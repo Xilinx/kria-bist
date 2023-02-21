@@ -1,6 +1,10 @@
 # Kria Board Interface Test Application
 
 ## Setup
+Install prerequisites
+```
+sudo apt install freeipmi-tools
+```
 Install pytest, clone this repo, and cd into tests dir
 ```
 sudo apt install python3-pytest

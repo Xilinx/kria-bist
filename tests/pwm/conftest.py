@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import pytest
-from pwm_config import supported_boards
+from bist_pwm_config import supported_boards
 
 def pytest_generate_tests(metafunc):
     """

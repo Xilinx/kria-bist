@@ -3,7 +3,7 @@
 
 # Import the 'modules' that are required for execution
 import pytest
-from gpio_config import supported_boards
+from bist_gpio_config import supported_boards
 
 
 def pytest_generate_tests(metafunc):

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import pytest
-from eeprom import *
+from bist_eeprom import *
 
 @pytest.mark.eeprom
 def test_eeprom(id, helpers):

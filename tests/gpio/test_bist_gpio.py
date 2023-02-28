@@ -4,7 +4,7 @@
 # Import the 'modules' that are required for test cases execution
 import pytest
 import logging
-from gpio import *
+from bist_gpio import *
 
 logger = logging.getLogger(__name__)
 

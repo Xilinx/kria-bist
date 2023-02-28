@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import pytest
-from pwm import *
+from bist_pwm import *
 
 @pytest.mark.pwm
 def test_pwm(id, helpers):

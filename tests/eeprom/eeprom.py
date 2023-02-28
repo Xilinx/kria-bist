@@ -4,7 +4,9 @@
 import glob
 import subprocess
 
-def run_eeprom_test(eeprom_addr, field, value, logger):
+def run_eeprom_test(label, eeprom_addr, field, value, helpers):
+    logger = helpers.logger_init(label)
+    logger.start_test()
     eeprom_file = glob.glob('/sys/devices/platform/axi/*.i2c/*/*' + eeprom_addr + '/eeprom')[0]
     ret, fru = subprocess.getstatusoutput('/usr/sbin/ipmi-fru' + ' --fru-file=' + eeprom_file  + ' --interpret-oem-data')
     data_from_eeprom = fru.split(field+": ",1)[1].split("\n",1)[0].strip()
@@ -12,15 +14,26 @@ def run_eeprom_test(eeprom_addr, field, value, logger):
     if field == "FRU Board Product Name":
         data_from_eeprom = data_from_eeprom.split("-")[1]
 
-    logger.info(fru)
-    logger.info("\nExpected " + field + " is: " + str(value))
+    logger.info(fru + "\n")
+    logger.info("Expected " + field + " is: " + str(value))
     logger.info(field + " from EEPROM: " + data_from_eeprom)
 
     # Check if ipmi-fru returns an error code
-    # There is a known issue for the KV EEPROM and an error is expected.
-    # The second if condition below is a workaround for this issue.
-    product_name = fru.split("FRU Board Product Name: ",1)[1].split("\n",1)[0].strip()
-    if (ret != 0) and (product_name.split("-")[1] != "KV"):
-        assert False
+    if (ret != 0):
+        # This if condition is an exception for a known EEPROM issue
+        if "ipmi_fru_next: multirecord area checksum invalid" in fru:
+            logger.warning("A multirecord area checksum is invalid. This is likely a known issue. Please double check the EEPROM output.")
+        else:
+            logger.error("Error reading EEPROM")
+            logger.test_failed()
+            logger.stop_test()
+            assert False
 
-    assert data_from_eeprom == value
+    if data_from_eeprom == value:
+        logger.test_passed()
+        logger.stop_test()
+        assert True
+    else:
+        logger.test_failed()
+        logger.stop_test()
+        assert False

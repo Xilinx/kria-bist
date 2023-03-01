@@ -27,13 +27,13 @@ def run_eeprom_test(label, eeprom_addr, field, value, helpers):
             logger.error("Error reading EEPROM")
             logger.test_failed()
             logger.stop_test()
-            assert False
+            return False
 
     if data_from_eeprom == value:
         logger.test_passed()
         logger.stop_test()
-        assert True
+        return True
     else:
         logger.test_failed()
         logger.stop_test()
-        assert False
+        return False

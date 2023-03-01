@@ -11,4 +11,4 @@ def test_eeprom(id, helpers):
     field = id['field']
     value = id['value']
 
-    run_eeprom_test(label, eeprom_addr, field, value, helpers)
+    assert run_eeprom_test(label, eeprom_addr, field, value, helpers)

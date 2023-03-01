@@ -7,4 +7,4 @@ from bist_pwm import *
 @pytest.mark.pwm
 def test_pwm(id, helpers):
     if id['label'] == 'fan':
-        run_fancontrol_test(id['label'], helpers)
+        assert run_fancontrol_test(id['label'], helpers)

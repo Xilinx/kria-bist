@@ -33,7 +33,7 @@ def run_fancontrol_test(label, helpers):
         elif var == 'N':
             logger.test_failed()
             logger.stop_test()
-            assert False
+            return False
         else:
             logger.info("Invalid input, try again")
 
@@ -43,11 +43,10 @@ def run_fancontrol_test(label, helpers):
         if var == 'Y':
             logger.test_passed()
             logger.stop_test()
-            assert True
-            break
+            return True
         elif var == 'N':
             logger.test_failed()
             logger.stop_test()
-            assert False
+            return False
         else:
             logger.info("Invalid input, try again")

@@ -3,23 +3,23 @@
 
 # Import the 'modules' that are required for test cases execution
 import pytest
-import logging
 from bist_gpio import *
 
-logger = logging.getLogger(__name__)
 
 @pytest.mark.gpio
-def test_gpio(id):
+def test_gpio(id, helpers):
     """
     Function to parse GPIO Configurations
-    
+
     Args:
             id: List of configurations
+            helpers: Handle for logging
 
     """
     # Parse the configurations
+    label = (id["label"])
     width = (id["width"])
     offset = (id["offset"])
 
     # Function call to Test GPIO Loopback
-    run_gpio_loopback(width, offset, logger)
+    assert run_gpio_loopback(label, width, offset, helpers)

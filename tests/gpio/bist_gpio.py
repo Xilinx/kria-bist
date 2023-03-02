@@ -110,17 +110,20 @@ def generate_patterns(width):
     return patterns
 
 
-def run_gpio_loopback(width, offset, logger):
+def run_gpio_loopback(label, width, offset, helpers):
     """
     GPIO Loopback test execution
 
     Args:
-            width : Width of the GPIO under test
-            offset : Offset of the GPIO under test
-            logger: Handle for logging
+            label: Interface under test
+            width: Width of the GPIO under test
+            offset: Offset of the GPIO under test
+            helpers: Handle for logging
 
     """
-    width = (int(width))/2
+    logger = helpers.logger_init(label)
+    logger.start_test()
+    width = (int(width)) / 2
     w_offset = int(offset)
     r_offset = int(offset) + int(width)
 
@@ -140,6 +143,15 @@ def run_gpio_loopback(width, offset, logger):
         rp = "".join(map(str, r_pattern))
         result = "Match" if rp == wp else "Mismatch"
 
-        logger.info("\nWrite pattern: " + wp + ", Read pattern " + rp + " : " + result)
+        if rp == wp:
+            logger.info("Write pattern: " + wp + ", Read pattern " + rp + " : " + result)
+            pattern_match = True
 
-        assert r_pattern == w_pattern
+        else:
+            logger.info("Write pattern: " + wp + ", Read pattern " + rp + " : " + result)
+            pattern_match = False
+            break
+    
+    logger.test_passed() if pattern_match else logger.test_failed()
+    logger.stop_test()
+    return pattern_match

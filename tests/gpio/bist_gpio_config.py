@@ -21,4 +21,3 @@ supported_boards = {
         {'label': 'rpi', 'width': '28', 'offset': '32'},
     ]
 }
-

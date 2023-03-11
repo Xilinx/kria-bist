@@ -3,7 +3,7 @@
 ## Setup
 Install prerequisites
 ```
-sudo apt install freeipmi-tools libiio python3-libiio
+sudo apt install freeipmi-tools libiio python3-libiio tpm2-tools
 ```
 Install pytest, clone this repo, and cd into tests dir
 ```

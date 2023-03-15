@@ -27,11 +27,7 @@ def run_tpm2_getcap_test(label, helpers):
         "handles-loaded-session",
         "handles-saved-session",
     ]
-    try:
-        ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True, timeout=1)
-    except subprocess.TimeoutExpired as e:
-        logger.error(cmd + " timed out after " + str(e.timeout) + " seconds")
-        return False
+    ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True)
     if ret.returncode:
         logger.error("Failed to run " + cmd)
         return False
@@ -53,11 +49,7 @@ def run_tpm2_selftest_test(label, helpers):
 
     cmd = "tpm2_selftest"
     logger.info("Running " + cmd)
-    try:
-        ret = subprocess.run(cmd, check=True, timeout=1)
-    except subprocess.TimeoutExpired as e:
-        logger.error(cmd + " timed out after " + str(e.timeout) + " seconds")
-        return False
+    ret = subprocess.run(cmd, check=True)
     if ret.returncode:
         logger.error(cmd + " failed with return code: " + ret)
         return False
@@ -75,11 +67,7 @@ def run_tpm2_getrandom_test(label, helpers):
     random_data = []
     # Generate 10 hash keys
     for i in range(10):
-        try:
-            ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True, timeout=1)
-        except subprocess.TimeoutExpired as e:
-            logger.error(cmd + " timed out after " + str(e.timeout) + " seconds")
-            return False
+        ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True)
         if ret.returncode:
             logger.error(cmd + " failed with return code: " + ret)
             return False
@@ -108,11 +96,7 @@ def run_tpm2_hash_test(label, helpers):
 
     cmd = "tpm2_hash " + output_dir + "/" + test_file_name + " --hex"
     logger.info("Running " + cmd)
-    try:
-        ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True, timeout=1)
-    except subprocess.TimeoutExpired as e:
-        logger.error(cmd + " timed out after " + str(e.timeout) + " seconds")
-        return False
+    ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True)
     if ret.returncode:
         logger.error(cmd + " failed with return code: " + ret)
         return False
@@ -134,11 +118,7 @@ def tpm_pcrread(pcr_banks, sha, logger):
     """Helper function to read PCR registers"""
     cmd = "tpm2_pcrread sha" + sha + ":" + pcr_banks
     logger.info("Running " + cmd)
-    try:
-        ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True, timeout=1)
-    except subprocess.TimeoutExpired as e:
-        logger.error(cmd + " timed out after " + str(e.timeout) + " seconds")
-        return False
+    ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True)
     if ret.returncode:
         logger.error(cmd + " failed with return code: " + ret)
         return False
@@ -175,11 +155,7 @@ def tpm_pcrextend(pcr_register, hash_algorithm, sha_data, logger):
     """Helper function to extend PCR register"""
     cmd = "tpm2_pcrextend " + pcr_register + ":sha" + hash_algorithm + "=" + sha_data
     logger.info("Running " + cmd)
-    try:
-        ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True, timeout=1)
-    except subprocess.TimeoutExpired as e:
-        logger.error(cmd + " timed out after " + str(e.timeout) + " seconds")
-        return False
+    ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True)
     if ret.returncode:
         logger.error(cmd + " failed with return code: " + ret)
         return False
@@ -241,11 +217,7 @@ def run_tpm2_pcrreset_test(label, helpers):
             return False
         cmd = "tpm2_pcrreset " + pcr_register
         logger.info("Running " + cmd)
-        try:
-            ret = subprocess.run(cmd.split(' '), check=True, timeout=1)
-        except subprocess.TimeoutExpired as e:
-            logger.error(cmd + " timed out after " + str(e.timeout) + " seconds")
-            return False
+        ret = subprocess.run(cmd.split(' '), check=True)
         if ret.returncode:
             logger.error(cmd + " failed with return code: " + ret)
             return False

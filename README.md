@@ -3,7 +3,7 @@
 ## Setup
 Install prerequisites
 ```
-sudo apt install freeipmi-tools libiio python3-libiio tpm2-tools
+sudo apt install freeipmi-tools libiio python3-libiio tpm2-tools v4l-utils gstreamer1.0-tools gstreamer1.0-plugins-good gstreamer1.0-plugins-bad libgstreamer1.0-0 gst-perf
 ```
 Install pytest, clone this repo, and cd into tests dir
 ```

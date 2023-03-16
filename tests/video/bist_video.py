@@ -52,15 +52,14 @@ def get_media_node(pipeline):
     return None
 
 
-def set_test_pattern(video_node):
+def set_test_pattern(video_node, tpg_pattern):
     """
     Set a specific Test pattern on a sensor mapped to a video node
 
     Args:
             video_node: Video node devpath
+            tpg_pattern: Test pattern generator value
     """
-    # Test Pattern Generator control
-    tpg_pattern = "1"
     # Set test pattern on given video node
     video_cmd = f"v4l2-ctl -d {video_node} -c test_pattern={tpg_pattern}"
     subprocess.run(video_cmd.split(' '),check=True, text=True)
@@ -186,7 +185,7 @@ def run_filesink_pipeline(label, media_node, width, height, fps, fmt, test_image
     return True
 
 
-def run_video_filesink_test(label, pipeline, width, height, fps, fmt, helpers):
+def run_video_filesink_test(label, pipeline, width, height, fps, fmt, tpg_pattern, helpers):
     """
     Video Filesink Test
 
@@ -197,6 +196,7 @@ def run_video_filesink_test(label, pipeline, width, height, fps, fmt, helpers):
             height: Height in terms of resolution
             fps: Targetted frames per second
             fmt: Video format of pipeline
+            tpg_pattern: Test pattern generator value
             helpers: Handle for logging
     """
     logger = helpers.logger_init(label)
@@ -214,7 +214,7 @@ def run_video_filesink_test(label, pipeline, width, height, fps, fmt, helpers):
         return False
 
     # Function call to set Test pattern
-    set_test_pattern(video_node)
+    set_test_pattern(video_node, tpg_pattern)
 
     # Function call to get paths for output/data directories
     output_dir = helpers.get_output_dir(__file__)

@@ -23,8 +23,10 @@ def test_video(id, helpers):
     fmt = (id["fmt"])
 
     if "filesink" in label:
-        # Funtion call to Video Filesink Test on Video
-        test_result = run_video_filesink_test(label, pipeline, width, height, fps, fmt, helpers)
+        # Parse Test pattern generator value from configurations
+        tpg_pattern = (id["tpg_pattern"])
+        # Funtion call to Video Filesink Test
+        test_result = run_video_filesink_test(label, pipeline, width, height, fps, fmt, tpg_pattern, helpers)
     elif "perf" in label:
         # Function call to Video Performance Test
         test_result = run_video_perf_test(label, pipeline, width, height, fps, fmt, helpers)

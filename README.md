@@ -3,19 +3,29 @@
 ## Setup
 Install prerequisites
 ```
-sudo apt install \ 
+sudo apt install \
 	freeipmi-tools \
 	libiio \
 	python3-libiio \
-	tpm2-tools \ 
-	v4l-utils \ 
-	gstreamer1.0-tools \ 
+	tpm2-tools \
+	v4l-utils \
+	gstreamer1.0-tools \
 	gstreamer1.0-plugins-good \
 	gstreamer1.0-plugins-bad \
 	libgstreamer1.0-0 \
 	gst-perf \
 	libdrm-tests \
-	python3-periphery
+	python3-periphery \
+	iperf3 \
+	ethtool
+
+sudo pip install \
+	netifaces \
+	ipaddress \
+	pyroute2 \
+	ping3 \
+	iperf3 \
+	func-timeout
 ```
 Install pytest, clone this repo, and cd into tests dir
 ```

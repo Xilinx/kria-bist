@@ -295,7 +295,9 @@ def run_video_filesink_test(label, pipeline, width, height, fps, fmt, tpg_patter
         return False
 
     # Function call to set Test pattern
-    set_test_pattern(video_node, tpg_pattern)
+    result = set_test_pattern(video_node, tpg_pattern, logger)
+    if not result:
+        return False
 
     # Function call to get paths for output/data directories
     output_dir = helpers.get_output_dir(__file__)

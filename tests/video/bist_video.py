@@ -152,7 +152,7 @@ def run_perf_pipeline(media_node, width, height, fps, fmt, logger):
             bool/string: False if Pipeline Times out/String of performance output if Pipeline succeeds
     """
     # Run the pipeline for 10 seconds
-    buffers = (int(fps) * 10)
+    buffers = fps * 10
     # Run the pipeline
     gst_cmd = f"gst-launch-1.0 mediasrcbin media-device={media_node} v4l2src0::num-buffers={buffers} ! video/x-raw," \
               f"width={width},height={height},framerate={fps}/1,format={fmt} ! perf ! fakevideosink"
@@ -352,14 +352,14 @@ def run_video_perf_test(label, pipeline, width, height, fps, fmt, helpers):
     actual_fps = get_framerate(perf_output)
 
     # Function call to check if actual_fps is within accepted range of targetted fps
-    result = within_percentage(actual_fps, int(fps))
+    result = within_percentage(actual_fps, fps)
 
     # Check result and declare pass/fail
     if result:
-        logger.info("Actual fps: " + str(actual_fps) + ", Target fps:" + fps + " - Actual fps within accepted range")
+        logger.info("Actual fps: " + str(actual_fps) + ", Target fps:" + str(fps) + " - Actual fps within accepted range")
         return True
     else:
-        logger.error("Actual fps: " + str(actual_fps) + ", Target fps:" + fps + " - Actual fps not within accepted range")
+        logger.error("Actual fps: " + str(actual_fps) + ", Target fps:" + str(fps) + " - Actual fps not within accepted range")
         return False
 
 

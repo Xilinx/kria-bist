@@ -74,6 +74,36 @@ def set_test_pattern(video_node, tpg_pattern, logger):
     return True
 
 
+def set_test_pattern_ap1302_debugfs(video_node, tpg_pattern, ar1335_tpg_reg, logger):
+    """
+    Set Test pattern at the ar1335 sensor using debugfs
+    Args:
+            video_node: Video node devpath
+            tpg_pattern: Test pattern generator value
+            ar1335_tpg_reg: Sensor address to test pattern reg
+            logger: Handle for logging
+    Returns:
+            bool: True if pattern is set, False if pattern is not set i.e. command failed
+    """
+    # Disable ap1302 test pattern
+    video_cmd = f"v4l2-ctl -d {video_node} -c test_pattern=0"
+    process = subprocess.run(video_cmd.split(' '), capture_output=True, check=True, text=True)
+    if process.returncode:
+        logger.error("Failed to run v4l2-ctl disable test pattern command")
+        return False
+    try:
+        # Set sensor address to test pattern register (0x0600) of ar1335
+        with open('/sys/kernel/debug/ap1302.4-003c/sipm_addr', 'w') as file:
+            file.write(f"{ar1335_tpg_reg}")
+        # Set value of test pattern register to color bar (0x2)
+        with open('/sys/kernel/debug/ap1302.4-003c/sipm_data', 'w') as file:
+            file.write(f"0x{tpg_pattern}")
+    except TimeoutError:
+        logger.error("Write to test pattern register via debugfs timed out")
+        return False
+    return True
+
+
 def within_percentage(actual_fps, fps):
     """
     Calculate if captured actual fps is within +/- percentage range of target fps
@@ -361,9 +391,15 @@ def run_video_ximagesink_test(label, pipeline, width, height, fps, fmt, tpg_patt
         return False
 
     # Function call to set Test pattern
-    result = set_test_pattern(video_node, tpg_pattern, logger)
-    if not result:
-        return False
+    if "ar1335_ap1302" in label:
+        ar1335_tpg_reg = "0x02000600"
+        result = set_test_pattern_ap1302_debugfs(video_node, tpg_pattern, ar1335_tpg_reg, logger)
+        if not result:
+            return False
+    else:
+        result = set_test_pattern(video_node, tpg_pattern, logger)
+        if not result:
+            return False
     # Function call to run ximagesink pipeline
     result = run_ximagesink_pipeline(media_node, width, height, fps, fmt, logger)
     if not result:

@@ -30,6 +30,11 @@ def test_video(id, helpers):
     elif "perf" in label:
         # Function call to Video Performance Test
         test_result = run_video_perf_test(label, pipeline, width, height, fps, fmt, helpers)
+    elif "ximagesink" in label:
+        # Parse Test pattern generator value from configurations
+        tpg_pattern = (id["tpg_pattern"])
+        # Function call to Video Imagesink test
+        test_result = run_video_ximagesink_test(label, pipeline, width, height, fps, fmt, tpg_pattern, helpers)
     else:
         assert False
 

@@ -8,6 +8,7 @@ import re
 import filecmp
 import os
 import signal
+from inputimeout import inputimeout, TimeoutOccurred
 
 
 def get_video_node(pipeline):
@@ -52,17 +53,55 @@ def get_media_node(pipeline):
     return None
 
 
-def set_test_pattern(video_node, tpg_pattern):
+def set_test_pattern(video_node, tpg_pattern, logger):
     """
     Set a specific Test pattern on a sensor mapped to a video node
 
     Args:
             video_node: Video node devpath
             tpg_pattern: Test pattern generator value
+            logger: Handle for logging
+
+    Returns:
+            bool: True if pattern is set, False if pattern not set i.e command failed
     """
     # Set test pattern on given video node
     video_cmd = f"v4l2-ctl -d {video_node} -c test_pattern={tpg_pattern}"
-    subprocess.run(video_cmd.split(' '),check=True, text=True)
+    process = subprocess.run(video_cmd.split(' '), capture_output=True, check=True, text=True)
+    if process.returncode:
+        logger.error("Failed to run v4l2-ctl set test pattern command")
+        return False
+    return True
+
+
+def set_test_pattern_ap1302_debugfs(video_node, tpg_pattern, ar1335_tpg_reg, logger):
+    """
+    Set Test pattern at the ar1335 sensor using debugfs
+    Args:
+            video_node: Video node devpath
+            tpg_pattern: Test pattern generator value
+            ar1335_tpg_reg: Sensor address to test pattern reg
+            logger: Handle for logging
+    Returns:
+            bool: True if pattern is set, False if pattern is not set i.e. command failed
+    """
+    # Disable ap1302 test pattern
+    video_cmd = f"v4l2-ctl -d {video_node} -c test_pattern=0"
+    process = subprocess.run(video_cmd.split(' '), capture_output=True, check=True, text=True)
+    if process.returncode:
+        logger.error("Failed to run v4l2-ctl disable test pattern command")
+        return False
+    try:
+        # Set sensor address to test pattern register (0x0600) of ar1335
+        with open('/sys/kernel/debug/ap1302.4-003c/sipm_addr', 'w') as file:
+            file.write(f"{ar1335_tpg_reg}")
+        # Set value of test pattern register to color bar (0x2)
+        with open('/sys/kernel/debug/ap1302.4-003c/sipm_data', 'w') as file:
+            file.write(f"0x{tpg_pattern}")
+    except TimeoutError:
+        logger.error("Write to test pattern register via debugfs timed out")
+        return False
+    return True
 
 
 def within_percentage(actual_fps, fps):
@@ -113,7 +152,7 @@ def run_perf_pipeline(media_node, width, height, fps, fmt, logger):
             bool/string: False if Pipeline Times out/String of performance output if Pipeline succeeds
     """
     # Run the pipeline for 10 seconds
-    buffers = (int(fps) * 10)
+    buffers = fps * 10
     # Run the pipeline
     gst_cmd = f"gst-launch-1.0 mediasrcbin media-device={media_node} v4l2src0::num-buffers={buffers} ! video/x-raw," \
               f"width={width},height={height},framerate={fps}/1,format={fmt} ! perf ! fakevideosink"
@@ -185,6 +224,48 @@ def run_filesink_pipeline(label, media_node, width, height, fps, fmt, test_image
     return True
 
 
+def run_ximagesink_pipeline(media_node, width, height, fps, fmt, logger):
+    """
+    Run an imagesink pipeline of a test pattern
+
+    Args:
+            media_node: Media node devpath
+            width: Width in terms of resolution
+            height: Height in terms of resolution
+            fps: Targetted frames per second
+            fmt: Video format of pipeline
+            logger: Handle for logging
+
+    Returns:
+            bool: True if pattern observed, False if pattern not observed
+    """
+    # Run the pipeline
+    gst_cmd = f"gst-launch-1.0 mediasrcbin media-device={media_node} v4l2src0::stride-align=256 ! video/x-raw," \
+              f"width={width},height={height},framerate={fps}/1,format={fmt} ! videoconvert ! ximagesink sync=false"
+    logger.info("Please observe the pop-up window")
+    logger.info("Do you see color bar test pattern in the window [Y/N]?")
+    try:
+        process = subprocess.Popen(gst_cmd.split(' '), stdout=subprocess.PIPE)
+        while(1):
+            user_timeout = 30
+            var = inputimeout(timeout=user_timeout).strip().upper()
+            if var == 'Y':
+                logger.info("User reports that pattern was observed in the window")
+                ret_val = True
+                break
+            elif var == 'N':
+                logger.error("User reports that pattern was not observed in the window")
+                ret_val = False
+                break
+            else:
+                logger.info("Invalid input, try again")
+    except TimeoutOccurred:
+        logger.error("No user input entered after " + str(user_timeout) + " seconds, aborting test")
+        ret_val = False
+    os.kill(process.pid, signal.SIGKILL)
+    return ret_val
+
+
 def run_video_filesink_test(label, pipeline, width, height, fps, fmt, tpg_pattern, helpers):
     """
     Video Filesink Test
@@ -214,7 +295,9 @@ def run_video_filesink_test(label, pipeline, width, height, fps, fmt, tpg_patter
         return False
 
     # Function call to set Test pattern
-    set_test_pattern(video_node, tpg_pattern)
+    result = set_test_pattern(video_node, tpg_pattern, logger)
+    if not result:
+        return False
 
     # Function call to get paths for output/data directories
     output_dir = helpers.get_output_dir(__file__)
@@ -269,12 +352,59 @@ def run_video_perf_test(label, pipeline, width, height, fps, fmt, helpers):
     actual_fps = get_framerate(perf_output)
 
     # Function call to check if actual_fps is within accepted range of targetted fps
-    result = within_percentage(actual_fps, int(fps))
+    result = within_percentage(actual_fps, fps)
 
     # Check result and declare pass/fail
     if result:
-        logger.info("Actual fps: " + str(actual_fps) + ", Target fps:" + fps + " - Actual fps within accepted range")
+        logger.info("Actual fps: " + str(actual_fps) + ", Target fps:" + str(fps) + " - Actual fps within accepted range")
         return True
     else:
-        logger.error("Actual fps: " + str(actual_fps) + ", Target fps:" + fps + " - Actual fps not within accepted range")
+        logger.error("Actual fps: " + str(actual_fps) + ", Target fps:" + str(fps) + " - Actual fps not within accepted range")
         return False
+
+
+def run_video_ximagesink_test(label, pipeline, width, height, fps, fmt, tpg_pattern, helpers):
+    """
+    Video Imagesink Test
+
+    Args:
+            label: Label for Interface under test
+            pipeline: Name of video pipeline
+            width: Width in terms of resolution
+            height: Height in terms of resolution
+            fps: Targetted frames per second
+            fmt: Video format of pipeline
+            tpg_pattern: Test Pattern Generator value
+            helpers: Handle for logging
+    """
+    logger = helpers.logger_init(label)
+    logger.start_test()
+
+    # Function call to fetch media node
+    media_node = get_media_node(pipeline)
+    if media_node == None:
+        logger.error("No media node found for " + pipeline)
+        return False
+
+    # Function call to fetch video node
+    video_node = get_video_node(pipeline)
+    if video_node == None:
+        logger.error("No video node found for " + pipeline)
+        return False
+
+    # Function call to set Test pattern
+    if "ar1335_ap1302" in label:
+        ar1335_tpg_reg = "0x02000600"
+        result = set_test_pattern_ap1302_debugfs(video_node, tpg_pattern, ar1335_tpg_reg, logger)
+        if not result:
+            return False
+    else:
+        result = set_test_pattern(video_node, tpg_pattern, logger)
+        if not result:
+            return False
+    # Function call to run ximagesink pipeline
+    result = run_ximagesink_pipeline(media_node, width, height, fps, fmt, logger)
+    if not result:
+        return False
+    else:
+        return True

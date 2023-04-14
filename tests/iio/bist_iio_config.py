@@ -17,8 +17,8 @@ supported_boards = {
             'label': 'ina260_current',
             'device': 'ina260',
             'channel': 'current0',
-            'min_current': 750,
-            'max_current': 1050
+            'min_current': 850,
+            'max_current': 1250
         }
     ],
 

@@ -98,7 +98,7 @@ def gpio_read_range(chip, offset, width):
 
 def generate_patterns(width):
     """
-    Generate bit patterns for all permutations of <width> number of bits
+    Generate bit patterns, with only one bit set, for all permutations of <width> number of bits
 
     Args:
             width: Number of bits
@@ -106,7 +106,11 @@ def generate_patterns(width):
     Returns:
                 list: List of tuples of type int with binary pattern
     """
-    patterns = list(itertools.product([0, 1], repeat=int(width)))
+    patterns = []
+    for i in range(width):
+        # Generate binary patterns with only one set bit & add padding based on total bits(width)
+        # Convert tuple of type str to tuple of type int
+        patterns.append(tuple(int(digit) for digit in format(1 << i, 'b').zfill(width)))
     return patterns
 
 

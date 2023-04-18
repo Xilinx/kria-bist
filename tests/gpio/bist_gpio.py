@@ -127,9 +127,9 @@ def run_gpio_loopback(label, width, offset, helpers):
     """
     logger = helpers.logger_init(label)
     logger.start_test()
-    width = (int(width)) / 2
+    width = width // 2
     w_offset = int(offset)
-    r_offset = int(offset) + int(width)
+    r_offset = int(offset) + width
 
     # Function call to get legitimate GPIO devpath
     chip = gpio_get_chip()
@@ -140,8 +140,8 @@ def run_gpio_loopback(label, width, offset, helpers):
     # Read pattern(1's and 0's) from given offsets(loopbacked pins)
     # Perform comparison of both patterns and conclude match/mismatch
     for w_pattern in patterns:
-        gpio_write_range(chip, w_offset, int(width), w_pattern)
-        r_pattern = gpio_read_range(chip, r_offset, int(width))
+        gpio_write_range(chip, w_offset, width, w_pattern)
+        r_pattern = gpio_read_range(chip, r_offset, width)
 
         wp = "".join(map(str, w_pattern))
         rp = "".join(map(str, r_pattern))

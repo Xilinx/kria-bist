@@ -42,7 +42,7 @@ def gpio_write(chip, offset, value):
             value: Value to be written
     """
     # Open legitimate GPIO out line, write the value, close GPIO line
-    gpio_out = GPIO(chip, int(offset), "out")
+    gpio_out = GPIO(chip, offset, "out")
     gpio_out.write(bool(value))
     gpio_out.close()
 
@@ -59,7 +59,7 @@ def gpio_read(chip, offset):
                 int: Value read from given offset
     """
     # Open legitimate GPIO in line, read the value, close GPIO line
-    gpio_in = GPIO(chip, int(offset), "in")
+    gpio_in = GPIO(chip, offset, "in")
     read_val = int(gpio_in.read())
     gpio_in.close()
     return read_val
@@ -98,7 +98,7 @@ def gpio_read_range(chip, offset, width):
 
 def generate_patterns(width):
     """
-    Generate bit patterns for all permutations of <width> number of bits
+    Generate bit patterns, with only one bit set, for all permutations of <width> number of bits
 
     Args:
             width: Number of bits
@@ -106,7 +106,11 @@ def generate_patterns(width):
     Returns:
                 list: List of tuples of type int with binary pattern
     """
-    patterns = list(itertools.product([0, 1], repeat=int(width)))
+    patterns = []
+    for i in range(width):
+        # Generate binary patterns with only one set bit & add padding based on total bits(width)
+        # Convert tuple of type str to tuple of type int
+        patterns.append(tuple(int(digit) for digit in format(1 << i, 'b').zfill(width)))
     return patterns
 
 
@@ -123,9 +127,9 @@ def run_gpio_loopback(label, width, offset, helpers):
     """
     logger = helpers.logger_init(label)
     logger.start_test()
-    width = (int(width)) / 2
-    w_offset = int(offset)
-    r_offset = int(offset) + int(width)
+    width = width // 2
+    w_offset = offset
+    r_offset = offset + width
 
     # Function call to get legitimate GPIO devpath
     chip = gpio_get_chip()
@@ -136,8 +140,8 @@ def run_gpio_loopback(label, width, offset, helpers):
     # Read pattern(1's and 0's) from given offsets(loopbacked pins)
     # Perform comparison of both patterns and conclude match/mismatch
     for w_pattern in patterns:
-        gpio_write_range(chip, w_offset, int(width), w_pattern)
-        r_pattern = gpio_read_range(chip, r_offset, int(width))
+        gpio_write_range(chip, w_offset, width, w_pattern)
+        r_pattern = gpio_read_range(chip, r_offset, width)
 
         wp = "".join(map(str, w_pattern))
         rp = "".join(map(str, r_pattern))

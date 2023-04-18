@@ -42,7 +42,7 @@ def gpio_write(chip, offset, value):
             value: Value to be written
     """
     # Open legitimate GPIO out line, write the value, close GPIO line
-    gpio_out = GPIO(chip, int(offset), "out")
+    gpio_out = GPIO(chip, offset, "out")
     gpio_out.write(bool(value))
     gpio_out.close()
 
@@ -59,7 +59,7 @@ def gpio_read(chip, offset):
                 int: Value read from given offset
     """
     # Open legitimate GPIO in line, read the value, close GPIO line
-    gpio_in = GPIO(chip, int(offset), "in")
+    gpio_in = GPIO(chip, offset, "in")
     read_val = int(gpio_in.read())
     gpio_in.close()
     return read_val
@@ -128,8 +128,8 @@ def run_gpio_loopback(label, width, offset, helpers):
     logger = helpers.logger_init(label)
     logger.start_test()
     width = width // 2
-    w_offset = int(offset)
-    r_offset = int(offset) + width
+    w_offset = offset
+    r_offset = offset + width
 
     # Function call to get legitimate GPIO devpath
     chip = gpio_get_chip()

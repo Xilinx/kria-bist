@@ -8,6 +8,7 @@ import re
 import filecmp
 import os
 import signal
+import time
 from inputimeout import inputimeout, TimeoutOccurred
 
 
@@ -224,7 +225,7 @@ def run_filesink_pipeline(label, media_node, width, height, fps, fmt, test_image
     return True
 
 
-def run_ximagesink_pipeline(media_node, width, height, fps, fmt, logger):
+def run_ximagesink_pipeline(media_node, width, height, fps, fmt, logger, label, video_node, tpg_pattern):
     """
     Run an imagesink pipeline of a test pattern
 
@@ -246,6 +247,18 @@ def run_ximagesink_pipeline(media_node, width, height, fps, fmt, logger):
     logger.info("Do you see color bar test pattern in the window [Y/N]?")
     try:
         process = subprocess.Popen(gst_cmd.split(' '), stdout=subprocess.PIPE)
+        # Test pattern at sensor does not produce expected result with a single write to tgp_reg
+        # Gstreamer pipeline needs to be in running state when second write is performed
+        # When pipeline is running, the second write to tpg_reg is done inside if check which sets the test pattern
+        # This if check block is a temporary workaround
+        if "ar1335_ap1302" in label:
+            ar1335_tpg_reg = "0x02000600"
+            time.sleep(3)
+            result = set_test_pattern_ap1302_debugfs(video_node, tpg_pattern, ar1335_tpg_reg, logger)
+            if not result:
+                ret_val = False
+                os.kill(process.pid, signal.SIGKILL)
+                return ret_val
         while(1):
             user_timeout = 30
             var = inputimeout(timeout=user_timeout).strip().upper()
@@ -403,7 +416,7 @@ def run_video_ximagesink_test(label, pipeline, width, height, fps, fmt, tpg_patt
         if not result:
             return False
     # Function call to run ximagesink pipeline
-    result = run_ximagesink_pipeline(media_node, width, height, fps, fmt, logger)
+    result = run_ximagesink_pipeline(media_node, width, height, fps, fmt, logger, label, video_node, tpg_pattern)
     if not result:
         return False
     else:

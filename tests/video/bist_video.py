@@ -10,6 +10,7 @@ import os
 import signal
 import time
 from inputimeout import inputimeout, TimeoutOccurred
+from periphery import MMIO
 
 
 def get_video_node(pipeline):
@@ -72,6 +73,47 @@ def set_test_pattern(video_node, tpg_pattern, logger):
     if process.returncode:
         logger.error("Failed to run v4l2-ctl set test pattern command")
         return False
+    return True
+
+# The imx547 capture pipeline includes two IPs for which there are no v4l subdevice drivers
+# Those IPs are configured through register writes in the configure_pipeline_imx547() function
+# Additionally, media bus format is set at the sensor's subdev node since mediasrcbin plugin
+# doesn't propagate the format correctly throughout the capture pipeline
+def configure_pipeline_imx547(label, media_node, width, height, fps, logger):
+    """
+    Configure imx547 sensor pipeline
+
+    Args:
+            label: Label for interface under test
+            media_node: Media node devpath
+            width: Width in terms of resolution
+            height: Height in terms of resolution
+            fps: Targetted frames per second
+            logger: Handle for logging
+
+    Returns:
+            bool: True if pipeline configured, False if pipeline not configured
+    """
+    # Configure sensor pad
+    cmd = f'media-ctl -d /dev/media0 -V "\\"imx547 7-001a\\":0 [fmt:Y10_1X10/1920x1080 field:none @1/60]"'
+    process = subprocess.run(cmd, shell=True, capture_output=True)
+    if process.returncode:
+        return False
+    # Configure PPi-Video IP
+    ppi_ip = MMIO(0xa0030000, 32)
+    ppi_ip.write32(0,0x000009A8) # 0x9A8 is 2472 pixels (width)
+    ppi_ip.close()
+    ppi_ip = MMIO(0xa0030004, 32)
+    ppi_ip.write32(0,0x00000850) # 0x850 is 2128 lines of pixels (height)
+    ppi_ip.close()
+    # Configure SLVS-EC IP Core
+    slvs_ip = MMIO(0xa0020000, 32)
+    slvs_ip.write32(0,0x0000000A)
+    slvs_ip.close()
+    slvs_ip = MMIO(0xa002000c, 32)
+    slvs_ip.write32(0,0x00000001)
+    slvs_ip.close()
+    logger.info("Extra imx547 pipeline configuration successful")
     return True
 
 
@@ -320,6 +362,13 @@ def run_video_filesink_test(label, pipeline, width, height, fps, fmt, tpg_patter
     test_image_path = output_dir + "/" + label + "_test.raw"
     golden_image_path = data_dir + "/" + label + "_golden.raw"
 
+    # Workaround: Configure imx547 pipeline
+    if "imx547" in label:
+        result = configure_pipeline_imx547(label, media_node, width, height, fps, logger)
+        if not result:
+            logger.error("Failed to configure imx547 pipeline")
+            return False
+
     # Function call to generate test image
     output = run_filesink_pipeline(label, media_node, width, height, fps, fmt, test_image_path, logger)
     if not output:
@@ -354,6 +403,13 @@ def run_video_perf_test(label, pipeline, width, height, fps, fmt, helpers):
     if media_node == None:
         logger.error("No media node found for " + pipeline)
         return False
+
+    # Workaround: Configure imx547 pipeline
+    if "imx547" in label:
+        result = configure_pipeline_imx547(label, media_node, width, height, fps, logger)
+        if not result:
+            logger.error("Failed to configure imx547 pipeline")
+            return False
 
     # Function call to fetch perf output
     perf_output = run_perf_pipeline(media_node, width, height, fps, fmt, logger)

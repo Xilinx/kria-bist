@@ -12,4 +12,8 @@ supported_boards = {
         {'label': 'ar1335_filesink', 'pipeline': 'ias_vcap_csi', 'width': 3840, 'height': 2160, 'fps': 30, 'fmt': 'NV12', 'tpg_pattern': 2},
         {'label': 'ar1335_perf', 'pipeline': 'ias_vcap_csi', 'width': 3840, 'height': 2160, 'fps': 30, 'fmt': 'NV12'},
     ],
+    'kr260' : [
+        {'label': 'imx547_filesink', 'pipeline': 'isp_v_proc', 'width': 1920, 'height': 1080, 'fps': 60, 'fmt': 'GRAY8', 'tpg_pattern': 3},
+        {'label': 'imx547_perf', 'pipeline': 'isp_v_proc', 'width': 1920, 'height': 1080, 'fps': 60, 'fmt': 'GRAY8'},
+    ],
 }

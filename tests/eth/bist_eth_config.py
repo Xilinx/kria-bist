@@ -15,6 +15,8 @@ supported_boards = {
         {'label': 'ethernet3_ping', 'phy_addr': '4'},
         {'label': 'ethernet3_perf', 'phy_addr': '4'},
         {'label': 'ethernet4_ping', 'phy_addr': '8'},
-        {'label': 'ethernet4_perf', 'phy_addr': '8'}
+        {'label': 'ethernet4_perf', 'phy_addr': '8'},
+        {'label': 'ethernet_sfp_ping', 'phy_addr': None},
+        {'label': 'ethernet_sfp_perf', 'phy_addr': None}
     ]
 }

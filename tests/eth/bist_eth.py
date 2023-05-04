@@ -9,13 +9,14 @@ from pyroute2 import IPRoute
 from ping3 import ping
 import iperf3
 import func_timeout
+import glob
 
 remote_host_ip = '192.168.0.1'
 static_ip_prefix = '192.168.0.1'
 
-def eth_get_interface(phy_addr, logger):
+def eth_get_interface_speed(phy_addr, logger):
     """
-    Get the eth interface based on PHY address.
+    Get the eth interface and speed based on PHY address.
 
     Args:
             phy_addr: PHY address
@@ -23,6 +24,7 @@ def eth_get_interface(phy_addr, logger):
 
     Returns:
             string: eth interface
+            float: Max speed in Gb/s
     """
     # Get list of interfaces
     interface_list = netifaces.interfaces()
@@ -30,6 +32,16 @@ def eth_get_interface(phy_addr, logger):
     for interface in interface_list:
         if "eth" not in interface:
             interface_list.remove(interface)
+
+    # Check for SFP case where PHY address is None
+    if phy_addr is None:
+        # Find eth interface without a PHY
+        for interface in interface_list:
+            if glob.glob("/sys/class/net/" + interface + "/phydev") == []:
+                logger.debug("The SFP interface is: " + interface)
+                # Default speed for SFP
+                sfp_max_speed = 0.5 # Gbps
+                return interface, sfp_max_speed
 
     # Check for matching PHY address
     for interface in interface_list:
@@ -44,7 +56,8 @@ def eth_get_interface(phy_addr, logger):
             return None
         phy_addr_string = "PHYAD: " + str(phy_addr)
         if phy_addr_string in output:
-            return interface
+            speed = eth_get_speed(interface, logger)
+            return interface, speed
     return None
 
 def eth_get_speed(eth_interface, logger):
@@ -56,7 +69,7 @@ def eth_get_speed(eth_interface, logger):
             logger: Calling function's logger object
 
     Returns:
-            int: Max speed in Gb/s
+            float: Max speed in Gb/s
     """
     cmd = "ethtool " + eth_interface
     ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True)
@@ -137,7 +150,7 @@ def run_eth_ping_test(label, phy_addr, helpers):
     logger = helpers.logger_init(label)
     logger.start_test()
 
-    eth_interface = eth_get_interface(phy_addr, logger)
+    eth_interface, _ = eth_get_interface_speed(phy_addr, logger)
     if eth_interface is None:
         return False
 
@@ -168,12 +181,8 @@ def run_eth_perf_test(label, phy_addr, helpers):
     logger = helpers.logger_init(label)
     logger.start_test()
 
-    eth_interface = eth_get_interface(phy_addr, logger)
-    if eth_interface is None:
-        return False
-
-    max_speed_gbps = eth_get_speed(eth_interface, logger)
-    if max_speed_gbps is None:
+    eth_interface, max_speed_gbps = eth_get_interface_speed(phy_addr, logger)
+    if eth_interface is None or max_speed_gbps is None:
         return False
 
     interface_ip = eth_setup(eth_interface, logger)

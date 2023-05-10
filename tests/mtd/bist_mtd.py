@@ -164,7 +164,8 @@ def run_mtd_read_write_test(label, helpers):
     logger = helpers.logger_init(label)
     logger.start_test()
     data_size = 1 # To set data size to 1MiB
-    offset = 0 # Address offset at the mtd partition
+    # Address offset set for 3 sectors at mtd User partition until device tree update with correct QSPI partition layout is available
+    offset = 196608 # Address offset set for 3 sectors (192KB)
     length = data_size * 1048576 # To convert MiB to bytes
     bist_mtd_write_file = tempfile.NamedTemporaryFile(delete=False)
     bist_mtd_read_file = tempfile.NamedTemporaryFile(delete=False)

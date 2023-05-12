@@ -54,8 +54,6 @@ def run_fancontrol_test(label, helpers):
         elif var == 'N':
             with open(pwm_file, "w") as pf:
                 pf.write(str(fan_speed_max))
-            logger.test_failed()
-            logger.stop_test()
             return False
         else:
             logger.info("Invalid input, try again")
@@ -64,12 +62,8 @@ def run_fancontrol_test(label, helpers):
     while(1):
         var = input().strip().upper()
         if var == 'Y':
-            logger.test_passed()
-            logger.stop_test()
             return True
         elif var == 'N':
-            logger.test_failed()
-            logger.stop_test()
             return False
         else:
             logger.info("Invalid input, try again")

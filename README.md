@@ -4,8 +4,9 @@
 Install prerequisites
 ```
 sudo apt install \
+	python3-pytest \
 	freeipmi-tools \
-	libiio \
+	libiio0 \
 	python3-libiio \
 	tpm2-tools \
 	v4l-utils \
@@ -17,7 +18,8 @@ sudo apt install \
 	libdrm-tests \
 	python3-periphery \
 	iperf3 \
-	ethtool
+	ethtool \
+	mtd-utils
 
 sudo pip install \
 	netifaces \
@@ -25,11 +27,8 @@ sudo pip install \
 	pyroute2 \
 	ping3 \
 	iperf3 \
-	func-timeout
-```
-Install pytest, clone this repo, and cd into tests dir
-```
-sudo apt install python3-pytest
+	func-timeout \
+	inputimeout
 ```
 ## Examples
 To collect tests:

@@ -10,6 +10,7 @@ from ping3 import ping
 import iperf3
 import func_timeout
 import glob
+from time import sleep
 
 remote_host_ip = '192.168.0.1'
 static_ip_prefix = '192.168.0.1'
@@ -194,12 +195,15 @@ def run_eth_perf_test(label, phy_addr, helpers):
     client.server_hostname = remote_host_ip
     client.port = 5201
     client.bind_address = interface_ip
-    logger.info(client.bind_address)
+    logger.debug("Client bind address: " + str(client.bind_address))
     try:
         perf_timeout = 3 # seconds
         perf_result = int(func_timeout.func_timeout(perf_timeout, client.run).sent_Mbps)/1000
     except func_timeout.FunctionTimedOut:
-        logger.error("iperf3 test timed out for interface " + str(eth_interface))
+        sleep(0.05) # Short delay to prevent unwanted prints to console
+        os.dup2(client._stdout_fd, 1) # Redirect output to console
+        logger.error("iperf3 test timed out for interface " + str(eth_interface) + ". "
+            "Please ensure the remote host IP is correct and an iperf3 server is running on the remote host.")
         return False
     except AttributeError as e:
         logger.error("iperf3 failed to measure bitrate. "

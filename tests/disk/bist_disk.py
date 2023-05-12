@@ -6,6 +6,7 @@ import subprocess
 import os
 import shutil
 from pathlib import Path
+import re
 
 
 def get_dev_path_speed(port_name, hw_path, logger):
@@ -39,7 +40,6 @@ def get_dev_path_speed(port_name, hw_path, logger):
         # To select ext4 partition on the disk
         if 'mmc' in hw_path[last_index]:
             partition_device = f"{device_path}p2"  # MMC-SD adapter enumeration: /dev/{mmcblkxp2}
-            logger.info(partition_device)
         else:
             partition_device = f"{device_path}2"  # USB-SD adapter enumeration: /dev/{sdx2}
     else:
@@ -53,14 +53,25 @@ def get_dev_path_speed(port_name, hw_path, logger):
 
 def find_block(bus, path, max_depth=3):
     # Create path object for searching the device block directory
-    search_path = Path(f"/sys/bus/{bus}/devices/{path}/")
+    if bus == 'usb':
+        search_path = Path(f"/sys/bus/usb/devices/{path}/")
+    elif bus == 'mmc':
+        search_path = Path("/sys/bus/mmc/devices/")
+        mmc_path = re.compile(f"{path}.*")
+        for sub_dir in search_path.iterdir():
+            if mmc_path.match(sub_dir.name):
+                search_path = sub_dir
+                break
+        else:
+            return None
     # Check if the device block exists
     if not search_path.exists():
         return None
+    block_path = re.compile(r"(?:.*/){0," + str(max_depth) + r"}block$")
     # Traverse and check for "block" directory till maximum depth
-    for item in search_path.glob("**/*"):
-        if item.is_dir() and item.name == "block" and item.parts[:-1].count("block") < max_depth:
-            for dev_path in item.iterdir():
+    for block_sub_dir in search_path.glob("**/*"):
+        if block_path.match(str(block_sub_dir)):
+            for dev_path in block_sub_dir.iterdir():
                 return dev_path.name
 
 

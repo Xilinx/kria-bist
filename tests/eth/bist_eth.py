@@ -49,16 +49,16 @@ def eth_get_interface_speed(phy_addr, logger):
         ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True)
         if ret.returncode:
             logger.error("Failed to run " + cmd)
-            return None
+            return None, None
         output = ret.stdout
         if not output:
             logger.error("Failed to read ethtool output")
-            return None
+            return None, None
         phy_addr_string = "PHYAD: " + str(phy_addr)
         if phy_addr_string in output:
             speed = eth_get_speed(interface, logger)
             return interface, speed
-    return None
+    return None, None
 
 def eth_get_speed(eth_interface, logger):
     """
@@ -152,6 +152,7 @@ def run_eth_ping_test(label, phy_addr, helpers):
 
     eth_interface, _ = eth_get_interface_speed(phy_addr, logger)
     if eth_interface is None:
+        logger.error("Failed to get eth interface")
         return False
 
     eth_setup(eth_interface, logger)
@@ -183,6 +184,7 @@ def run_eth_perf_test(label, phy_addr, helpers):
 
     eth_interface, max_speed_gbps = eth_get_interface_speed(phy_addr, logger)
     if eth_interface is None or max_speed_gbps is None:
+        logger.error("Failed to get eth interface and speed")
         return False
 
     interface_ip = eth_setup(eth_interface, logger)

@@ -12,8 +12,8 @@ supported_boards = {
             {'label': 'usb3_write_performance', 'hw_path': ['1-1.3', '2-1.3']},
             {'label': 'usb4_read_performance', 'hw_path': ['1-1.4', '2-1.4']},
             {'label': 'usb4_write_performance', 'hw_path': ['1-1.4', '2-1.4']},
-            {'label': 'sd_read_performance', 'hw_path': ['mmc0:e624', 'mmc1:e624']},
-            {'label': 'sd_write_performance', 'hw_path': ['mmc0:e624', 'mmc1:e624']},
+            {'label': 'sd_read_performance', 'hw_path': ['mmc0:', 'mmc1:']},
+            {'label': 'sd_write_performance', 'hw_path': ['mmc0:', 'mmc1:']},
 
     ],
 

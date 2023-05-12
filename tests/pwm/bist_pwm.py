@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import glob
+from inputimeout import inputimeout, TimeoutOccurred
 
 def run_fancontrol_test(label, helpers):
     logger = helpers.logger_init(label)
@@ -10,6 +11,7 @@ def run_fancontrol_test(label, helpers):
     pwm_file = ""
     fan_speed_max = 255
     fan_speed_slow = 26
+    user_input_timeout = 30
 
     # Get pwm file based on hwmon name
     hwmon_devices = glob.glob("/sys/class/hwmon/*/name")
@@ -31,7 +33,11 @@ def run_fancontrol_test(label, helpers):
 
     logger.info("\nType Y to reduce fan speed:")
     while(1):
-        var = input().strip().upper()
+        try:
+            var = inputimeout(timeout=user_input_timeout).strip().upper()
+        except TimeoutOccurred:
+            logger.error("No user input entered after " + str(user_input_timeout) + " seconds, aborting test")
+            return False
         if var == 'Y':
             logger.info("Reducing fan speed to " + str(int(fan_speed_slow/fan_speed_max*100)) + "%")
             logger.debug("Writing " + str(fan_speed_slow) + " to " + str(pwm_file))
@@ -44,7 +50,13 @@ def run_fancontrol_test(label, helpers):
 
     logger.info("\nIs the fan spinning at a slower speed? [Y/N]")
     while(1):
-        var = input().strip().upper()
+        try:
+            var = inputimeout(timeout=user_input_timeout).strip().upper()
+        except TimeoutOccurred:
+            with open(pwm_file, "w") as pf:
+                pf.write(str(fan_speed_max))
+            logger.error("No user input entered after " + str(user_input_timeout) + " seconds, aborting test")
+            return False
         if var == 'Y':
             logger.info("Setting fan back to max speed")
             logger.debug("Writing " + str(fan_speed_max) + " to " + str(pwm_file))
@@ -60,7 +72,11 @@ def run_fancontrol_test(label, helpers):
 
     logger.info("\nIs the fan spinning at full speed? [Y/N]")
     while(1):
-        var = input().strip().upper()
+        try:
+            var = inputimeout(timeout=user_input_timeout).strip().upper()
+        except TimeoutOccurred:
+            logger.error("No user input entered after " + str(user_input_timeout) + " seconds, aborting test")
+            return False
         if var == 'Y':
             return True
         elif var == 'N':

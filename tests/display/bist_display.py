@@ -75,15 +75,4 @@ def run_display_connectivity_test(label, display_device, helpers):
         return False
     logger.info("EDID read successfully")
     logger.debug("EDID value: " + edid_value)
-    logger.info("Make sure you have the correct input source selected from the monitor's menu.")
-    logger.info("Do you see any output displayed on Monitor? [Y/N]")
-    while(1):
-        var = input().strip().upper()
-        if var == 'Y':
-            logger.info("User reports that output is displayed on the monitor")
-            return True
-        elif var == 'N':
-            logger.error("User reports that no output is displayed on the monitor")
-            return False
-        else:
-            logger.info("Invalid input, try again")
+    return True

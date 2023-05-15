@@ -19,7 +19,8 @@ sudo apt install \
 	python3-periphery \
 	iperf3 \
 	ethtool \
-	mtd-utils
+	mtd-utils \
+	i2c-tools
 
 sudo pip install \
 	netifaces \

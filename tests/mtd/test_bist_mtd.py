@@ -18,7 +18,19 @@ def test_mtd(id, helpers):
     # Parse the configurations
     label = id['label']
 
-    test_result = run_mtd_read_write_test(label, helpers)
+    if 'read_write_performance' in label:
+        mode = 'rw'
+        test_result = run_qspi_performance_test(label, mode, helpers)
+    elif 'read_performance' in label:
+        mode = 'r'
+        test_result = run_qspi_performance_test(label, mode, helpers)
+    elif 'write_performance' in label:
+        mode = 'w'
+        test_result = run_qspi_performance_test(label, mode, helpers)
+    elif "read_write" in label:
+        test_result = run_qspi_read_write_test(label, helpers)
+    else:
+        assert False
 
     logger = helpers.logger_init(label)
     if test_result:

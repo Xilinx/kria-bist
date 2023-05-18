@@ -8,9 +8,5 @@ supported_boards = {
 
     'kr260': [
         {'label': 'fan'}
-    ],
-
-    'kd240': [
-        {'label': 'fan'}
     ]
 }

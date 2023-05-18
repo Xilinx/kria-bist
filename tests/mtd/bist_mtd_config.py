@@ -12,11 +12,5 @@ supported_boards = {
             {'label': 'qspi_read_write'},
             {'label': 'qspi_read_performance'},
             {'label': 'qspi_write_performance'}
-    ],
-
-    'kd240': [
-            {'label': 'qspi_read_write'},
-            {'label': 'qspi_read_performance'},
-            {'label': 'qspi_write_performance'}
     ]
 }

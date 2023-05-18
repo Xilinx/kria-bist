@@ -30,20 +30,5 @@ supported_boards = {
             'field': 'FRU Board Product Name',
             'value': 'KR'
         }
-    ],
-
-    'kd240': [
-        {
-            'label': 'som_eeprom',
-            'eeprom_addr': '50',
-            'field': 'FRU Board Product Name',
-            'value': 'K24'
-        },
-        {
-            'label': 'carrier_card_eeprom',
-            'eeprom_addr': '51',
-            'field': 'FRU Board Product Name',
-            'value': 'KD'
-        }
     ]
 }

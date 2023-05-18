@@ -30,16 +30,5 @@ supported_boards = {
             {'label': 'sd_read_performance', 'hw_path': ['1-1.1']},
             {'label': 'sd_write_performance', 'hw_path': ['1-1.1']},
 
-    ],
-
-    'kd240': [
-
-            {'label': 'usb1_read_performance', 'hw_path': ['1-1.2', '2-1.2']},
-            {'label': 'usb1_write_performance', 'hw_path': ['1-1.2', '2-1.2']},
-            {'label': 'usb2_read_performance', 'hw_path': ['1-1.3', '2-1.3']},
-            {'label': 'usb2_write_performance', 'hw_path': ['1-1.3', '2-1.3']},
-            {'label': 'sd_read_performance', 'hw_path': ['1-1.1']},
-            {'label': 'sd_write_performance', 'hw_path': ['1-1.1']},
-
     ]
 }

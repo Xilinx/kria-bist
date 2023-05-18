@@ -14,4 +14,3 @@ supported_boards = {
 }
 
 supported_boards['kr260'] = supported_boards['kv260']
-supported_boards['kd240'] = supported_boards['kv260']

@@ -18,8 +18,15 @@ def test_display(id, helpers):
     # Parse the configurations
     label = (id["label"])
     display_device = (id["display_device"])
-    # Funtion call to Test DP connectivity
-    test_result = run_display_connectivity_test(label, display_device, helpers)
+    if label == 'display_connectivity':
+        # Funtion call to Test DP connectivity
+        test_result = run_display_connectivity_test(label, display_device, helpers)
+    elif label == 'display_modetest':
+        fmt = (id["fmt"])
+        # Function call to Test Modetest
+        test_result = run_display_modetest(label, display_device, fmt, helpers)
+    else:
+        assert False
 
     logger = helpers.logger_init(label)
     if test_result:

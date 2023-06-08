@@ -170,12 +170,13 @@ def log_disk_performance(measured_speed, mode, port_name, port_speed, logger):
         'SD Speed C-class': {'Read': 6, 'Write': 2},
         'SD Speed UHS-class': {'Read': 12, 'Write': 6},
         'SD Speed class': {'Read': 6, 'Write': 2},
-        'USB 2.0': {'Read': 18, 'Write': 6},
-        'USB 3.0': {'Read': 80, 'Write': 12}
+        'USB 2.0': {'Read': 9, 'Write': 2},
+        'USB 3.0': {'Read': 80, 'Write': 8}
     }
     # Minimum read speed expectation for the port
     min_speed = speed_dict[port_speed][mode]
     logger.info(f"Minimum expected {mode} speed for {port_speed} devices: {min_speed} MB/s")
+    logger.info("The indicated threshold values may not be accurate for your specific device. Please verify correct values with the device manufacturer"
     logger.info(f"Measured {mode} speed: {str(measured_speed)} MB/s")
     # Compare measured speed with expected speed
     if float(measured_speed) < min_speed:

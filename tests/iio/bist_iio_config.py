@@ -20,5 +20,15 @@ supported_boards = {
             'min_current': 850,
             'max_current': 1250
         }
+    ],
+
+    'kd240': [
+        {
+            'label': 'ina260_current',
+            'device': 'ina260',
+            'channel': 'current0',
+            'min_current': 500,
+            'max_current': 700
+        }
     ]
 }

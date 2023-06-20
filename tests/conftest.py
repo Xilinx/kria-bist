@@ -82,7 +82,7 @@ def pytest_addoption(parser):
     """
     Addition to command line arguements
 
-    :board  - Command line arguement which takes board name as input (eg --board kv260/kr260)
+    :board  - Command line arguement which takes board name as input (eg --board kv260/kr260/kd240)
     :action - Store the command(will store the board name)
     :help   - Description of the command added to pytest help console
 

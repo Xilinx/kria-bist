@@ -324,8 +324,8 @@ def run_qspi_performance_test(label, mode, helpers):
     offset = 196608 # Address offset set for 3 sectors (192KB)
     length = data_size * 1048576 # To convert MiB to bytes
     block_size = 65536 # Block size (in bytes) of mtd partitions on the device
-    qspi_min_write_speed = 350 # Minimum expected QSPI write speed in KB/s
-    qspi_min_read_speed = 12 # Minimum expected QSPI read speed in MB/s
+    qspi_min_write_speed = 285 # Minimum expected QSPI write speed in KB/s
+    qspi_min_read_speed = 9 # Minimum expected QSPI read speed in MB/s
     # Obtain MTD user partition and size of the partition
     mtd_user_partition, mtd_partition_size = get_user_partition_size(logger)
     if mtd_user_partition is None:

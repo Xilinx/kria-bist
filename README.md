@@ -20,7 +20,8 @@ sudo apt install \
 	iperf3 \
 	ethtool \
 	mtd-utils \
-	i2c-tools
+	i2c-tools \
+	python3-can
 
 sudo pip install \
 	netifaces \

@@ -18,5 +18,14 @@ supported_boards = {
         {'label': 'ethernet4_perf', 'phy_addr': '8'},
         {'label': 'ethernet_sfp_ping', 'phy_addr': None},
         {'label': 'ethernet_sfp_perf', 'phy_addr': None}
+    ],
+
+    'kd240': [
+        {'label': 'ethernet1_ping', 'phy_addr': '2'},
+        {'label': 'ethernet1_perf', 'phy_addr': '2'},
+        {'label': 'ethernet2_ping', 'phy_addr': '3'},
+        {'label': 'ethernet2_perf', 'phy_addr': '3'},
+        {'label': 'ethernet3_ping', 'phy_addr': '8'},
+        {'label': 'ethernet3_perf', 'phy_addr': '8'},
     ]
 }

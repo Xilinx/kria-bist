@@ -151,6 +151,11 @@ def run_gpio_loopback(label, width, offset, helpers):
             logger.info("Write pattern: " + wp + ", Read pattern " + rp + " : " + result)
             pattern_match = True
 
+        # Check if rp and wp are inverted and it is brake_1wire gpio test
+        elif all(rp != wp for rp,wp in zip(rp,wp)) and "brake" in label:
+            logger.info("Write pattern: " + wp + ", Read pattern " + rp + " : Pattern is inverted which is expected")
+            pattern_match = True
+
         else:
             logger.info("Write pattern: " + wp + ", Read pattern " + rp + " : " + result)
             pattern_match = False

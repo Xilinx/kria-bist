@@ -72,8 +72,8 @@ measured and threshold speed comparison.
 
 | Mode  |QSPI MTD partition|
 | :---: | :--------------: |
-| Read  |      12MB/s      |
-| Write |     350KB/s      |
+| Read  |       9MB/s      |
+| Write |     285KB/s      |
 
 ## Next Steps
 

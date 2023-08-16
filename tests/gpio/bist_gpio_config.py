@@ -7,10 +7,7 @@ supported_boards = {
     ],
 
     'kd240': [
-        {'label': 'pmod0', 'width': 8, 'offset': 0},
-        {'label': 'gate_drive_en', 'width': 1, 'offset': 8},
-        {'label': 'brake_cntrl', 'width': 1, 'offset': 9},
-        {'label': 'one_wire', 'width': 1, 'offset': 10},
+        {'label': 'brake_ctrl_1wire_loopback', 'width': 2, 'offset': 8},
     ],
 
     'kr260': [

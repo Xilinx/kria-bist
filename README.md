@@ -22,7 +22,8 @@ sudo apt install \
 	mtd-utils \
 	i2c-tools \
 	python3-can \
-	python3-pymodbus
+	python3-pymodbus \
+	xlnx-app-kd240-foc-motor-ctrl
 
 sudo pip install \
 	netifaces \

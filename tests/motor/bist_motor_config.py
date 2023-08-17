@@ -8,11 +8,11 @@ supported_boards = {
             'speed': 1000
         },
         {
-            'label': 'volt_adc_fb_modespeed_test',
+            'label': 'volt_adc_fb_modeopenloop_test',
             'speed': 1000
         },
         {
-            'label': 'curr_adc_fb_modespeed_test',
+            'label': 'curr_adc_fb_modeopenloop_test',
             'speed': 1000
         },
         {

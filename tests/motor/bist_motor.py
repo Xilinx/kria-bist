@@ -52,6 +52,15 @@ def run_qei_gate_drive_test(label, speed, helpers):
             bool: True/False
     """
     logger = helpers.logger_init(label)
+
+    # Run dependency test
+    test_result = run_motor_dc_link_volt_adc_fb_test(label, helpers)
+    if test_result:
+        logger.info("DC Link Voltage Test Passed")
+    else:
+        logger.error("DC Link Voltage Test Failed")
+        return False
+
     logger.start_test()
     # Initialize speed parameters
     speed_lower_limit = speed * 0.80
@@ -62,6 +71,9 @@ def run_qei_gate_drive_test(label, speed, helpers):
     iterations = 10
     # Get a MotorControl instance with session ID 1 and default config path
     mc = mcontrol.MotorControl.getMotorControlInstance(1)
+    if mc is None:
+        logger.error("Unable to get MotorControl instance")
+        return False
     # Use the MotorControl instance to call its member functions
     # Initialize the motor by setting mode = OFF
     mc.setOperationMode(mcontrol.MotorOpMode.kModeOff)
@@ -70,7 +82,7 @@ def run_qei_gate_drive_test(label, speed, helpers):
     logger.info(f"Motor speed: {speed}")
     # Set the mode = Speed to spin the motor
     mc.setOperationMode(mcontrol.MotorOpMode.kModeSpeed)
-    time.sleep(1)  # Wait for the motor to stabilize
+    time.sleep(2)  # Wait for the motor to stabilize
     op_mode = mc.getOperationMode()
     if str(op_mode) != 'MotorOpMode.kModeSpeed':
         logger.error("Error setting the motor mode: Speed")
@@ -117,6 +129,9 @@ def run_motor_vlt_adc_fb_modeoff_test(label, helpers):
     iterations = 10
     # Get a MotorControl instance with session ID 1 and default config path
     mc = mcontrol.MotorControl.getMotorControlInstance(1)
+    if mc is None:
+        logger.error("Unable to get MotorControl instance")
+        return False
     # Use the MotorControl instance to call its member functions
     # Initialize the motor by setting mode = OFF
     mc.setOperationMode(mcontrol.MotorOpMode.kModeOff)
@@ -142,7 +157,7 @@ def run_motor_vlt_adc_fb_modeoff_test(label, helpers):
     return True
 
 
-def run_motor_vlt_adc_fb_modespeed_test(label, speed, helpers):
+def run_motor_vlt_adc_fb_modeopenloop_test(label, speed, helpers):
     """
     Motor Voltage ADC feedback test on IIO channels for mode: Speed
 
@@ -155,29 +170,38 @@ def run_motor_vlt_adc_fb_modespeed_test(label, speed, helpers):
             bool: True/False
     """
     logger = helpers.logger_init(label)
+
+    # Run dependency test
+    test_result = run_qei_gate_drive_test(label, speed, helpers)
+    if test_result:
+        logger.info("QEI Gate Drive Test Passed")
+    else:
+        logger.error("QEI Gate Drive Test Failed")
+        return False
+
     logger.start_test()
-    # Initialize speed parameters
+    # Initialize parameters
     voltage_fb_lower_limit = 8
     logger.debug(f"Motor voltage ADC feedback lower limit: {voltage_fb_lower_limit}V")
     voltage_fb_upper_limit = 15
     logger.debug(f"Motor voltage ADC feedback upper limit: {voltage_fb_upper_limit}V")
     voltage_fb_in_range = True
-    # Iterations for taking average of motor speed measurement
+    # Iterations for taking average of motor voltage measurement
     iterations = 100
     # Get a MotorControl instance with session ID 1 and default config path
     mc = mcontrol.MotorControl.getMotorControlInstance(1)
+    if mc is None:
+        logger.error("Unable to get MotorControl instance")
+        return False
     # Use the MotorControl instance to call its member functions
     # Initialize the motor by setting mode = OFF
     mc.setOperationMode(mcontrol.MotorOpMode.kModeOff)
-    # Set motor speed
-    mc.setSpeed(speed)
-    logger.info(f"Motor speed: {speed}")
-    # Set the mode = Speed to spin the motor
-    mc.setOperationMode(mcontrol.MotorOpMode.kModeSpeed)
+    # Set the mode = Open loop
+    mc.setOperationMode(mcontrol.MotorOpMode.kModeOpenLoop)
     time.sleep(1)  # Wait for the motor to stabilize
     op_mode = mc.getOperationMode()
-    if str(op_mode) != 'MotorOpMode.kModeSpeed':
-        logger.error("Error setting the motor mode: Speed")
+    if str(op_mode) != 'MotorOpMode.kModeOpenLoop':
+        logger.error("Error setting the motor mode: Open Loop")
         return False
     logger.info(f"Operation Mode: {op_mode}")
     iio_voltage_channel = [mcontrol.ElectricalData.kPhaseA, mcontrol.ElectricalData.kPhaseB,
@@ -195,7 +219,7 @@ def run_motor_vlt_adc_fb_modespeed_test(label, speed, helpers):
         motor_offmode = mc.getOperationMode()
         logger.info(f"Operation Mode: {motor_offmode}")
         return False
-    logger.info("Motor voltage ADC feedback test successful in 'Speed' mode")
+    logger.info("Motor voltage ADC feedback test successful in 'Open Loop' mode")
     mc.setOperationMode(mcontrol.MotorOpMode.kModeOff)
     motor_offmode = mc.getOperationMode()
     logger.info(f"Operation Mode: {motor_offmode}")
@@ -217,12 +241,15 @@ def run_motor_curr_adc_fb_modeoff_test(label, helpers):
     logger.start_test()
     # Iterations for taking average of adc motor Current feedback measurement
     iterations = 10
-    # Initialize speed parameters
+    # Initialize parameters
     current_fb_lower_limit = 0.05
     logger.debug(f"Motor current ADC feedback lower limit: {current_fb_lower_limit}A")
     current_fb_in_range = True
     # Get a MotorControl instance with session ID 1 and default config path
     mc = mcontrol.MotorControl.getMotorControlInstance(1)
+    if mc is None:
+        logger.error("Unable to get MotorControl instance")
+        return False
     # Use the MotorControl instance to call its member functions
     # Initialize the motor by setting mode = OFF
     mc.setOperationMode(mcontrol.MotorOpMode.kModeOff)
@@ -248,7 +275,7 @@ def run_motor_curr_adc_fb_modeoff_test(label, helpers):
     return True
 
 
-def run_motor_curr_adc_fb_modespeed_test(label, speed, helpers):
+def run_motor_curr_adc_fb_modeopenloop_test(label, speed, helpers):
     """
     Motor Current ADC feedback test on IIO channels for mode: Speed
 
@@ -261,29 +288,38 @@ def run_motor_curr_adc_fb_modespeed_test(label, speed, helpers):
             bool: True/False
     """
     logger = helpers.logger_init(label)
+
+    # Run dependency test
+    test_result = run_qei_gate_drive_test(label, speed, helpers)
+    if test_result:
+        logger.info("QEI Gate Drive Test Passed")
+    else:
+        logger.error("QEI Gate Drive Test Failed")
+        return False
+
     logger.start_test()
-    # Initialize speed parameters
+    # Initialize parameters
     current_fb_lower_limit = 0.01
     logger.debug(f"Motor current ADC feedback lower limit: {current_fb_lower_limit}A")
     current_fb_upper_limit = 0.5
     logger.debug(f"Motor current ADC feedback upper limit: {current_fb_upper_limit}A")
     current_fb_in_range = True
-    # Iterations for taking average of motor speed measurement
+    # Iterations for taking average of motor current measurement
     iterations = 100
     # Get a MotorControl instance with session ID 1 and default config path
     mc = mcontrol.MotorControl.getMotorControlInstance(1)
+    if mc is None:
+        logger.error("Unable to get MotorControl instance")
+        return False
     # Use the MotorControl instance to call its member functions
     # Initialize the motor by setting mode = OFF
     mc.setOperationMode(mcontrol.MotorOpMode.kModeOff)
-    # Set motor speed
-    mc.setSpeed(speed)
-    logger.info(f"Motor speed: {speed}")
-    # Set the mode = Speed to spin the motor
-    mc.setOperationMode(mcontrol.MotorOpMode.kModeSpeed)
+    # Set the mode = Open loop
+    mc.setOperationMode(mcontrol.MotorOpMode.kModeOpenLoop)
     time.sleep(1)  # Wait for the motor to stabilize
     op_mode = mc.getOperationMode()
-    if str(op_mode) != 'MotorOpMode.kModeSpeed':
-        logger.error("Error setting the motor mode: Speed")
+    if str(op_mode) != 'MotorOpMode.kModeOpenLoop':
+        logger.error("Error setting the motor mode: Open Loop")
         return False
     logger.info(f"Operation Mode: {op_mode}")
     iio_current_channel = [mcontrol.ElectricalData.kPhaseA, mcontrol.ElectricalData.kPhaseB,
@@ -301,7 +337,7 @@ def run_motor_curr_adc_fb_modespeed_test(label, speed, helpers):
         motor_offmode = mc.getOperationMode()
         logger.info(f"Operation Mode: {motor_offmode}")
         return False
-    logger.info("Motor current ADC feedback test successful in 'Speed' mode")
+    logger.info("Motor current ADC feedback test successful in 'Open Loop' mode")
     mc.setOperationMode(mcontrol.MotorOpMode.kModeOff)
     motor_offmode = mc.getOperationMode()
     logger.info(f"Operation Mode: {motor_offmode}")
@@ -323,14 +359,17 @@ def run_motor_dc_link_volt_adc_fb_test(label, helpers):
     logger.start_test()
     # Iterations for taking average of adc motor Voltage feedback measurement
     iterations = 10
-    # Initialize speed parameters
-    voltage_fb_lower_limit = 23.5
+    # Initialize parameters
+    voltage_fb_lower_limit = 22.8
     logger.debug(f"Motor voltage ADC feedback lower limit: {voltage_fb_lower_limit}V")
-    voltage_fb_upper_limit = 24.5
+    voltage_fb_upper_limit = 25.2
     logger.debug(f"Motor voltage ADC feedback upper limit: {voltage_fb_upper_limit}V")
     dc_channel = mcontrol.ElectricalData.kDCLink
     # Get a MotorControl instance with session ID 1 and default config path
     mc = mcontrol.MotorControl.getMotorControlInstance(1)
+    if mc is None:
+        logger.error("Unable to get MotorControl instance")
+        return False
     # Use the MotorControl instance to call its member functions
     # Initialize the motor by setting mode = OFF
     mc.setOperationMode(mcontrol.MotorOpMode.kModeOff)
@@ -366,12 +405,15 @@ def run_motor_dc_link_curr_adc_fb_test(label, helpers):
     logger.start_test()
     # Iterations for taking average of adc motor Current feedback measurement
     iterations = 10
-    # Initialize speed parameters
-    current_fb_lower_limit = 0.5
+    # Initialize parameters
+    current_fb_lower_limit = 0.6
     logger.debug(f"Motor current DC link ADC feedback lower limit: {current_fb_lower_limit}A")
     dc_channel = mcontrol.ElectricalData.kDCLink
     # Get a MotorControl instance with session ID 1 and default config path
     mc = mcontrol.MotorControl.getMotorControlInstance(1)
+    if mc is None:
+        logger.error("Unable to get MotorControl instance")
+        return False
     # Use the MotorControl instance to call its member functions
     # Initialize the motor by setting mode = OFF
     mc.setOperationMode(mcontrol.MotorOpMode.kModeOff)

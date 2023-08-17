@@ -21,7 +21,8 @@ sudo apt install \
 	ethtool \
 	mtd-utils \
 	i2c-tools \
-	python3-can
+	python3-can \
+	python3-pymodbus
 
 sudo pip install \
 	netifaces \

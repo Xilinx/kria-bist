@@ -45,6 +45,12 @@ functionality or performance of an interface.
 
    Know Issues <docs/known_issues.md>
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Repository
+   :hidden:
+
+   Software Repository <https://github.com/Xilinx/kria-bist>
 
 
 Support

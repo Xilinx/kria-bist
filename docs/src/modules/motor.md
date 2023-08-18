@@ -25,17 +25,17 @@ setOperationMode(), etc.
    read back near 0V when the motor is in 'Off' mode. The ADC voltage feedback values of
    channels PhaseA, PhaseB and PhaseC are measured using getVoltage() motor control function
    and verified to be below predefined threshold value of 1V to pass the test.
-  
+
    The config parameter for the test is described below:
 
     * label: The test label
-  
-3. run_motor_vlt_adc_fb_modespeed_test() - In this test, the ADC voltages are validated to
-   read back the volatge values in the predefined range in 'Speed' mode with rpm set to 1000.
+
+3. run_motor_vlt_adc_fb_modeopenloop_test() - In this test, the ADC voltages are validated to
+   read back the voltage values in the predefined range in 'Open Loop' mode.
    The ADC voltage feedback values of channels PhaseA, PhaseB and PhaseC are measured using
    getVoltage() motor control function. The measured voltages are averaged out of 100 samples
    of readings and verified to be in the range of 8V - 15V for each channel to pass the test.
-   
+
    The config parameters for the test are described below:
 
     * label: The test label
@@ -46,18 +46,18 @@ setOperationMode(), etc.
    channels PhaseA, PhaseB and PhaseC are measured using getCurrent() motor control function.
    The measured currents are averaged out of 100 samples of readings for each channel and
    verified to be below predefined threshold value of 0.05A for the test to pass.
-   
+
    The config parameter for the test is described below:
 
     * label: The test label
-    
-5. run_motor_curr_adc_fb_modespeed_test() - In this test, the ADC currents are validated to
-   read back the current values in the predefined range in 'Speed' mode with rpm set to 1000.
+
+5. run_motor_curr_adc_fb_modeopenloop_test() - In this test, the ADC currents are validated to
+   read back the current values in the predefined range in 'Open Loop' mode.
    The ADC current feedback values of channels PhaseA, PhaseB and PhaseC are measured using
    getCurrent() motor control function. The measured currents are averaged out of 100 samples
    of readings for each channel and verified to be in the range of 0.01A - 0.5A for the test
    to pass.
-   
+
    The config parameters for the test are described below:
 
     * label: The test label
@@ -66,20 +66,33 @@ setOperationMode(), etc.
 6. run_motor_dc_link_volt_adc_fb_test() - In this test, the DC link voltage is validated to be
    near 24V when the power supply is plugged in motor 'Off' mode. The DC link voltage is measured
    using getVoltage() motor control function. The measured voltageis averaged out of 10 samples
-   of readings and verified to be in the range of 23.5V - 24.5V for the test to pass.
+   of readings and verified to be in the range of 22.8V - 25.2V for the test to pass.
 
    The config parameter for the test is described below:
 
     * label: The test label
-    
+
 7. run_motor_dc_link_curr_adc_fb_test() - In this test, the DC link current is validated to be
-   near 0A in the 'Off' mode. The DC link voltage is measured using getVoltage() motor control
+   near 0A in the 'Off' mode. The DC link current is measured using getCurrent() motor control
    function. The measured current is averaged out of 10 samples of readings and verified to be
-   below predefined threshold value of 0.05A for the test to pass.
+   below predefined threshold value of 0.6A for the test to pass.
 
    The config parameter for the test is described below:
 
     * label: The test label
+
+## Test Dependencies
+
+Some of the above tests include dependency tests that are run prior to the main test.
+The test dependencies are summarized in the table below. The dependency tests must
+pass before the main test is run to ensure the results from the main test are accurate.
+If a dependency test fails, the main test will be aborted.
+
+| Test                          | Dependency                                   |
+| :---------------------------: | :------------------------------------------: |
+| qei_gate_drive_test           |dc_link_volt_adc_fb_test                      |
+| volt_adc_fb_modeopenloop_test |dc_link_volt_adc_fb_test, qei_gate_drive_test |
+| curr_adc_fb_modeopenloop_test |dc_link_volt_adc_fb_test, qei_gate_drive_test |
 
 ## Test Execution
 
@@ -89,15 +102,15 @@ Example commands for this module are provided below (KD240):
 pytest-3 --board kd240 -m motor  // Run all tests in this module
 pytest-3 --board kd240 -k qei_gate_drive_test  // Run QEI interface test in 'Speed' mode
 pytest-3 --board kd240 -k volt_adc_fb_modeoff_test  // Run motor voltage ADC feedback test in 'Off' mode
-pytest-3 --board kd240 -k volt_adc_fb_modespeed_test  // Run motor voltage ADC feedback test in 'Speed' mode
+pytest-3 --board kd240 -k volt_adc_fb_modeopenloop_test  // Run motor voltage ADC feedback test in 'Open Loop' mode
 pytest-3 --board kd240 -k curr_adc_fb_modeoff_test  // Run motor current ADC feedback test in 'Off' mode
-pytest-3 --board kd240 -k curr_adc_fb_modespeed_test  // Run motor current ADC feedback test in 'Speed' mode
+pytest-3 --board kd240 -k curr_adc_fb_modeopenloop_test  // Run motor current ADC feedback test in 'Open Loop' mode
 pytest-3 --board kd240 -k dc_link_volt_adc_fb_test  // Run DC link voltage ADC feedback test in 'Off' mode
 pytest-3 --board kd240 -k dc_link_curr_adc_fb_test  // Run DC link current ADC feedback test in 'Off' mode
 ```
 
 The test prints out messages indicating motor mode and readings of the motor object for each test.
- 
+
 ## Test Debug
 
 * Make sure to load the BIST firmware before running the motor tests as motor hls_foc_periodic device

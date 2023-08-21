@@ -47,6 +47,7 @@ the full suite of hardware tests, see board specific pages:
 
 1. [KV260 Board Setup](setup_kv260.md)
 2. [KR260 Board Setup](setup_kr260.md)
+2. [KD240 Board Setup](setup_kd240.md)
 
 ## Setup SSH with X-forwarding
 
@@ -69,12 +70,14 @@ the full suite of hardware tests, see board specific pages:
 * Testing was performed with:
 
   * [x07-20230302-63 Ubuntu 22.04 Linux Image](https://people.canonical.com/~platform/images/xilinx/kria-ubuntu-22.04/iot-limerick-kria-classic-desktop-2204-x07-20230302-63.img.xz?_ga=2.229092828.1548870927.1684017553-434607567.1663082500)
-
   * [v2022.1-09152304_update3 Boot Firmware](https://www.xilinx.com/member/forms/download/xef.html?filename=BOOT_xilinx-k26-starterkit-v2022.1-09152304_update3.BIN)
 
 * Before continuing with the BIST application specific instructions, if not yet
-  done so, boot Linux with instructions from the
-  [Kria Starter Kit Linux Boot](https://xilinx.github.io/kria-apps-docs/kv260/2022.1/build/html/docs/kria_starterkit_linux_boot.html)
+  done so, boot Linux with instructions from:
+
+  1. [Kria Starter Kit Linux Boot on KV260](https://xilinx.github.io/kria-apps-docs/kv260/2022.1/build/html/docs/kria_starterkit_linux_boot.html)
+  2. [Kria Starter Kit Linux Boot on KR260](https://xilinx.github.io/kria-apps-docs/kr260/build/html/docs/kria_starterkit_linux_boot.html)
+  3. [Kria Starter Kit Linux Boot on KD240](https://xilinx.github.io/kria-apps-docs/kd240/linux_boot.html)
 
   **Note:** The minimum Linux kernel version required is `5.15.0.9000`
 
@@ -88,10 +91,12 @@ the full suite of hardware tests, see board specific pages:
   Sorting... Done
   Full Text Search... Done
 
-  xlnx-firmware-kr260-bist/jammy 0.9-0xlnx1 arm64
+  xlnx-firmware-kr260-bist/jammy 0.10-0xlnx1 arm64
   FPGA firmware for Xilinx boards - kr260 bist application
-  xlnx-firmware-kv260-bist/jammy 0.9-0xlnx1 arm64
+  xlnx-firmware-kv260-bist/jammy 0.10-0xlnx1 arm64
   FPGA firmware for Xilinx boards - kv260 bist application
+  xlnx-firmware-kd240-bist/jammy 0.10-0xlnx1 arm64
+  FPGA firmware for Xilinx boards - kd240 bist application
   ```
 
 * Install firmware binaries
@@ -99,6 +104,7 @@ the full suite of hardware tests, see board specific pages:
   ```bash
   sudo apt install xlnx-firmware-kv260-bist     // For kv260-bist
   sudo apt install xlnx-firmware-kr260-bist     // For kr260-bist
+  sudo apt install xlnx-firmware-kd240-bist     // For kd240-bist
   ```
 
 * List installed the application firmware binaries
@@ -124,6 +130,7 @@ the full suite of hardware tests, see board specific pages:
   sudo xmutil unloadapp
   sudo xmutil loadapp kv260-bist      // For kv260-bist
   sudo xmutil loadapp kr260-bist      // For kr260-bist
+  sudo xmutil loadapp kd240-bist      // For kd240-bist
   ```
 
 ## Miscellaneous Preparation
@@ -305,6 +312,7 @@ The pytest command line output will have two separate sessions as follows
   ```bash
   pytest-3 --board kv260     // For KV260
   pytest-3 --board kr260     // For KR260
+  pytest-3 --board kd240     // For KD240
   ```
 
 * Run individual tests

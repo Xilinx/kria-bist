@@ -85,6 +85,7 @@ The test modules are listed below. Please refer to the individual module pages f
    MTD Test Module <modules/mtd.md>
    PWM Test Module <modules/pwm.md>
    TPM Test Module <modules/tpm.md>
+   TTY Test Module <modules/tty.md>
    Video Test Module <modules/video.md>
 
 

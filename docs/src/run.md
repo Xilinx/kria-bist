@@ -16,9 +16,12 @@ fail.
 
 * Install the NIC card into the host machine
 
-* Configure the host machine to have a static IP of 192.168.0.1 (If a different
-  IP is used, the `BIST_REMOTE_HOST_IP` environment variable needs to be set on
-  the Kria board to override the default host IP)
+* The host machine can be assigned an IP in two ways:
+  * DHCP IP Assignment
+  * Static IP Assignment
+
+* Configure the host machine to have a DHCP/Static IP and set the 
+  `BIST_REMOTE_HOST_IP` environment variable on the Kria board.
 
 * Install iperf3
 
@@ -222,6 +225,14 @@ the full suite of hardware tests, see board specific pages:
   ```
   root@xlnx-docker/#
   ```
+
+## Setup IP addresses on the Kria board
+
+User can assign IP addresses in two ways:
+  * DHCP IP Assignment - IP addresses are auto-assigned
+  * Static IP Assignment - User needs to set a Static IP for the eth interfaces 
+    under test. Make sure that the Static IP's are in the same subnet as the 
+    remote host machine.
 
 ## Run the BIST Application
 

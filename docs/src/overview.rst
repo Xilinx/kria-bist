@@ -75,6 +75,7 @@ The test modules are listed below. Please refer to the individual module pages f
 .. toctree::
    :maxdepth: 1
 
+   CAN Test Module <modules/can.md>
    Disk Test Module <modules/disk.md>
    Display Test Module <modules/display.md>
    EEPROM Test Module <modules/eeprom.md>
@@ -85,6 +86,7 @@ The test modules are listed below. Please refer to the individual module pages f
    Motor Test Module <modules/motor.md>
    MTD Test Module <modules/mtd.md>
    PWM Test Module <modules/pwm.md>
+   SPI Test Module <module/spi.md>
    TPM Test Module <modules/tpm.md>
    TTY Test Module <modules/tty.md>
    Video Test Module <modules/video.md>

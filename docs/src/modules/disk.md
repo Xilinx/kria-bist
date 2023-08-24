@@ -42,6 +42,14 @@ mapping for the test labels to the four USB ports is given below:
 | usb3_* | Top Right     |
 | usb4_* | Bottom Right  |
 
+For KD240 starter kit, there are two USB ports and one SD card port. The
+mapping for the test labels to the two USB ports is given below:
+
+| Test Label  | USB Port |
+| :---------: | :------: |
+| usb1_* |      Top      |
+| usb2_* |      Bottom   |
+
 ## Test Execution
 
 Example commands for this module are provided below (KV260):

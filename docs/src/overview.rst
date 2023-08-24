@@ -82,6 +82,7 @@ The test modules are listed below. Please refer to the individual module pages f
    GPIO Test Module <modules/gpio.md>
    I2C Test Module <modules/i2c.md>
    IIO Test Module <modules/iio.md>
+   Motor Test Module <modules/motor.md>
    MTD Test Module <modules/mtd.md>
    PWM Test Module <modules/pwm.md>
    TPM Test Module <modules/tpm.md>

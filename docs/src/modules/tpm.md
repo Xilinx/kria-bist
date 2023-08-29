@@ -26,7 +26,7 @@ one has a separate function. The tests are described below.
 
 ## Test Execution
 
-Example commands for this module are provided below (KV260):
+The example commands for this module are provided below (KV260):
 
 ```bash
 pytest-3 --board kv260 -m tpm			// Run all tests in this module
@@ -34,14 +34,14 @@ pytest-3 --board kv260 -k tpm2_getcap		// Run tpm2_getcap test
 pytest-3 --board kv260 -k tpm2_hash		// Run tpm2_hash test
 ```
 
-Each test will print out log messages which include the command that is run by
-the test function and the final test result. Some tests will also log debug
-level messages with additional info, which can be found in the automatically
+Each test prints out the log messages that include the command that is run by
+the test function and the final test result. Some tests also log debug
+level messages with additional information, which can be found in the automatically
 generated log file.
 
 ## Test Debug
 
-* If one of the tpm tests fail, the commands from the log prints can be run
+* If one of the tpm tests fails, the commands from the log prints can be run
   manually to verify the expected output.
 
 ## Known Issues and Limitations

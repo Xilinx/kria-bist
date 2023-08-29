@@ -2,8 +2,8 @@
 
 ## Overview
 
-The disk test module verifies the performance of USB and SD interfaces on the 
-Kria starter kits.
+The disk test module verifies the performance of USB and SD interfaces on the AMD
+Kria&trade; starter kits.
 
 
 ## Tests
@@ -11,7 +11,7 @@ Kria starter kits.
 The module contains self validating performance test. It uses "dd" command-line
 utility to check the performance of USB and SD disk interfaces and verifies
 if the measured read/write speeds are greater than the specified threshold speeds.
-The test provides performance verification for different modes such as read, write
+The test provides performance verification for different modes such as read, write,
 and read_write (optional) suites.
 
 The config parameters for the test are described below:
@@ -20,7 +20,7 @@ The config parameters for the test are described below:
 * hw_path: The USB/SD hardware path enumeration on the device
 * mode: The mode of the performance test (read, write or read_write)
 
-The disk performance test obtains port name and number from the test label
+The disk performance test obtains the port name and number from the test label
 and retrieves the disk partition, USB/SD device path and speed standard of
 the device connected to the interface using get_dev_path_speed() function.
 The module then verifies if the available space on the device is greater than
@@ -64,13 +64,13 @@ pytest-3 --board kv260 -k sd_write_performance  // Run write performance test fo
 
 For each interface, the test prints out the device path, speed standard of the device
 connected, along with minimum expected read/write speed and measured speed. The log indicates
-whether the performance test is passed or failed based on the measured and threshold speed
+whether the performance test is pass or fail based on the measured and threshold speed
 comparison.
 
 ## Test Debug
 
-* Make sure the USB/SD card media is inserted correctly to the interface under test.
-* Verify there is minimum of 128MiB of storage space available for performing read/write
+* Make sure that the USB/SD card media is inserted correctly to the interface under test.
+* Verify that there is a minimum of 128MiB of storage space available for performing read/write
   transaction on the device connected to the interface. 
 
 ## Known Issues and Limitations
@@ -80,30 +80,30 @@ comparison.
 * Read and write performance speeds depend on the actual device under test and varies greatly
   on the manufacturer and model. The obtained performance numbers are to be reviewed by the
   user and not an indication of max achievable performance.
-* There is a known issue that for some USB/SD ports read and write performance speeds fall
-  slightly below the threshold speeds given in the table below. In this case, the performance
+* There is a known issue that for some USB/SD ports read and write performance, speeds fall
+  slightly below the threshold speeds given in the following table. In this case, the performance
   can be verified manually based on the device manufacturer and model.
 
 | Mode  | SD Speed C-class | SD Speed UHS-class | USB-SD Speed class | USB 2.0 | USB 3.0 |
 | :---: | :--------------: | :----------------: | :----------------: | :-----: | :-----: |
-| Read  |       6MB/s      |       12MB/s       |        6MB/s       |  9MB/s  |  80MB/s |
-| Write |       2MB/s      |       6MB/s        |        2MB/s       |  2MB/s  |  8MB/s  |
+| Read  |       6MBps      |       12MBps       |        6MBps       |  9MBps  |  80MBps |
+| Write |       2MBps      |       6MBps        |        2MBps       |  2MBps  |  8MBps  |
 
-* The threshold speeds are established based on experimentation conducted on different devices
-  as shown in the tables below. The read and write speeds indicated are an average of multiple
+* The threshold speeds are established based on the experimentation conducted on different devices
+  as shown in the following tables. The read and write speeds indicated are an average of multiple
   iterations with a 20% error margin.
   
 USB devices:
 
 |                Model                 |   Class   |  Read     |   Write  |
 |  :--------------------------------:  |  :-----:  |  :-----:  |  :----:  |
-|     SanDisk Cruzer - SDCZ600-016G    |  USB 3.0  |  100MB/s  |  12MB/s  |
-|      SanDisk Ultra - SDCZ48-016G     |  USB 3.0  |  102MB/s  |   8MB/s  |
-|   SanDisk Ultra fair - SDCZ73-032G   |  USB 3.0  |  120MB/s  |  12MB/s  |
-|   SanDisk Ultra Eco - SDCZ96-064G    |  USB 3.2  |  80MB/s   |  12MB/s  |
-|      SanDisk Cruzer - SDCZ36-004G    |  USB 2.0  |   9MB/s   |   2MB/s  |
-|  SanDisk Cruzer Blade - SDCZ50-016G  |  USB 2.0  |  24MB/s   |   7MB/s  |
-|  DataTraveler 101 G2 - DT101G2-016G  |  USB 2.0  |  18MB/s   |   6MB/s  |
+|     SanDisk Cruzer - SDCZ600-016G    |  USB 3.0  |  100MBps  |  12MBps  |
+|      SanDisk Ultra - SDCZ48-016G     |  USB 3.0  |  102MBps  |   8MBps  |
+|   SanDisk Ultra fair - SDCZ73-032G   |  USB 3.0  |  120MBps  |  12MBps  |
+|   SanDisk Ultra Eco - SDCZ96-064G    |  USB 3.2  |  80MBps   |  12MBps  |
+|      SanDisk Cruzer - SDCZ36-004G    |  USB 2.0  |   9MBps   |   2MBps  |
+|  SanDisk Cruzer Blade - SDCZ50-016G  |  USB 2.0  |  24MBps   |   7MBps  |
+|  DataTraveler 101 G2 - DT101G2-016G  |  USB 2.0  |  18MBps   |   6MBps  |
 
 MicroSD devices:
 
@@ -112,8 +112,8 @@ speeds of SD Speed C-class and SD Speed UHS-class.
 
 |                      Model                    |        Class       |   Read   |  Write |
 | :-------------------------------------------: | :----------------: | :------: | :----: |
-| SanDisk Ultra 16GB - HC Class 10 (White/Grey) |  SD Speed C-class  |  6MB/s   |  2MB/s |
-| SanDisk Ultra 16GB - HC Class 10 (Red/Grey)   | SD Speed UHS-class |  12MB/s  |  6MB/s |
+| SanDisk Ultra 16GB - HC Class 10 (White/Grey) |  SD Speed C-class  |  6MBps   |  2MBps |
+| SanDisk Ultra 16GB - HC Class 10 (Red/Grey)   | SD Speed UHS-class |  12MBps  |  6MBps |
 
 ## Next Steps
 

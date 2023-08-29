@@ -6,31 +6,31 @@
 2. KR260 Power Supply & Adapter
 3. MicroSD Card
 4. Host Machine (Widows or Ubuntu)
-5. 4 USB Flash Drives
-6. 5 Ethernet Cables
+5. Four USB Flash Drives
+6. Five Ethernet Cables
 7. Ethernet Switch
-8. 4 [PMOD TPH2 Test Point Headers](https://digilent.com/reference/pmod/pmodtph2/)
+8. Four [PMOD TPH2 Test Point Headers](https://digilent.com/reference/pmod/pmodtph2/)
 9. 30 Female to Female Jumper Wires
 10. 1080P/4K Monitor and Power Supply
 11. DisplayPort Cable
 12. [Sony IMX547 Monochrome Camera Sensor Module](https://www.xilinx.com/products/som/kria/kr260-robotics-starter-kit/imx547-camera-kit-monochrome.html)
 13. [Fiber Optic Cable](https://www.amazon.com/dp/B089K3VYZ1)
-14. [2 10G SFP+ Transceivers](https://www.amazon.com/dp/B08BP55663)
+14. [Two 10G SFP+ Transceivers](https://www.amazon.com/dp/B08BP55663)
 15. [10G NIC Card](https://www.amazon.com/dp/B06X9T683K)
 
 ## Board Setup
 
 This page shows how to set up the KR260 before running the BIST application.
 
-Refer to KR260 Board & Interface layout below for connector reference numbers:
+Refer to the KR260 Board and the Interface layout below for connector reference numbers:
 
 ![KR260-Interfaces](./media/KR260-Interfaces.png)
 
-The image below shows a KR260 with all the hardware connected.
+The following image shows a KR260 with all the hardware connected.
 
 ![KR260-Image](./media/KR260-Image.png)
 
-The BIST application requires the following hardware setup for running
+The BIST application requires the following hardware setup to run
 the full suite of hardware tests:
 
 * USB Flash Drive (x4)
@@ -51,7 +51,7 @@ the full suite of hardware tests:
   ![KR260-PMOD](./media/KR260-PMOD.png)
 
   Connect the PMOD test point headers to the PMOD ports (J2, J18, J19, J20) on
-  the KR260. Connect the pins on J3 on each of the 4 PMOD test point headers
+  the KR260. Connect the pins on J3 on each of the four PMOD test point headers
   using jumper wires as described below.
   - Connect P1 to P7
   - Connect P2 to P8

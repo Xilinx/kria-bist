@@ -1,13 +1,13 @@
  # Known Issues
 
-* Currently AR1335 module does not auto-load after loading kv260-bist firmware
-binaries. Near term solution is to dynamically modprobe module with additional
+* Currently, the AR1335 module does not auto-load after loading kv260-bist firmware
+binaries. A near term solution is to dynamically modprobe module with an additional
 command.
 
 * Kernel traces are seen while dynamically loading `kv260-bist` firmware binaries
-on 2nd attempt after unloading the app after 1st load
-**NOTE**: To get the BIST app working, user needs to press the on board 'SW2'
-button which is 'RESET'
+on the second attempt after unloading the app after the first load.
+
+***Note***: To get the BIST app working, press the on board 'SW2,'button which is 'RESET.'
 ```bash
 ubuntu@kria:~$ sudo xmutil unloadapp
 [sudo] password for ubuntu:

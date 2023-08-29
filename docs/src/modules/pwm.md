@@ -2,22 +2,21 @@
 
 ## Overview
 
-This test module verifies the PWM functionality on Kria starter kits.
+This test module verifies the PWM functionality on the AMD Kria&trade; starter kits.
 
 ## Tests
 
-The PWM module contains a single functional test which requires user input.
-This test prompts the user to reduce the fan speed. It then reduces the fan
-speed by writing a small value to the pwm device that the fan is connected to.
+The PWM module contains a single functional test, which requires user input.
+This test prompts you to reduce the fan speed. It then reduces the fan
+speed by writing a small value to the pwm device to which the fan is connected.
 The user is then asked to verify that the fan is spinning at a slower speed. If
 it is, the fan is set back to the max speed by writing a value of 255 to the
-pwm device. The user is then asked to verify that the fan is spinning at full
-speed and if the user confirms, the test passes. If at any point in this flow,
-the user indicates that the fan is not behaving as expected, the test fails.
+pwm device. You are then asked to verify that the fan is spinning at full
+speed and if you confirm, the test passes. If at any point in this flow, you indicate that the fan is not behaving as expected, the test fails.
 
 ## Test Execution
 
-Example commands for this module are provided below (KV260):
+The example commands for this module are provided below (KV260):
 
 ```bash
 pytest-3 --board kv260 -m pwm		// Run all tests in this module
@@ -26,9 +25,9 @@ pytest-3 --board kv260 -k fan		// Run fan test
 
 ## Test Debug
 
-* Make sure the fancontrol service has been stopped before running this test.
-* Make sure the BIST firmware is loaded.
-* Make sure the fan is connected to the J13 connecter.
+* Make sure that the fancontrol service has been stopped before running this test.
+* Make sure that the BIST firmware is loaded.
+* Make sure that the fan is connected to the J13 connecter.
 
 ## Known Issues and Limitations
 

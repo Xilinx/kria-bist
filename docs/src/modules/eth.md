@@ -2,16 +2,16 @@
 
 ## Overview
 
-This module tests the ethernet interface(s) on the Kria starter kits using a
+This module tests the ethernet interface(s) on the AMD Kria&trade; starter kits using a
 host machine.
 
 ## Tests
 
-There are two types of tests in this module: a self-validating functional test
-which uses the ping3 python package, and a self-validating performance test
+There are two types of tests in this module: a self-validating functional test,
+which uses the ping3 python package, and a self-validating performance test,
 which uses the iperf3 utility.
 
-There are two ways that user can assign an IP Addresses:
+There are two ways in which you can assign an IP Address:
   * DHCP IP Assignment
   * Static IP Assignment
 
@@ -21,7 +21,7 @@ an IP to the Kria board using DHCP and it is in the same subnet, this IP is used
 for the test. If the host machine has not assigned an IP, user should assign a 
 Static IP under the same subnet to the eth interfaces. For Kria boards with 
 multiple ethernet  ports, an ethernet switch must be used to connect all ethernet 
-ports to a single port on the host machine which has the above IP. Configure the 
+ports to a single port on the host machine that has the above IP. Configure the 
 IP for the SFP interface on the host machine and set the `BIST_REMOTE_HOST_SFP_IP` 
 environment variable on the Kria board.
 
@@ -35,7 +35,7 @@ For each test in this module, the eth_get_interface_speed() and eth_setup()
 functions are used to set up the test. The eth_get_interface_speed() returns
 the interface name and its speed based on the PHY address. If the PHY address
 is None, this function returns the interface for the SFP+ port and a fixed
-speed. The assumption is that there will only be one ethernet interface without
+speed. The assumption is that there is only one ethernet interface without
 a PHY, and this interface corresponds to the SFP+ port. The eth_setup()
 function checks if a given interface has an IP in the same subnet as the host
 machine. 
@@ -59,7 +59,7 @@ below:
 
 ## Test Execution
 
-Example commands for this module are provided below (KR260):
+The example commands for this module are provided below (KR260):
 
 ```bash
 pytest-3 --board kr260 -m eth			// Run all tests in this module
@@ -67,19 +67,19 @@ pytest-3 --board kr260 -k ethernet1_ping	// Run ethernet1_ping test
 pytest-3 --board kr260 -k ping			// Run all ping tests
 pytest-3 --board kr260 -k perf			// Run all perf tests
 ```
-For each interface, the ping test will print out the delay and the test will
-pass if the ping is successful. The perf test will print out the measured
-bitrate and the test will pass if it is above the threshold. The default
+For each interface, the ping test prints out the delay and the test is a
+pass if the ping is successful. The perf test prints out the measured
+bitrate and the test is a pass if it is above the threshold. The default
 threshold is 80% of the max speed for the ethernet ports.
 
 ## Test Debug
 
-* Make sure the host machine is set up as described [here](../run).
-* Make sure the BIST_REMOTE_HOST_IP environment variable is set on the Kria
+* Make sure that the host machine is set up as described [here](../run).
+* Make sure that the BIST_REMOTE_HOST_IP environment variable is set on the Kria
   board.
-* Make sure the BIST_REMOTE_HOST_SFP_IP environment variable is set on the Kria
+* Make sure that the BIST_REMOTE_HOST_SFP_IP environment variable is set on the Kria
   board.
-* For the perf tests, make sure an iperf3 server is running on the host machine.
+* For the perf tests, make sure that an iperf3 server is running on the host machine.
 * If a ping test fails, it can be run manually using ping with the -I option.
 * If a perf test fails, it can be run manually using iperf3 with the -B option.
 

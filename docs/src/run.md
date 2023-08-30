@@ -10,31 +10,31 @@ toolchain.
 
 ## Set up the Host Machine
 
-**Note:** Setting up the host machine is only required for testing the ethernet
-and SFP+ interfaces. If this is skipped, the tests for these interfaces will
+***Note***: Setting up the host machine is only required to test the ethernet
+and SFP+ interfaces. If this is skipped, the tests for these interfaces
 fail.
 
-* Install the NIC card into the host machine
+* Install the NIC card into the host machine.
 
 * The host machine can be assigned an IP in two ways:
   * DHCP IP Assignment
   * Static IP Assignment
 
 * Configure the host machine to have a DHCP/Static IP and set the 
-  `BIST_REMOTE_HOST_IP` environment variable on the Kria board.
+  `BIST_REMOTE_HOST_IP` environment variable on the AMD Kria &trade; board.
 
-* Install iperf3
+* Install iperf3.
 
-  * For Ubuntu, use the command below
+  * For Ubuntu, use the following command:
 
     ```
     sudo apt install iperf3
     ```
 
   * For Windows, use the appropriate download link from
-    [this page](https://iperf.fr/iperf-download.php)
+    [this page](https://iperf.fr/iperf-download.php).
 
-* Start an iperf3 server on the host machine using the command below
+* Start an iperf3 server on the host machine using the following command:
 
    ```
    iperf3 -s -p 5201
@@ -45,8 +45,8 @@ fail.
 
 Supported Starter Kits
 
-The BIST application requires the following hardware setup for running
-the full suite of hardware tests, see board specific pages:
+The BIST application requires the following hardware setup to run
+the full suite of hardware tests. See the board specific pages:
 
 1. [KV260 Board Setup](setup_kv260.md)
 2. [KR260 Board Setup](setup_kr260.md)
@@ -54,8 +54,8 @@ the full suite of hardware tests, see board specific pages:
 
 ## Setup SSH with X-forwarding
 
-* To run the bist test suite test instructions should be running over an SSH
-  connection with X-forwarding enabled
+* To run the bist test suite, the test instructions should run over an SSH
+  connection with X-forwarding enabled.
 
   Examples:
 
@@ -65,8 +65,8 @@ the full suite of hardware tests, see board specific pages:
     ssh -X <hostname>
     ```
 
-  * On Windows download [Mobaxterm](https://mobaxterm.mobatek.net/download.html)
-    which automatically enables X-forwarding when creating a new ssh connection
+  * On Windows, download [Mobaxterm](https://mobaxterm.mobatek.net/download.html),
+    which automatically enables X-forwarding when creating a new ssh connection.
 
 ## Boot Linux
 
@@ -82,11 +82,11 @@ the full suite of hardware tests, see board specific pages:
   2. [Kria Starter Kit Linux Boot on KR260](https://xilinx.github.io/kria-apps-docs/kr260/build/html/docs/kria_starterkit_linux_boot.html)
   3. [Kria Starter Kit Linux Boot on KD240](https://xilinx.github.io/kria-apps-docs/kd240/linux_boot.html)
 
-  **Note:** The minimum Linux kernel version required is `5.15.0.9000`
+  ***Note***: The minimum Linux kernel version required is `5.15.0.9000`.
 
 ## Download and Load the BIST PL Firmware
 
-* Search the package feed for available bist firmware packages
+* Search the package feed for available bist firmware packages.
 
   ```bash
   apt search bist
@@ -102,7 +102,7 @@ the full suite of hardware tests, see board specific pages:
   FPGA firmware for Xilinx boards - kd240 bist application
   ```
 
-* Install firmware binaries
+* Install firmware binaries.
 
   ```bash
   sudo apt install xlnx-firmware-kv260-bist     // For kv260-bist
@@ -110,24 +110,24 @@ the full suite of hardware tests, see board specific pages:
   sudo apt install xlnx-firmware-kd240-bist     // For kd240-bist
   ```
 
-* List installed the application firmware binaries
+* List installed the application firmware binaries.
 
-  The firmware consist of bitstream, device tree overlay (dtbo) file. The
+  The firmware consists of bitstream, device tree overlay (dtbo) file. The
   firmware is loaded dynamically on user request once Linux is fully booted.
   The xmutil utility can be used for that purpose.
 
   After installing the FW, execute xmutil listapps to verify that it is
-  captured under the listapps function, and to have dfx-mgrd re-scan and
-  register all accelerators in the FW directory tree.
+  captured under the listapps function, and to have dfx-mgrd, re-scan and
+  register all accelerators in the firmware directory tree.
 
   ```bash
   sudo xmutil listapps
   ```
 
-* Load a new application firmware binary
+* Load a new application firmware binary.
 
-  When there's already another accelerator/firmware being activated, unload it
-  first, then load the desired BIST firmware
+  When there is already an another accelerator/firmware being activated, unload it
+  first, then load the desired BIST firmware.
 
   ```bash
   sudo xmutil unloadapp
@@ -138,49 +138,49 @@ the full suite of hardware tests, see board specific pages:
 
 ## Miscellaneous Preparation
 
-* Verify if SSH terminal is using the correct authority file
-  * The output should look something like this
+* Verify if the SSH terminal is using the correct authority file.
+  * The output should look something like this.
    ```bash
    xauth -v list
    Using authority file /home/ubuntu/.Xauthority
    kria/unix:10  MIT-MAGIC-COOKIE-1  f5212118305f75678a69daa4a6eda703
    ```
-   * If incorrect or no authority file present, do the following steps:
+   * If incorrect or no authority file is present, do the following steps:
    ```bash
    rm -rf ~/.Xaut*
    ```
-   * Reboot the target board
+   * Reboot the target board.
    ```bash
    sudo reboot
    ```
    * Check the `xauth -v list` after reboot(in SSH terminal), it should display 
-   the correct authority file on output console
+   the correct authority file on the output console.
 
-* The BIST application tests the fan, therefore please stop the fancontrol
-  service before running the docker for the testing to function as intended
+* The BIST application tests the fan. Therefore, stop the fancontrol
+  service before running the docker for the testing to function as intended.
 
   ```bash
   sudo systemctl stop fancontrol
   ```
 
 * Disable desktop environment before running the docker for the display testing
-  to function as intended
+  to function as intended.
 
   ```bash
   sudo xmutil desktop_disable
   ```
 
-  **NOTE**: Executing “xmutil desktop_disable” will cause the monitor to go
+  ***NOTE***: Executing “xmutil desktop_disable” causes the monitor to go
   blank.
 
-* Remember to start the fancontrol service after exiting the docker container
+* Remember to start the fancontrol service after exiting the docker container.
 
   ```bash
   sudo systemctl start fancontrol
   ```
 
 * After running the application and exiting the docker container, the desktop
-  environment can be enabled again
+  environment can be enabled again.
 
   ```bash
   sudo xmutil desktop_enable
@@ -188,27 +188,27 @@ the full suite of hardware tests, see board specific pages:
 
 ## Download and Run the BIST Docker Image
 
-* Pull the docker image from dockerhub
+* Pull the docker image from dockerhub.
 
   ```bash
   docker pull xilinx/kria-bist:2022.2
   ```
 
 * The storage volume on the SD card can be limited with multiple docker
-  images inbstalled. If there are space issues, you can use following command
+  images inbstalled. If there are space issues, use the following command
   to remove existing docker images.
 
   ```bash
   docker rmi --force <image>
   ```
 
-* You can find the images installed with command:
+* You can find the images installed with the following command:
 
   ```bash
   docker images
   ```
 
-* Launch the docker container using the below command
+* Launch the docker container using the following command:
 
   ```bash
   docker run \
@@ -226,8 +226,8 @@ the full suite of hardware tests, see board specific pages:
       -it xilinx/kria-bist:2022.2 bash
   ```
 
-* It will launch the bist image in a new container and drop the user into a bash
-  shell
+* It launches the bist image in a new container and drops the user into a bash
+  shell.
 
   ```
   root@xlnx-docker/#
@@ -235,16 +235,16 @@ the full suite of hardware tests, see board specific pages:
 
 ## Setup IP addresses on the Kria board
 
-User can assign IP addresses in two ways:
-  * DHCP IP Assignment - IP addresses are auto-assigned
-  * Static IP Assignment - User needs to set a Static IP for the eth interfaces 
-    under test. Make sure that the Static IP's are in the same subnet as the 
+You can assign IP addresses in two ways:
+  * DHCP IP Assignment - IP addresses are auto-assigned.
+  * Static IP Assignment - You need to set a Static IP for the eth interfaces 
+    under test. Make sure that the Static IPs are in the same subnet as the 
     remote host machine.
 
 ## Run the BIST Application
 
 The application is installed under `/opt/xilinx/kria-bist`. Navigate to the
-"tests" directory from where the BIST tests are to be run
+"tests" directory from where the BIST tests are to be run.
 
 ```bash
 cd /opt/xilinx/kria-bist/tests
@@ -252,7 +252,7 @@ cd /opt/xilinx/kria-bist/tests
 
 ### Usage
 
-Commonly used command line switches for BIST
+Commonly used command line switches for BIST.
 
 ```bash
 pytest-3 [OPTIONS]
@@ -266,12 +266,12 @@ OPTIONS:
 
 ### Output and Logs
 
-The pytest command line output will have two separate sessions as follows
+The pytest command line output has two separate sessions as follows:
 
 * Test session
 
-  It will display number of collected, deselected and selected tests. Current
-  running test will also be shown.
+  It displays the number of collected, deselected, and selected tests. Current
+  running test is also shown.
 
   For example:
 
@@ -289,11 +289,11 @@ The pytest command line output will have two separate sessions as follows
 
   This displays the current status of the test.
 
-  1. Start of test: Indicates test has started.
+  1. Start of test: Indicates that the test has started.
 
   2. Test observations: Prints the test observation on the command line.
 
-  3. Test passed/failed: Declares the test result ie passed/failed.
+  3. Test passed/failed: Declares the test result, that is, pass/fail.
 
   4. End of Test: Indicates that the test has ended.
 
@@ -314,11 +314,11 @@ The pytest command line output will have two separate sessions as follows
   ======================= 1 passed, 33 deselected in 1.02s =======================
   ```
 
-* A log file (`kria_bist_pytest.log`) will be created in the current directory.
+* A log file (`kria_bist_pytest.log`) is created in the current directory.
 
 ### Examples
 
-* Run the entire BIST test suite for a target board
+* Run the entire BIST test suite for a target board.
 
   ```bash
   pytest-3 --board kv260     // For KV260
@@ -326,9 +326,9 @@ The pytest command line output will have two separate sessions as follows
   pytest-3 --board kd240     // For KD240
   ```
 
-* Run individual tests
+* Run individual tests.
 
-  The example below will run the pmod0 test on the KV260 as target board
+  The following example runs the pmod0 test on the KV260 as target board.
 
   ```bash
   pytest-3 -k pmod0 --board kv260
@@ -354,9 +354,9 @@ The pytest command line output will have two separate sessions as follows
   ======================= 1 passed, 33 deselected in 1.01s =======================
   ```
 
-* Collect test cases
+* Collect test cases.
 
-  Collect all the tests for a target board
+  Collect all the tests for a target board.
 
   ```bash
   pytest-3 --collect-only --board kv260
@@ -422,7 +422,7 @@ The pytest command line output will have two separate sessions as follows
   ====================== 40 tests collected in 1.02s ===========================
   ```
 
-* Collect all tests for a specific testmodule for a target board
+* Collect all tests for a specific testmodule for a target board.
 
   ```bash
   pytest-3 --collect-only --board kv260 -m video
@@ -446,7 +446,7 @@ The pytest command line output will have two separate sessions as follows
   ================ 8/34 tests collected (26 deselected) in 0.99s =================
   ```
 
-* Run all tests for a target board and module
+* Run all tests for a target board and the module.
 
   ```bash
   pytest-3 --board kv260 -m video

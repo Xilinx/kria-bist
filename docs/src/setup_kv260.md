@@ -6,12 +6,12 @@
 2. KV260 Power Supply & Adapter
 3. MicroSD Card
 4. Host Machine (Windows or Ubuntu)
-5. 4 USB Flash Drives
-6. 1 Ethernet Cable
-7. 1 [PMOD TPH2 Test Point Headers](https://digilent.com/reference/pmod/pmodtph2/)
-8. 4 Female to Female Jumper Wires
-9. 1 [Raspberry Pi Camera Module](https://www.raspberrypi.com/products/camera-module-v2/)
-10. 2 [Ar1335 Camera Sensors](https://www.xilinx.com/products/som/kria/kv260-vision-starter-kit/basic-accessory-pack.html)
+5. Four USB Flash Drives
+6. One Ethernet Cable
+7. One [PMOD TPH2 Test Point Headers](https://digilent.com/reference/pmod/pmodtph2/)
+8. Four Female to Female Jumper Wires
+9. One [Raspberry Pi Camera Module](https://www.raspberrypi.com/products/camera-module-v2/)
+10. Two [Ar1335 Camera Sensors](https://www.xilinx.com/products/som/kria/kv260-vision-starter-kit/basic-accessory-pack.html)
 11. 1080P/4K Monitor and Power Supply
 12. DisplayPort/HDMI Cable
 
@@ -19,22 +19,22 @@
 
 This page shows how to set up the KV260 before running the BIST application.
 
-Refer to KR260 Board & Interface layout below for connector reference numbers:
+Refer to the KR260 Board and the Interface layout below for connector reference numbers:
 
 ![GitHub Logo](./media/KV260-Interfaces.png)
 
-The image below shows a KV260 with all the hardware connected.
+The following image shows a KV260 with all the hardware connected.
 
 ![GitHub Logo](./media/KV260-Image.png)
 
-The BIST application requires the following hardware setup for running
+The BIST application requires the following hardware setup to run
 the full suite of hardware tests:
 
 * USB Flash Drive (x4)
 
   ![GitHub Logo](./media/KV260-SD.png)
 
-  Connect a USB Flash Drive to each of the 4 USB ports.
+  Connect a USB Flash Drive to each of the four USB ports.
 
 * Ethernet Cable (x1)
 

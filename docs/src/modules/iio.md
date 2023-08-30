@@ -20,19 +20,19 @@ The config parameters for this test are described below:
 
 ## Test Execution
 
-Example commands for this module are provided below (KV260):
+The example commands for this module are provided below (KV260):
 
 ```bash
 pytest-3 --board kv260 -m iio			// Run all tests in this module
 pytest-3 --board kv260 -k ina260_current	// Run ina260_current test
 ```
 
-This test will print out the measured value and pass if it is within the
+This test prints out the measured value and passes if it is within the
 expected range.
 
 ## Test Debug
 
-* Make sure the BIST firmware is loaded since the readings can vary for
+* Make sure that the BIST firmware is loaded since the readings can vary for
   different designs.
 
 ## Known Issues and Limitations

@@ -3,7 +3,7 @@ BIST
 #####################################################
 
 
-The Built-In Self Test (BIST) application tests the interfaces on Kria starter
+The Built-In Self Test (BIST) application tests the interfaces on AMD Kria™ starter
 kits to verify functionality and/or performance. If a custom design is not
 working as expected, this application can be used to differentiate hardware
 issues from design issues.

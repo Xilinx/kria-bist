@@ -15,6 +15,8 @@ There are two ways in which you can assign an IP Address:
   * DHCP IP Assignment
   * Static IP Assignment
 
+**NOTE**: `BIST_REMOTE_HOST_SFP_IP` can only be assigned a Static IP
+
 Configure the host machine to have a DHCP/Static IP and set the `BIST_REMOTE_HOST_IP` 
 environment variable on the Kria board. If the host machine has already assigned 
 an IP to the Kria board using DHCP and it is in the same subnet, this IP is used 
@@ -24,6 +26,15 @@ multiple ethernet  ports, an ethernet switch must be used to connect all etherne
 ports to a single port on the host machine that has the above IP. Configure the 
 IP for the SFP interface on the host machine and set the `BIST_REMOTE_HOST_SFP_IP` 
 environment variable on the Kria board.
+
+If Static IP Assignment is used for BIST_REMOTE_HOST_IP and 
+BIST_REMOTE_HOST_SFP_IP they have to be on different subnets. For example:
+* `BIST_REMOTE_HOST_IP` - `192.168.0.1`
+* `BIST_REMOTE_HOST_SFP_IP` - `192.168.1.1`
+
+On the KR260 the interfaces correspond to the following:
+* eth0,eth1,eth3,eth4(PS/PL IPs) - Should be under `BIST_REMOTE_HOST_IP` subnet
+* eth2(SFP IP) - Should be under `BIST_REMOTE_HOST_SFP_IP` subnet
 
 The config parameters for this test are described below:
 
@@ -79,6 +90,8 @@ threshold is 80% of the max speed for the ethernet ports.
   board.
 * Make sure that the BIST_REMOTE_HOST_SFP_IP environment variable is set on the Kria
   board.
+* If static IP assignment is used for host machines, make sure that 
+  BIST_REMOTE_HOST_IP and BIST_REMOTE_HOST_SFP_IP are on different subnets.
 * For the perf tests, make sure that an iperf3 server is running on the host machine.
 * If a ping test fails, it can be run manually using ping with the -I option.
 * If a perf test fails, it can be run manually using iperf3 with the -B option.

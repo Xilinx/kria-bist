@@ -79,10 +79,10 @@ def run_qei_gate_drive_test(label, speed, helpers):
     mc.setOperationMode(mcontrol.MotorOpMode.kModeOff)
     # Set motor speed
     mc.setSpeed(speed)
-    logger.info(f"Motor speed: {speed}")
+    logger.info(f"Motor speed: {speed}. Please wait 12 seconds for motor to reach speed setpoint.")
     # Set the mode = Speed to spin the motor
     mc.setOperationMode(mcontrol.MotorOpMode.kModeSpeed)
-    time.sleep(2)  # Wait for the motor to stabilize
+    time.sleep(12)  # Wait for the motor to stabilize
     op_mode = mc.getOperationMode()
     if str(op_mode) != 'MotorOpMode.kModeSpeed':
         logger.error("Error setting the motor mode: Speed")

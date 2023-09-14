@@ -23,6 +23,11 @@ fail.
 * Configure the host machine to have a DHCP/Static IP and set the 
   `BIST_REMOTE_HOST_IP` environment variable on the AMD Kria &trade; board.
 
+  Example:
+  ```
+    export BIST_REMOTE_HOST_IP=<IP_Address>
+  ```
+
 * Install iperf3.
 
   * For Ubuntu, use the following command:
@@ -52,28 +57,30 @@ the full suite of hardware tests. See the board specific pages:
 2. [KR260 Board Setup](setup_kr260.md)
 2. [KD240 Board Setup](setup_kd240.md)
 
-## Setup SSH with X-forwarding
-
-* To run the bist test suite, the test instructions should run over an SSH
-  connection with X-forwarding enabled.
-
-  Examples:
-
-  * On Linux, run:
-
-    ```bash
-    ssh -X <hostname>
-    ```
-
-  * On Windows, download [Mobaxterm](https://mobaxterm.mobatek.net/download.html),
-    which automatically enables X-forwarding when creating a new ssh connection.
 
 ## Boot Linux
 
 * Testing was performed with:
 
-  * [x07-20230302-63 Ubuntu 22.04 Linux Image](https://people.canonical.com/~platform/images/xilinx/kria-ubuntu-22.04/iot-limerick-kria-classic-desktop-2204-x07-20230302-63.img.xz?_ga=2.229092828.1548870927.1684017553-434607567.1663082500)
-  * [v2022.1-09152304_update3 Boot Firmware](https://www.xilinx.com/member/forms/download/xef.html?filename=BOOT_xilinx-k26-starterkit-v2022.1-09152304_update3.BIN)
+  * KD240 platform:
+
+    | Platform     | Version                         |
+    | :----------: | :-----------------------------: |
+    | Linux Kernel | 5.15.0-9002                     |
+    | Boot Fiwmare | BOOT-k24-smk-20230912123632.bin |
+
+  * KR260/KV260 platform:
+
+    | Platform      | Version                                                 |
+    | :-----------: | :-----------------------------------------------------: | 
+    | Linux Kernel  | 5.15.0-1023                                             |
+    | Boot Firmware | BOOT_xilinx-k26-starterkit-v2022.1-09152304_update3.BIN |
+
+  * Application packages:
+
+    | Application               | Version     |
+    | :-----------------------: | :---------: |
+    | xlnx-kria-apps-bitstreams | 0.10-0xlnx1 |
 
 * Before continuing with the BIST application specific instructions, if not yet
   done so, boot Linux with instructions from:
@@ -82,7 +89,6 @@ the full suite of hardware tests. See the board specific pages:
   2. [Kria Starter Kit Linux Boot on KR260](https://xilinx.github.io/kria-apps-docs/kr260/build/html/docs/kria_starterkit_linux_boot.html)
   3. [Kria Starter Kit Linux Boot on KD240](https://xilinx.github.io/kria-apps-docs/kd240/linux_boot.html)
 
-  ***Note***: The minimum Linux kernel version required is `5.15.0.9000`.
 
 ## Download and Load the BIST PL Firmware
 
@@ -136,6 +142,27 @@ the full suite of hardware tests. See the board specific pages:
   sudo xmutil loadapp kd240-bist      // For kd240-bist
   ```
 
+## Setup SSH with X-forwarding
+
+**NOTE**: Setting up an SSH connection is only required to test the ximagesink
+tests of the video module on KV260 board. If this is skipped, those tests will 
+fail
+
+* To run the bist test suite, the test instructions should run over an SSH
+  connection with X-forwarding enabled.
+
+  Examples:
+
+  * On Host, run:
+
+    ```bash
+    ssh -X ubuntu@<Kria Starter Kit IP address>
+    ```
+    **NOTE**: If all ethernet cables are plugged in, feel free to use any IP.
+
+  * On Windows, download [Mobaxterm](https://mobaxterm.mobatek.net/download.html),
+    which automatically enables X-forwarding when creating a new ssh connection.
+
 ## Miscellaneous Preparation
 
 * Verify if the SSH terminal is using the correct authority file.
@@ -156,15 +183,17 @@ the full suite of hardware tests. See the board specific pages:
    * Check the `xauth -v list` after reboot(in SSH terminal), it should display 
    the correct authority file on the output console.
 
-* The BIST application tests the fan. Therefore, stop the fancontrol
-  service before running the docker for the testing to function as intended.
+* The BIST application tests the fan. Therefore, if a fan is present stop the 
+  fancontrol service before running the docker for the testing to function as 
+  intended.
 
   ```bash
   sudo systemctl stop fancontrol
   ```
 
-* Disable desktop environment before running the docker for the display testing
-  to function as intended.
+* On KV260/KR260 disable desktop environment before running the docker 
+  for the display testing to function as intended. On KD240 this step can be 
+  skipped as we are using a headless Ubuntu Server image.
 
   ```bash
   sudo xmutil desktop_disable
@@ -235,7 +264,14 @@ the full suite of hardware tests. See the board specific pages:
 
 ## Setup IP addresses on the Kria board
 
-You can assign IP addresses in two ways:
+* Set the `BIST_REMOTE_HOST_IP` environment variable on Kria board
+  
+  Example:
+  ```
+    export BIST_REMOTE_HOST_IP=<IP_Address>
+  ```
+
+* You can assign IP addresses in two ways:
   * DHCP IP Assignment - IP addresses are auto-assigned.
   * Static IP Assignment - You need to set a Static IP for the eth interfaces 
     under test. Make sure that the Static IPs are in the same subnet as the 

@@ -135,6 +135,14 @@ the full suite of hardware tests. See the board specific pages:
   sudo xmutil loadapp kr260-bist      // For kr260-bist
   sudo xmutil loadapp kd240-bist      // For kd240-bist
   ```
+  **NOTE**: KD240 Firmware load `xmutil loadapp kd240-bist` will print following 
+  messages. These are safe to ignore.
+  ```bash
+    [  112.802574] net eth1: Speed other than 10, 100
+    [  112.807227] net eth1: or 1Gbps is not supported
+    [  112.866305] net eth2: Speed other than 10, 100
+    [  112.871168] net eth2: or 1Gbps is not supported
+  ```
 
 ## Miscellaneous Preparation
 

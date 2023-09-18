@@ -5,7 +5,7 @@
 This document shows how to set up the board and run the Built-In Self Test
 (BIST) application.
 
-This guide and its prebuilts are targeted for Ubuntu 22.04 and Xilinx 2022.2
+This guide and its prebuilts are targeted for Ubuntu 22.04 and Xilinx 2023.1
 toolchain.
 
 ## Set up the Host Machine

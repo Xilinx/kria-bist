@@ -5,7 +5,7 @@
 This document shows how to set up the board and run the Built-In Self Test
 (BIST) application.
 
-This guide and its prebuilts are targeted for Ubuntu 22.04 and Xilinx 2022.2
+This guide and its prebuilts are targeted for Ubuntu 22.04 and Xilinx 2023.1
 toolchain.
 
 ## Set up the Host Machine
@@ -228,7 +228,7 @@ fail
 * Pull the docker image from dockerhub.
 
   ```bash
-  docker pull xilinx/kria-bist:2022.2
+  docker pull xilinx/kria-bist:2023.1
   ```
 
 * The storage volume on the SD card can be limited with multiple docker
@@ -260,7 +260,7 @@ fail
       -v /etc/vart.conf:/etc/vart.conf \
       -v /lib/firmware/xilinx:/lib/firmware/xilinx \
       -v /run:/run \
-      -it xilinx/kria-bist:2022.2 bash
+      -it xilinx/kria-bist:2023.1 bash
   ```
 
 * It launches the bist image in a new container and drops the user into a bash

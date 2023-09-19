@@ -64,11 +64,11 @@ Testing was performed with the following artifacts:
 
 ### KD240 platform artifacts
 
-| Component                | Version                         |
-|--------------------------|---------------------------------|
-| Boot Fiwmare             | BOOT-k24-smk-20230913102125.bin |
-| Linux Kernel             | 5.15.0-9002                     |
-| xlnx-firmware-kd240-bist | 0.10-0xlnx1                     |
+| Component                | Version              |
+|--------------------------|----------------------|
+| Boot Fiwmare             | K24-BootFW-01.00.bin |
+| Linux Kernel             | 5.15.0-9002          |
+| xlnx-firmware-kd240-bist | 0.10.1-0xlnx1        |
 
 ### KR260 platform artifacts
 
@@ -76,7 +76,7 @@ Testing was performed with the following artifacts:
 |--------------------------|---------------------------------------------------------| 
 | Boot Firmware            | BOOT_xilinx-k26-starterkit-v2022.1-09152304_update3.BIN |
 | Linux Kernel             | 5.15.0-1023                                             |
-| xlnx-firmware-kr260-bist | 0.10-0xlnx1                                             |
+| xlnx-firmware-kr260-bist | 0.10.1-0xlnx1                                           |
 
 ### KV260 platform artifacts
 
@@ -84,7 +84,7 @@ Testing was performed with the following artifacts:
 |--------------------------|---------------------------------------------------------| 
 | Boot Firmware            | BOOT_xilinx-k26-starterkit-v2022.1-09152304_update3.BIN |
 | Linux Kernel             | 5.15.0-1023                                             |
-| xlnx-firmware-kv260-bist | 0.10-0xlnx1                                             |
+| xlnx-firmware-kv260-bist | 0.10.1-0xlnx1                                           |
 
 Please refer to the [Kria Wiki](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/1641152513/Kria+K26+SOM#Boot-Firmware-Updates)
 to obtain latest linux image and boot firmware.

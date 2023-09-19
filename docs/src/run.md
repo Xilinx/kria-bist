@@ -58,37 +58,51 @@ the full suite of hardware tests. See the board specific pages:
 2. [KD240 Board Setup](setup_kd240.md)
 
 
+## Tested Artifacts
+
+Testing was performed with the following artifacts:
+
+### KD240 platform artifacts
+
+| Component                | Version                         |
+|--------------------------|---------------------------------|
+| Boot Fiwmare             | BOOT-k24-smk-20230913102125.bin |
+| Linux Kernel             | 5.15.0-9002                     |
+| xlnx-firmware-kd240-bist | 0.10-0xlnx1                     |
+
+### KR260 platform artifacts
+
+| Component                | Version                                                 |
+|--------------------------|---------------------------------------------------------| 
+| Boot Firmware            | BOOT_xilinx-k26-starterkit-v2022.1-09152304_update3.BIN |
+| Linux Kernel             | 5.15.0-1023                                             |
+| xlnx-firmware-kr260-bist | 0.10-0xlnx1                                             |
+
+### KV260 platform artifacts
+
+| Component                | Version                                                 |
+|--------------------------|---------------------------------------------------------| 
+| Boot Firmware            | BOOT_xilinx-k26-starterkit-v2022.1-09152304_update3.BIN |
+| Linux Kernel             | 5.15.0-1023                                             |
+| xlnx-firmware-kv260-bist | 0.10-0xlnx1                                             |
+
+Please refer to the [Kria Wiki](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/1641152513/Kria+K26+SOM#Boot-Firmware-Updates)
+to obtain latest linux image and boot firmware.
+
+### Application docker image
+
+| Docker Image              | Version     |
+|---------------------------|------------ |
+| xilinx/kria-bist          | 2023.1      |
+
 ## Boot Linux
 
-* Testing was performed with:
-
-  * KD240 platform:
-
-    | Platform     | Version                         |
-    | :----------: | :-----------------------------: |
-    | Linux Kernel | 5.15.0-9002                     |
-    | Boot Fiwmare | BOOT-k24-smk-20230912123632.bin |
-
-  * KR260/KV260 platform:
-
-    | Platform      | Version                                                 |
-    | :-----------: | :-----------------------------------------------------: | 
-    | Linux Kernel  | 5.15.0-1023                                             |
-    | Boot Firmware | BOOT_xilinx-k26-starterkit-v2022.1-09152304_update3.BIN |
-
-  * Application packages:
-
-    | Application               | Version     |
-    | :-----------------------: | :---------: |
-    | xlnx-kria-apps-bitstreams | 0.10-0xlnx1 |
-
-* Before continuing with the BIST application specific instructions, if not yet
-  done so, boot Linux with instructions from:
+Before continuing with the BIST application specific instructions, if not yet
+done so, boot Linux with instructions from:
 
   1. [Kria Starter Kit Linux Boot on KV260](https://xilinx.github.io/kria-apps-docs/kv260/2022.1/build/html/docs/kria_starterkit_linux_boot.html)
   2. [Kria Starter Kit Linux Boot on KR260](https://xilinx.github.io/kria-apps-docs/kr260/build/html/docs/kria_starterkit_linux_boot.html)
   3. [Kria Starter Kit Linux Boot on KD240](https://xilinx.github.io/kria-apps-docs/kd240/linux_boot.html)
-
 
 ## Download and Load the BIST PL Firmware
 

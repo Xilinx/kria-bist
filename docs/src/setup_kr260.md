@@ -26,9 +26,56 @@ Refer to the KR260 Board and the Interface layout below for connector reference 
 
 ![KR260-Interfaces](./media/KR260-Interfaces.png)
 
-The following image shows a KR260 with all the hardware connected.
+Test case mapping to board interfaces:
 
-![KR260-Image](./media/KR260-Image.png)
+| Interface                    | External Hardware                                         | Test Module | Test Case              |
+|------------------------------|-----------------------------------------------------------|-------------|------------------------|
+| USB3.0 (Top port) - U46      | USB Flash Drive                                           | Disk        | usb1_read_performance  |
+| USB3.0 (Top port) - U46      | USB Flash Drive                                           | Disk        | usb1_write_performance |
+| USB3.0 (Bottom port) - U46   | USB Flash Drive                                           | Disk        | usb2_read_performance  |
+| USB3.0 (Bottom port) - U46   | USB Flash Drive                                           | Disk        | usb2_write_performance |
+| USB3.0 (Top port) - U44      | USB Flash Drive                                           | Disk        | usb3_read_performance  |
+| USB3.0 (Top port) - U44      | USB Flash Drive                                           | Disk        | usb3_write_performance |
+| USB3.0 (Bottom port) - U44   | USB Flash Drive                                           | Disk        | usb4_read_performance  |
+| USB3.0 (Bottom port) - U44   | USB Flash Drive                                           | Disk        | usb4_write_performance |
+| MicroSD port - J11           | MicroSD Card                                              | Disk        | sd_read_performance    |
+| MicroSD port - J11           | MicroSD Card                                              | Disk        | sd_write_performance   |
+| Display Port - J6            | 1080p/4k Monitor and Power Cable, Display Port Cable      | Display     | display_connectivity   |
+| Display Port - J6            | 1080p/4k Monitor and Power Cable, Display Port Cable      | Display     | display_modetest       |
+| SOM EEPROM                   | None                                                      | EEPROM      | som_eeprom             |
+| Carrier Card EEPROM          | None                                                      | EEPROM      | carrier_card_eeprom    |
+| GEM2 PL RJ45 Ethernet - J10B | Ethernet Cable                                            | Ethernet    | ethernet1_ping         |
+| GEM2 PL RJ45 Ethernet - J10B | Ethernet Cable                                            | Ethernet    | ethernet1_perf         |
+| GEM3 PL RJ45 Ethernet - J10A | Ethernet Cable                                            | Ethernet    | ethernet2_ping         |
+| GEM3 PL RJ45 Ethernet - J10A | Ethernet Cable                                            | Ethernet    | ethernet2_perf         |
+| GEM0 PS RJ45 Ethernet - J10D | Ethernet Cable                                            | Ethernet    | ethernet3_ping         |
+| GEM0 PS RJ45 Ethernet - J10D | Ethernet Cable                                            | Ethernet    | ethernet3_perf         |
+| GEM1 PS RJ45 Ethernet - J10C | Ethernet Cable                                            | Ethernet    | ethernet4_ping         |
+| GEM1 PS RJ45 Ethernet - J10C | Ethernet Cable                                            | Ethernet    | ethernet4_perf         |
+| SFP+ - J23, J24              | Fiber Optic Cable, 2x 10G SFP+ Transceivers, 10G NIC Card | Ethernet    | ethernet_sfp_ping      |
+| SFP+ - J23, J24              | Fiber Optic Cable, 2x 10G SFP+ Transceivers, 10G NIC Card | Ethernet    | ethernet_sfp_perf      |
+| PMOD - J2                    | PMOD TPH2 Test Header, 4x Female-Female Jumper Wires      | GPIO        | pmod0                  |
+| PMOD - J18                   | PMOD TPH2 Test Header, 4x Female-Female Jumper Wires      | GPIO        | pmod1                  |
+| PMOD - J19                   | PMOD TPH2 Test Header, 4x Female-Female Jumper Wires      | GPIO        | pmod2                  |
+| PMOD - J20                   | PMOD TPH2 Test Header, 4x Female-Female Jumper Wires      | GPIO        | pmod3                  |
+| Raspberry Pi - J21           | 14x Female-Female Jumper Wires                            | GPIO        | rpi                    |
+| PS I2C Main Bus              | None                                                      | I2C         | ps_i2c_bus_main        |
+| PS I2C Channel 0 Bus         | None                                                      | I2C         | ps_i2c_bus_ch0         |
+| PS I2C Channel 1 Bus         | None                                                      | I2C         | ps_i2c_bus_ch1         |
+| INA260                       | None                                                      | IIO         | ina260_current         |
+| QSPI MTD Device              | None                                                      | MTD         | qspi_read_write        |
+| QSPI MTD Device              | None                                                      | MTD         | qspi_read_performance  |
+| QSPI MTD Device              | None                                                      | MTD         | qspi_write_performance |
+| PWM   Fan - J13              | Board Fan                                                 | PWM         | fan                    |
+| TPM Hardware                 | None                                                      | TPM         | tpm2_getcap            |
+| TPM Hardware                 | None                                                      | TPM         | tpm2_selftest          |
+| TPM Hardware                 | None                                                      | TPM         | tpm2_getrandom         |
+| TPM Hardware                 | None                                                      | TPM         | tpm2_hash              |
+| TPM Hardware                 | None                                                      | TPM         | tpm2_pcrread           |
+| TPM Hardware                 | None                                                      | TPM         | tpm2_pcrextend         |
+| TPM Hardware                 | None                                                      | TPM         | tpm2_pcrreset          |
+| SLVS-EC Connector - J22      | IMX547 SLVS-EC   Sensor Module                            | Video       | imx547_filesink        |
+| SLVS-EC Connector - J22      | IMX547 SLVS-EC Sensor Module                              | Video       | imx547_perf            |
 
 The BIST application requires the following hardware setup to run
 the full suite of hardware tests:
@@ -64,7 +111,7 @@ the full suite of hardware tests:
 
   ![KR260-DP](./media/KR260-DP.png)
 
-  Before booting, connect a 1080P/4K monitor to the board via the DP port.
+  Before booting, connect a 1080P/4K monitor to the board via the Display Port.
 
 * IMX547 SLVS-EC Sensor Module
 
@@ -105,6 +152,10 @@ the full suite of hardware tests:
   - Connect P35 to P37
 
   ![KR260-RPi-GPIO-Connections](./media/KR260-RPi_GPIO_Connections.png)
+  
+* The following image shows a KR260 setup with all the hardware connected.
+
+  ![KR260-Image](./media/KR260-Image.png)
 
 ## Next Steps
 

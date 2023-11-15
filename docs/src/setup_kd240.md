@@ -24,9 +24,50 @@ Refer to the KD240 Board and the Interface layout below for connector reference 
 
 ![KD240-Interfaces](./media/KD240-Interfaces.png)
 
-The following image shows a KD240 with all the hardware connected.
+Test case mapping to board interfaces:
 
-![KD240-Image](./media/KD240-Image.jpg)
+| Interface                                       | External Hardware                                                                         | Test Module | Test Case                             |
+|-------------------------------------------------|-------------------------------------------------------------------------------------------|-------------|---------------------------------------|
+| CAN - J18, PMOD - J2                            | MCP25625 PMOD CAN, 3x Male-Male Jumper Wires                                              | CAN         | can_bus_send                          |
+| CAN - J18, PMOD - J2                            | MCP25625 PMOD CAN, 3x Male-Male Jumper Wires                                              | CAN         | can_bus_receive                       |
+| USB3.0 (Top port) - U44                         | USB Flash Drive                                                                           | Disk        | usb1_read_performance                 |
+| USB3.0 (Top port) - U44                         | USB Flash Drive                                                                           | Disk        | usb1_write_performance                |
+| USB3.0 (Bottom port) - U44                      | USB Flash Drive                                                                           | Disk        | usb2_read_performance                 |
+| USB3.0 (Bottom port) - U44                      | USB Flash Drive                                                                           | Disk        | usb2_write_performance                |
+| MicroSD port - J11                              | MicroSD Card                                                                              | Disk        | sd_read_performance                   |
+| MicroSD port - J11                              | MicroSD Card                                                                              | Disk        | sd_write_performance                  |
+| SOM EEPROM                                      | None                                                                                      | EEPROM      | som_eeprom                            |
+| Carrier Card EEPROM                             | None                                                                                      | EEPROM      | carrier_card_eeprom                   |
+| GEM1 PL RJ45 Ethernet - J25B                    | Ethernet Cable                                                                            | Ethernet    | ethernet1_ping                        |
+| GEM1 PL RJ45 Ethernet - J25B                    | Ethernet Cable                                                                            | Ethernet    | ethernet1_perf                        |
+| GEM2 PL RJ45 Ethernet - J25A                    | Ethernet Cable                                                                            | Ethernet    | ethernet2_ping                        |
+| GEM2 PL RJ45 Ethernet - J25A                    | Ethernet Cable                                                                            | Ethernet    | ethernet2_perf                        |
+| GEM0 PS RJ45 Ethernet - J24                     | Ethernet Cable                                                                            | Ethernet    | ethernet3_ping                        |
+| GEM0 PS RJ45 Ethernet - J24                     | Ethernet Cable                                                                            | Ethernet    | ethernet3_perf                        |
+| Brake Connector - J46, 1-Wire Interface -   J47 | Male-Male Jumper Wire                                                                     | GPIO        | brake_ctrl_1wire_loopback             |
+| PS I2C Main Bus                                 | None                                                                                      | I2C         | ps_i2c_bus_main                       |
+| INA260                                          | None                                                                                      | IIO         | ina260_current                        |
+| Single-ended QEI Connector - J42                | Motor Kit with 24V Power Supply                                                           | Motor       | qei_gate_drive_test                   |
+| 3-phase Inverter Connector - J32                | Motor Kit with 24V Power Supply                                                           | Motor       | volt_adc_fb_modeopenloop_test         |
+| 3-phase Inverter Connector - J32                | Motor Kit with 24V Power Supply                                                           | Motor       | curr_adc_fb_modeopenloop_test         |
+| 3-phase Inverter Connector - J32                | Motor Kit with 24V Power Supply                                                           | Motor       | volt_adc_fb_modeoff_test              |
+| 3-phase Inverter Connector - J32                | Motor Kit with 24V Power Supply                                                           | Motor       | curr_adc_fb_modeoff_test              |
+| DC Link Connector - J29                         | Motor Kit with 24V Power Supply                                                           | Motor       | dc_link_volt_adc_fb_test              |
+| DC Link Connector - J29                         | Motor Kit with 24V Power Supply                                                           | Motor       | dc_link_curr_adc_fb_test              |
+| QSPI MTD Device                                 | None                                                                                      | MTD         | qspi_read_write                       |
+| QSPI MTD Device                                 | None                                                                                      | MTD         | qspi_read_performance                 |
+| QSPI MTD Device                                 | None                                                                                      | MTD         | qspi_write_performance                |
+| PWM   Fan - J13                                 | Board Fan                                                                                 | PWM         | fan                                   |
+| AXI SPI Bus                                     | None                                                                                      | SPI         | ad7797_torque_sensor_id_read          |
+| AXI SPI Bus                                     | None                                                                                      | SPI         | ad7797_torque_sensor_temperature_read |
+| TPM Hardware                                    | None                                                                                      | TPM         | tpm2_getcap                           |
+| TPM Hardware                                    | None                                                                                      | TPM         | tpm2_selftest                         |
+| TPM Hardware                                    | None                                                                                      | TPM         | tpm2_getrandom                        |
+| TPM Hardware                                    | None                                                                                      | TPM         | tpm2_hash                             |
+| TPM Hardware                                    | None                                                                                      | TPM         | tpm2_pcrread                          |
+| TPM Hardware                                    | None                                                                                      | TPM         | tpm2_pcrextend                        |
+| TPM Hardware                                    | None                                                                                      | TPM         | tpm2_pcrreset                         |
+| RS485 - J22                                     | RS485 Temperature Sensor, Humidity Sensor, 4x Male-Male Jumper Wires, 1x 12V Power Supply | TTY         | rs485_temp_humidity_sensor_read       |
 
 The BIST application requires the following hardware setup to run
 the full suite of hardware tests:
@@ -83,6 +124,9 @@ the full suite of hardware tests:
   * Connect encoder header pins to J42
   * Connect Motor's AC power jack to J32
 
+* The following image shows a KD240 with all the hardware connected.
+
+  ![KD240-Image](./media/KD240-Image.jpg)
 
 ## Next Steps
 

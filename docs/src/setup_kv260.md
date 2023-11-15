@@ -19,13 +19,54 @@
 
 This page shows how to set up the KV260 before running the BIST application.
 
-Refer to the KR260 Board and the Interface layout below for connector reference numbers:
+Refer to the KV260 Board and the Interface layout below for connector reference numbers:
 
 ![GitHub Logo](./media/KV260-Interfaces.png)
 
-The following image shows a KV260 with all the hardware connected.
+Test case mapping to board interfaces:
 
-![GitHub Logo](./media/KV260-Image.png)
+| Interface                          | External Hardware                                         | Test Module | Test Case                |
+|------------------------------------|-----------------------------------------------------------|-------------|--------------------------|
+| USB3.0 (Top port) - U44            | USB Flash Drive                                           | Disk        | usb1_read_performance    |
+| USB3.0 (Top port) - U44            | USB Flash Drive                                           | Disk        | usb1_write_performance   |
+| USB3.0 (Bottom port) - U44         | USB Flash Drive                                           | Disk        | usb2_read_performance    |
+| USB3.0 (Bottom port) - U44         | USB Flash Drive                                           | Disk        | usb2_write_performance   |
+| USB3.0 (Top port) - U46            | USB Flash Drive                                           | Disk        | usb3_read_performance    |
+| USB3.0 (Top port) - U46            | USB Flash Drive                                           | Disk        | usb3_write_performance   |
+| USB3.0 (Bottom port) - U46         | USB Flash Drive                                           | Disk        | usb4_read_performance    |
+| USB3.0 (Bottom port) - U46         | USB Flash Drive                                           | Disk        | usb4_write_performance   |
+| MicroSD port - J11                 | MicroSD Card                                              | Disk        | sd_read_performance      |
+| MicroSD port - J11                 | MicroSD Card                                              | Disk        | sd_write_performance     |
+| HDMI - J5 and/or Display Port - J6 | 1080p/4k Monitor and Power Cable, Display Port/HDMI Cable | Display     | display_connectivity     |
+| HDMI - J5 and/or Display Port - J6 | 1080p/4k Monitor and Power Cable, Display Port/HDMI Cable | Display     | display_modetest         |
+| SOM EEPROM                         | None                                                      | EEPROM      | som_eeprom               |
+| Carrier Card EEPROM                | None                                                      | EEPROM      | carrier_card_eeprom      |
+| RJ45 Ethernet - J10                | Ethernet Cable                                            | Ethernet    | ethernet1_ping           |
+| RJ45 Ethernet - J10                | Ethernet Cable                                            | Ethernet    | ethernet1_perf           |
+| PMOD - J2                          | PMOD TPH2 Test Header, 4x Female-Female Jumper Wires      | GPIO        | pmod0                    |
+| PS I2C Main Bus                    | None                                                      | I2C         | ps_i2c_bus_main          |
+| AXI I2C Main Bus                   | None                                                      | I2C         | axi_i2c_bus_main         |
+| AXI I2C Channel 0 Bus              | None                                                      | I2C         | axi_i2c_bus_ch0          |
+| INA260                             | None                                                      | IIO         | ina260_current           |
+| QSPI MTD Device                    | None                                                      | MTD         | qspi_read_write          |
+| QSPI MTD Device                    | None                                                      | MTD         | qspi_read_performance    |
+| QSPI MTD Device                    | None                                                      | MTD         | qspi_write_performance   |
+| PWM   Fan - J13                    | Board Fan                                                 | PWM         | fan                      |
+| TPM Hardware                       | None                                                      | TPM         | tpm2_getcap              |
+| TPM Hardware                       | None                                                      | TPM         | tpm2_selftest            |
+| TPM Hardware                       | None                                                      | TPM         | tpm2_getrandom           |
+| TPM Hardware                       | None                                                      | TPM         | tpm2_hash                |
+| TPM Hardware                       | None                                                      | TPM         | tpm2_pcrread             |
+| TPM Hardware                       | None                                                      | TPM         | tpm2_pcrextend           |
+| TPM Hardware                       | None                                                      | TPM         | tpm2_pcrreset            |
+| IAS Connector - J7 & AP1302        | AR1335 Sensor                                             | Video       | ar1335_ap1302_ximagesink |
+| IAS Connector - J7 & AP1302        | AR1335 Sensor                                             | Video       | ar1335_ap1302_perf       |
+| IAS Connector - J7 & AP1302        | AR1335 Sensor                                             | Video       | tpg_ap1302_ximagesink    |
+| IAS Connector - J7 & AP1302        | AR1335 Sensor                                             | Video       | tpg_ap1302_perf          |
+| Raspberry Pi Camera Connector - J9 | Raspberry Pi Camera Module 2                              | Video       | imx219_filesink          |
+| Raspberry Pi Camera Connector - J9 | Raspberry Pi Camera Module 2                              | Video       | imx219_perf              |
+| IAS Connector - J8                 | AR1335 Sensor                                             | Video       | ar1335_filesink          |
+| IAS Connector - J8                 | AR1335 Sensor                                             | Video       | ar1335_perf              |
 
 The BIST application requires the following hardware setup to run
 the full suite of hardware tests:
@@ -59,7 +100,7 @@ the full suite of hardware tests:
 
   ![GitHub Logo](./media/KV260-DP_HDMI.png)
 
-  Before booting, connect a 1080P/4K monitor to the board via either DP and/or
+  Before booting, connect a 1080P/4K monitor to the board via either Display Port and/or
   HDMI port.
 
 * AR1335 IAS-ISP Image Sensor Module
@@ -80,6 +121,9 @@ the full suite of hardware tests:
 
   Connect the Raspberry Pi Camera Module to J9 on the KV260.
 
+* The following image shows a KV260 setup with all the hardware connected.
+
+  ![GitHub Logo](./media/KV260-Image.png)
 
 ## Next Steps
 

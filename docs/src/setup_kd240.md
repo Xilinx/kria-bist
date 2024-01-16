@@ -13,8 +13,8 @@
 9. One [PMOD CAN](https://digilent.com/reference/pmod/pmodcan/start)
 10. 10 Male to Male,Female to Female,Female to Male Jumper Wires
 11. One RS485 Temperature and Humidity Sensor from [here](https://www.aliexpress.us/item/2251832868368800.html?gatewayAdapt=glo2usa4itemAdapt) or [here](https://www.amazon.com/Temperature-Humidity-Sensor-Display-Modbus/dp/B078NRYBVZ)
+    * Note: Ubuntu 22.04 kd05 image does not yet have RS485 driver and this test may fail - refer to [known issues](./known_issues.md) page for more details.
 12. Two USB Flash Drives
-
 
 ## Board Setup
 

@@ -3,7 +3,7 @@ BIST Overview
 #####################################################
 
 
-The Built-In Self Test (BIST) application tests the interfaces on the AMD Kria |trade| starter kits to verify functionality and/or performance. If a custom design is not working as expected, this application can be used to differentiate hardware issues from design issues.
+The Built-In Self Test (BIST) application tests the interfaces on the AMD Kria™ starter kits to verify functionality and/or performance. If a custom design is not working as expected, this application can be used to differentiate hardware issues from design issues.
 
 The BIST application is based on the pytest framework and designed to be modular and configurable so that it can be used across different starter kits. The tests are grouped into modules based on the interface which allows testing individual interfaces if needed. Some tests are self-validating, while others require user input based on observation. Each individual test either verifies the functionality or performance of an interface.
 
@@ -86,7 +86,7 @@ The test modules are listed below. Refer to the individual module pages for more
    Motor Test Module <modules/motor.md>
    MTD Test Module <modules/mtd.md>
    PWM Test Module <modules/pwm.md>
-   SPI Test Module <module/spi.md>
+   SPI Test Module <modules/spi.md>
    TPM Test Module <modules/tpm.md>
    TTY Test Module <modules/tty.md>
    Video Test Module <modules/video.md>

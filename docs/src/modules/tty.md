@@ -4,6 +4,8 @@
 
 This module tests the tty interface(s) on the AMD Kria&trade; starter kits.
 
+Note that this test is expected to fail in on KD240 with Ubuntu classic-22.04-kd05 version as the RS485 driver is in the process of being upstreamed for certified Ubuntu image. This test will still pass with Ubuntu 22.04-kd03 image on KD240, and it will also pass for KR260's RS485 over AXI lite interface.
+
 ## Tests
 
 The Tty module contains one self-validating test. This test uses the pymodbus
@@ -40,6 +42,8 @@ points to improper connections.
 * Occasionally, erroneous values (for example 3276.8) are reported for 
 temperature/humidity sensor data and this is due to error in the sensor itself, 
 which can be ignored and the test rerun to clear the error.
+* RS485 does not function in Ubuntu 22.04 kd05 as the driver is in the process of 
+being upstreamed. The driver is also [not present in PetaLinux 2023.2 KD240 BSP](https://support.xilinx.com/s/article/000035701?language=en_US). Thus, this test is expected to fail in that version.
 
 ## Next Steps
 

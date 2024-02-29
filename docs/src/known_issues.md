@@ -1,5 +1,7 @@
  # Known Issues
 
+* RS485 over PS uart on KD240 does not function in Ubuntu 22.04 kd05 release as the driver is in the process of being upstreamed. Thus, TTY test is expected to fail in Ubuntu 22.04 kd05 image on KD240. (It expect to pass in the Ubuntu 22.04 kd03 version on KD240, and does not impact RS485 over AXI lite uart on KR260)
+
 * Currently, the AR1335 module does not auto-load after loading kv260-bist firmware
 binaries. A near term solution is to dynamically modprobe module with an additional
 command.

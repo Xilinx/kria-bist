@@ -19,7 +19,7 @@ def run_fancontrol_test(label, helpers):
         with open(file) as f:
             device_name = f.read().rstrip()
         if device_name == 'pwmfan':
-            pwm_file = glob.glob(file.split('name')[0] + "pwm*")[0]
+            pwm_file = glob.glob(file.split('name')[0] + "pwm1")[0]
             logger.debug("pwm_file: " + pwm_file)
 
     if pwm_file == "":

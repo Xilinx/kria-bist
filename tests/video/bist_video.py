@@ -29,7 +29,8 @@ def get_video_node(pipeline):
     for i in range(len(video_devices)):
         if pipeline in video_devices[i] and i < len(video_devices) - 1:
             video_node = video_devices[i + 1].replace('\t', '')
-            return video_node
+            if "video" in video_node:
+                return video_node
     return None
 
 

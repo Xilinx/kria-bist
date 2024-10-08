@@ -55,6 +55,30 @@ def get_media_node(pipeline):
                 return media_node
     return None
 
+def lookup_tpg_pattern_name(label, tpg_pattern, video_node):
+    """
+    Get the Color Bars test pattern number
+
+    Args:
+            label : Label for interface under test
+            tpg_pattern : Test Pattern String
+            video_node: Video node devpath
+
+    Returns:
+            string: Test pattern number
+    """
+    video_cmd = f"v4l2-ctl -d {video_node} -L"
+    video_settings = subprocess.check_output(video_cmd,shell=True,text=True)
+
+    # Regex for x : "Test Pattern"
+    pattern = rf"(\d+)\s*:\s*{tpg_pattern}"
+    match = re.search(pattern, video_settings)
+    if match:
+        tpg_pattern_num = match.group(1)
+        return tpg_pattern_num
+    else:
+        return None
+
 
 def set_test_pattern(video_node, tpg_pattern, logger):
     """
@@ -135,6 +159,14 @@ def set_test_pattern_ap1302_debugfs(video_node, tpg_pattern, ar1335_tpg_reg, log
     if process.returncode:
         logger.error("Failed to run v4l2-ctl disable test pattern command")
         return False
+
+    # Hardcode test pattern value since lookup is not possible using v4l2-ctl
+    if 'Color Bars' in tpg_pattern:
+        tpg_pattern = 2
+    else:
+        logger.error("Patterns other than Color Bars are not supported")
+        return False
+
     try:
         # Set sensor address to test pattern register (0x0600) of ar1335
         with open('/sys/kernel/debug/ap1302.4-003c/sipm_addr', 'w') as file:
@@ -333,7 +365,7 @@ def run_video_filesink_test(label, pipeline, width, height, fps, fmt, tpg_patter
             height: Height in terms of resolution
             fps: Targetted frames per second
             fmt: Video format of pipeline
-            tpg_pattern: Test pattern generator value
+            tpg_pattern: Test pattern Generator
             helpers: Handle for logging
     """
     logger = helpers.logger_init(label)
@@ -350,8 +382,14 @@ def run_video_filesink_test(label, pipeline, width, height, fps, fmt, tpg_patter
         logger.error("No media node found for " + pipeline)
         return False
 
+    # Function call to get test pattern number
+    tpg_pattern_num = lookup_tpg_pattern_name(label, tpg_pattern, video_node)
+    if tpg_pattern_num == None:
+        logger.error("Test Pattern not found")
+        return False
+
     # Function call to set Test pattern
-    result = set_test_pattern(video_node, tpg_pattern, logger)
+    result = set_test_pattern(video_node, tpg_pattern_num, logger)
     if not result:
         return False
 
@@ -444,7 +482,7 @@ def run_video_ximagesink_test(label, pipeline, width, height, fps, fmt, tpg_patt
             height: Height in terms of resolution
             fps: Targetted frames per second
             fmt: Video format of pipeline
-            tpg_pattern: Test Pattern Generator value
+            tpg_pattern: Test Pattern Generator
             helpers: Handle for logging
     """
     logger = helpers.logger_init(label)
@@ -469,9 +507,15 @@ def run_video_ximagesink_test(label, pipeline, width, height, fps, fmt, tpg_patt
         if not result:
             return False
     else:
-        result = set_test_pattern(video_node, tpg_pattern, logger)
+        # Function call to get test pattern number
+        tpg_pattern_num = lookup_tpg_pattern_name(label, tpg_pattern, video_node)
+        if tpg_pattern_num == None:
+            logger.error("Test Pattern not found")
+            return False
+        result = set_test_pattern(video_node, tpg_pattern_num, logger)
         if not result:
             return False
+
     # Function call to run ximagesink pipeline
     result = run_ximagesink_pipeline(media_node, width, height, fps, fmt, logger, label, video_node, tpg_pattern)
     if not result:

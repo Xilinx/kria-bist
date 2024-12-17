@@ -4,7 +4,8 @@
 # Import the 'modules' that are required for test cases execution
 import glob
 import itertools
-from periphery import GPIO
+import errno
+from periphery import GPIO, GPIOError
 
 
 def gpio_get_chip():
@@ -16,19 +17,26 @@ def gpio_get_chip():
     """
     chips = glob.glob('/dev/gpiochip*')
     for chip in chips:
-        gpio = GPIO(chip, 0, "in")
-        label = gpio.chip_label
-        # Check for a label in format "<8-digit hex value>.gpio"
-        if (len(label) == 13) and label.split('.')[1] == 'gpio':
-            try:
-                int(label.split('.')[0], 16)
-                device_path = gpio.devpath
+        try:
+            gpio = GPIO(chip, 0, "in")
+            label = gpio.chip_label
+            # Check for a label in format "<8-digit hex value>.gpio"
+            if (len(label) == 13) and label.split('.')[1] == 'gpio':
+                try:
+                    int(label.split('.')[0], 16)
+                    device_path = gpio.devpath
+                    gpio.close()
+                    return device_path
+                except ValueError:
+                    gpio.close()
+            else:
                 gpio.close()
-                return device_path
-            except ValueError:
-                gpio.close()
-        else:
-            gpio.close()
+        except GPIOError as e:
+            if e.errno == errno.EBUSY:
+                # Device or resource busy
+                continue
+            else:
+                raise e
     print('No gpiochip found with label in format "<8-digit hex value>.gpio"')
 
 

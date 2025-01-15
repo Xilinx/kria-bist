@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import glob
+import os
 from pymodbus.client.sync import ModbusSerialClient
 
 def get_tty_dev_path(controller_name, logger):
@@ -14,8 +15,17 @@ def get_tty_dev_path(controller_name, logger):
     Returns:
             str: Tty dev path or None
     """
-    tty_path = f'/sys/devices/platform/axi/{controller_name}.serial/tty/tty*'
-    tty_path_list = glob.glob(tty_path)
+    serial_path = f'/sys/devices/platform/axi/{controller_name}.serial/'
+    tty_path_list = []
+    # Recusrsively walk through directory structure
+    for root, dirs, files in os.walk(serial_path):
+        # Look for directories that start with 'tty'
+        if 'tty' in dirs:
+            tty_dir = os.path.join(root, 'tty')
+            # Check for files starting with 'tty' within 'tty' directory
+            for file in os.listdir(tty_dir):
+                if file.startswith('tty'):
+                    tty_path_list.append(os.path.join(tty_dir, file))
     if not tty_path_list:
         logger.error("No tty device found for the controller_name: " + controller_name)
         return None

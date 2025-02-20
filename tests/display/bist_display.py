@@ -7,7 +7,7 @@ import re
 import os
 import signal
 import time
-from inputimeout import inputimeout, TimeoutOccurred
+from timeout_handler import input_timeout, TimeoutException
 
 
 def get_display_status(display_device):
@@ -107,7 +107,7 @@ def run_modetest_pipeline(plane_id, fmt, logger):
         while(1):
             logger.info("Did you see color bar test pattern on Monitor [Y/N]?")
             user_timeout = 30
-            var = inputimeout(timeout=user_timeout).strip().upper()
+            var = input_timeout(user_timeout).strip().upper()
             if var == 'Y':
                 logger.info("User reports pattern was observed on Monitor")
                 ret_val = True
@@ -118,7 +118,7 @@ def run_modetest_pipeline(plane_id, fmt, logger):
                 break
             else:
                 logger.info("Invalid input, please try again")
-    except TimeoutOccurred:
+    except TimeoutException:
         logger.error("No user input entered after " + str(user_timeout) + " seconds, aborting test")
         ret_val = False
     return ret_val

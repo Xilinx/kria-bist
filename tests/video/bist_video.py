@@ -9,8 +9,8 @@ import filecmp
 import os
 import signal
 import time
-from inputimeout import inputimeout, TimeoutOccurred
 from periphery import MMIO
+from timeout_handler import input_timeout, TimeoutException
 
 
 def get_video_node(pipeline):
@@ -336,7 +336,7 @@ def run_ximagesink_pipeline(media_node, width, height, fps, fmt, logger, label, 
                 return ret_val
         while(1):
             user_timeout = 30
-            var = inputimeout(timeout=user_timeout).strip().upper()
+            var = input_timeout(user_timeout).strip().upper()
             if var == 'Y':
                 logger.info("User reports that pattern was observed in the window")
                 ret_val = True
@@ -347,7 +347,7 @@ def run_ximagesink_pipeline(media_node, width, height, fps, fmt, logger, label, 
                 break
             else:
                 logger.info("Invalid input, try again")
-    except TimeoutOccurred:
+    except TimeoutException:
         logger.error("No user input entered after " + str(user_timeout) + " seconds, aborting test")
         ret_val = False
     os.kill(process.pid, signal.SIGKILL)

@@ -2,7 +2,8 @@
 # SPDX-License-Identifier: MIT
 
 import glob
-from inputimeout import inputimeout, TimeoutOccurred
+from timeout_handler import input_timeout, TimeoutException
+
 
 def run_fancontrol_test(label, helpers):
     logger = helpers.logger_init(label)
@@ -34,8 +35,8 @@ def run_fancontrol_test(label, helpers):
     logger.info("\nType Y to reduce fan speed:")
     while(1):
         try:
-            var = inputimeout(timeout=user_input_timeout).strip().upper()
-        except TimeoutOccurred:
+            var = input_timeout(user_input_timeout).strip().upper()
+        except TimeoutException:
             logger.error("No user input entered after " + str(user_input_timeout) + " seconds, aborting test")
             return False
         if var == 'Y':
@@ -51,8 +52,8 @@ def run_fancontrol_test(label, helpers):
     logger.info("\nIs the fan spinning at a slower speed? [Y/N]")
     while(1):
         try:
-            var = inputimeout(timeout=user_input_timeout).strip().upper()
-        except TimeoutOccurred:
+            var = input_timeout(user_input_timeout).strip().upper()
+        except TimeoutException:
             with open(pwm_file, "w") as pf:
                 pf.write(str(fan_speed_max))
             logger.error("No user input entered after " + str(user_input_timeout) + " seconds, aborting test")
@@ -73,8 +74,8 @@ def run_fancontrol_test(label, helpers):
     logger.info("\nIs the fan spinning at full speed? [Y/N]")
     while(1):
         try:
-            var = inputimeout(timeout=user_input_timeout).strip().upper()
-        except TimeoutOccurred:
+            var = input_timeout(user_input_timeout).strip().upper()
+        except TimeoutException:
             logger.error("No user input entered after " + str(user_input_timeout) + " seconds, aborting test")
             return False
         if var == 'Y':

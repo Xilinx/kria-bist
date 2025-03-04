@@ -3,7 +3,7 @@
 
 import glob
 import os
-from pymodbus.client.sync import ModbusSerialClient
+from pymodbus.client import ModbusSerialClient
 
 def get_tty_dev_path(controller_name, logger):
     """
@@ -57,7 +57,7 @@ def run_rs485_temp_humidity_sensor_read(label, controller_name, helpers):
         logger.error("Connection with RS485 could not be established. Please make sure the sensor is connected correctly")
         return False
     client.connect()
-    values = client.read_holding_registers(address=0x0,count=0x4,unit=1)
+    values = client.read_holding_registers(address=0x0,count=0x4,slave=1)
     if values.isError():
         logger.error("Values were not recorded. Please make sure the sensor is connected correctly")
         logger.test_failed() 

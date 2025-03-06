@@ -2,7 +2,8 @@
 # SPDX-License-Identifier: MIT
 
 import glob
-from pymodbus.client.sync import ModbusSerialClient
+import os
+from pymodbus.client import ModbusSerialClient
 
 def get_tty_dev_path(controller_name, logger):
     """
@@ -14,8 +15,17 @@ def get_tty_dev_path(controller_name, logger):
     Returns:
             str: Tty dev path or None
     """
-    tty_path = f'/sys/devices/platform/axi/{controller_name}.serial/tty/tty*'
-    tty_path_list = glob.glob(tty_path)
+    serial_path = f'/sys/devices/platform/axi/{controller_name}.serial/'
+    tty_path_list = []
+    # Recusrsively walk through directory structure
+    for root, dirs, files in os.walk(serial_path):
+        # Look for directories that start with 'tty'
+        if 'tty' in dirs:
+            tty_dir = os.path.join(root, 'tty')
+            # Check for files starting with 'tty' within 'tty' directory
+            for file in os.listdir(tty_dir):
+                if file.startswith('tty'):
+                    tty_path_list.append(os.path.join(tty_dir, file))
     if not tty_path_list:
         logger.error("No tty device found for the controller_name: " + controller_name)
         return None
@@ -47,7 +57,7 @@ def run_rs485_temp_humidity_sensor_read(label, controller_name, helpers):
         logger.error("Connection with RS485 could not be established. Please make sure the sensor is connected correctly")
         return False
     client.connect()
-    values = client.read_holding_registers(address=0x0,count=0x4,unit=1)
+    values = client.read_holding_registers(address=0x0,count=0x4,slave=1)
     if values.isError():
         logger.error("Values were not recorded. Please make sure the sensor is connected correctly")
         logger.test_failed() 

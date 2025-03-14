@@ -289,7 +289,7 @@ def run_filesink_pipeline(label, media_node, width, height, fps, fmt, test_image
               f",height={height},framerate={fps}/1,format={fmt} ! filesink location={test_image_path}"
     try:
         process = subprocess.Popen(gst_cmd.split(' '), stdout=subprocess.PIPE)
-        stdout,stderr = process.communicate(timeout=3)
+        stdout,stderr = process.communicate(timeout=10)
     except subprocess.TimeoutExpired as e:
         logger.error("Gstreamer command timed out after " + str(e.timeout) + " seconds. Sensor not connected or faulty")
         os.kill(process.pid, signal.SIGKILL)

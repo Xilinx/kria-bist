@@ -71,7 +71,7 @@ def can_node_initialize(can_channel, buffer_length, baudrate, logger):
         return None
     logger.debug(f"CAN interface {can_channel} is set to state: up")
     try:
-        bus = can.interface.Bus(channel=can_channel, bustype='socketcan', bitrate=baudrate)
+        bus = can.interface.Bus(channel=can_channel, interface='socketcan', bitrate=baudrate)
         logger.debug(f"Initialized node {can_channel}")
         return bus
     except can.CanError as e:

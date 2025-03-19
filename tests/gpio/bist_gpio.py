@@ -155,13 +155,19 @@ def run_gpio_loopback(label, width, offset, helpers):
         rp = "".join(map(str, r_pattern))
         result = "Match" if rp == wp else "Mismatch"
 
-        if rp == wp:
-            logger.info("Write pattern: " + wp + ", Read pattern " + rp + " : " + result)
-            pattern_match = True
+        # Check if rp and wp are equal and it is brake_1wire gpio test
+        if rp == wp and "brake" in label:
+            logger.info("Wire is not connected. Please check wire connection")
+            pattern_match = False
 
         # Check if rp and wp are inverted and it is brake_1wire gpio test
         elif all(rp != wp for rp,wp in zip(rp,wp)) and "brake" in label:
             logger.info("Write pattern: " + wp + ", Read pattern " + rp + " : Pattern is inverted which is expected")
+            pattern_match = True
+
+        # Case for PMOD and RPI gpio test
+        elif rp == wp:
+            logger.info("Write pattern: " + wp + ", Read pattern " + rp + " : " + result)
             pattern_match = True
 
         else:

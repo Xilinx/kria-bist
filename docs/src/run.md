@@ -5,28 +5,34 @@
 This document shows how to set up the board and run the Built-In Self Test
 (BIST) application.
 
-This guide and its prebuilts are targeted for Ubuntu 24.04 and Xilinx 2024.1
+This guide and its prebuilts are targeted for Ubuntu 24.04 and AMD 2024.1
 toolchain.
 
 ## Revision History
 
-### Version - v2.0
+### Version - v1.2
 
-Refreshed app for Ubuntu 24.04 compatibility with updates across documentation and known issues.
+Refreshed app for Ubuntu 24.04 compatibility with updates across test files and documentation.
 
 #### Change Log
 
-* Documentation:
+Test Updates:
 
-  * Added instructions for 24.04.
+  * Ethernet: Refined interface detection logic to ensure correct enumeration of interfaces.
+  * CAN: Updated python-can usage to align with the latest API and remove deprecated parameters.
+  * Display & PWM: Standardized timeout handling by replacing inputimeout with timeout_handler.
+  * GPIO: Addressed a corner case in 1wire_brake_ctrl to ensure correct test passes.
+  * TTY: Adjusted pymodbus imports and parameters for compatibility with Ubuntu 24.04.
+  * Common: Introduced timeout_handler.py for consistent user input timeout management across tests.
 
-* Known Issues:
+Documentation:
 
+  * Updated for compatibility with Ubuntu 24.04.
   * Added a known issue related to Ethernet Test.
 
 ### Version - v1.1
 
-Added additinal suppport for KD240 starter kit on Ubuntu 22.04.
+Added additional support for KD240 starter kit on Ubuntu 22.04.
 
 ### Version - v1.0
 
@@ -90,7 +96,7 @@ Testing was performed with the following artifacts:
 
 | Component                | Version              |
 |--------------------------|----------------------|
-| Boot Fiwmare             | K24-BootFW-01.02.bin |
+| Boot Fiwmare             | K24-BootFW-01.04.bin |
 | Linux Kernel             | 6.8.0-1013           |
 | xlnx-firmware-kd240-bist | 1.0-0xlnx1           |
 
@@ -98,7 +104,7 @@ Testing was performed with the following artifacts:
 
 | Component                | Version                |
 |--------------------------|------------------------|
-| Boot Firmware            | K26-BootFW-01.02.bin   |
+| Boot Firmware            | K26-BootFW-01.04.bin   |
 | Linux Kernel             | 6.8.0-1013             |
 | xlnx-firmware-kr260-bist | 1.0.1-0xlnx1           |
 
@@ -106,7 +112,7 @@ Testing was performed with the following artifacts:
 
 | Component                | Version              |
 |--------------------------|----------------------|
-| Boot Firmware            | K26-BootFW-01.02.bin |
+| Boot Firmware            | K26-BootFW-01.04.bin |
 | Linux Kernel             | 6.8.0-1013           |
 | xlnx-firmware-kv260-bist | 1.0-0xlnx1           |
 
@@ -138,7 +144,7 @@ done so, boot Linux with instructions from:
   sudo apt install xlnx-firmware-kd240-bist     // For kd240-bist
   ```
 
-* List installed the application firmware binaries.
+* List the installed the application firmware binaries.
 
   The firmware consists of bitstream, device tree overlay (dtbo) file. The
   firmware is loaded dynamically on user request once Linux is fully booted.
@@ -154,7 +160,7 @@ done so, boot Linux with instructions from:
 
 * Load a new application firmware binary.
 
-  When there is already an another accelerator/firmware being activated, unload it
+  When there is already another accelerator/firmware being activated, unload it
   first, then load the desired BIST firmware.
 
   ```bash
@@ -221,7 +227,7 @@ fail
   sudo xmutil desktop_disable
   ```
 
-  ***NOTE***: Executing “xmutil desktop_disable” causes the monitor to go
+  ***NOTE***: Executing `xmutil desktop_disable` causes the monitor to go
   blank.
 
 * Remember to start the fancontrol service after exiting the docker container.
@@ -246,7 +252,7 @@ fail
   ```
 
 * The storage volume on the SD card can be limited with multiple docker
-  images inbstalled. If there are space issues, use the following command
+  images installed. If there are space issues, use the following command
   to remove existing docker images.
 
   ```bash

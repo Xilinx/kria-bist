@@ -223,12 +223,25 @@ fail
   for the display testing to function as intended. On KD240 this step can be 
   skipped as we are using a headless Ubuntu Server image.
 
-  ```bash
-  sudo xmutil desktop_disable
-  ```
+  * Check if default target is set to `graphical.target`
 
-  ***NOTE***: Executing `xmutil desktop_disable` causes the monitor to go
-  blank.
+    ```bash
+    sudo systemctl get-default
+    ```
+
+  * If above command returns `graphical.target`, set default target to multi-user.
+  This step is to ensure that by default we always start without Ubuntu display
+  manager.
+
+    ```bash
+    sudo systemctl set-default multi-user.target
+    ```
+
+  * Reboot the system for the change to take effect.
+
+    ```bash
+    sudo reboot
+    ```
 
 * Remember to start the fancontrol service after exiting the docker container.
 
@@ -236,12 +249,22 @@ fail
   sudo systemctl start fancontrol
   ```
 
-* After running the application and exiting the docker container, the desktop
-  environment can be enabled again.
+* After running the application and exiting the docker container, the Ubuntu
+desktop environment can be enabled again.
 
-  ```bash
-  sudo xmutil desktop_enable
-  ```
+  * Set default target to graphical. This step is to ensure that by default we
+  always start with an Ubuntu display manager.
+
+    ```bash
+    sudo systemctl set-default graphical.target
+    ```
+
+  * Reboot the system for the change to take effect.
+
+    ```bash
+    sudo reboot
+    ```
+
 
 ## Download and Run the BIST Docker Image
 

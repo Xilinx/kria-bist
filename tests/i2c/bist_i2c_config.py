@@ -11,7 +11,7 @@ ps_i2c_k26_som = {
 }
 
 ps_i2c_kv_cc = {
-    'usb5477'   : 0x2d,
+    'usb5744'   : 0x2d,
     'ina260'    : 0x40,
     'eeprom_cc' : 0x51,
     'stdp4320'  : 0x73
@@ -38,7 +38,7 @@ ps_i2c_k24_som = {
 
 ps_i2c_kd_cc = {
     'slg7xl45106' : 0x11,
-    'usb5477'     : 0x2d,
+    'usb5744'     : 0x2d,
     'ina260'      : 0x40,
     'eeprom_cc'   : 0x51
 }
@@ -75,13 +75,13 @@ supported_boards = {
             'label'       : "ps_i2c_bus_ch0",
             'controller'  : "ff030000", # Address of the controller
             'mux_channel' : 0,
-            'i2c_devices' : {**ps_i2c_k26_som, **ps_i2c_kr_cc, **{'usb5477' : 0x2d}}
+            'i2c_devices' : {**ps_i2c_k26_som, **ps_i2c_kr_cc, **{'usb5744' : 0x2d}}
         },
         {
             'label'       : "ps_i2c_bus_ch1",
             'controller'  : "ff030000", # Address of the controller
             'mux_channel' : 1,
-            'i2c_devices' : {**ps_i2c_k26_som, **ps_i2c_kr_cc, **{'usb5477' : 0x2d}}
+            'i2c_devices' : {**ps_i2c_k26_som, **ps_i2c_kr_cc, **{'usb5744' : 0x2d}}
         }
     ],
     'kd240': [

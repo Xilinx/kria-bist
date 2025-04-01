@@ -45,3 +45,27 @@ reload of the application does not cause a hang.
   FAILED i2c/test_bist_i2c.py::test_i2c[ps_i2c_bus_main] - assert False
   ```
 
+<<<<<<< HEAD
+=======
+**NOTE** : To be able to load `kr260-bist` firmware workaround is to reboot/power cycle and try loading it again on next
+boot.
+```
+ubuntu@kria:~$ sudo xmutil loadapp kr260-bist
+[  173.585162] OF: overlay: WARNING: memory leak will occur if overlay removed, property: /fpga-region/firmware-name
+[  173.595491] OF: overlay: WARNING: memory leak will occur if overlay removed, property: /fpga-region/resets
+```
+
+* There is a known issue of system hang during the reload of the kd240-bist application. While the initial load and unload
+process works correctly, subsequent attempts to load the application result in a system hang. To prevent this, it is
+recommended to remove ADC_HUB and all the HLS modules before unloading the application firmware. This ensures that the next
+reload of the application does not cause a hang.
+
+  To remove the ADC_HUB and HLS modules before unloading the firmware, use the following commands:
+
+  ```
+  sudo rmmod $(lsmod | grep hls_ | awk '{print $1}') # Unloads all HLS modules
+  sudo rmmod xilinx_adc_hub # Unloads ADC_HUB module
+  sudo lsmod # Verify that HLS modules have been removed
+  ```
+  **NOTE** : Ensure that HLS and ADC_HUB modules are removed before `xmutil unloadapp` command.
+>>>>>>> e4ccc56 (docs: Added a known issue with kd240-bist FW stress testing)

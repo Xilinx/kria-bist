@@ -29,7 +29,7 @@ reload of the application does not cause a hang.
   **NOTE** : Ensure that HLS and ADC_HUB modules are removed before `xmutil unloadapp` command.
 
 
-* On KV260 Rev2 boards, the I2C test fails to detect the USB hub device `usb5744` at address `0x2d` on the `ps_i2c_bus_main` bus. This leads to a test failure in the I2C BIST test:
+* On KV260 **Rev2** boards, the I2C test fails to detect the USB hub device `usb5744` at address `0x2d` on the `ps_i2c_bus_main` bus. This leads to a test failure in the I2C BIST test:
 
   ```
   i2c/test_bist_i2c.py::test_i2c[ps_i2c_bus_main]

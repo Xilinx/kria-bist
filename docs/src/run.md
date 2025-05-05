@@ -97,7 +97,7 @@ Testing was performed with the following artifacts:
 | Component                | Version              |
 |--------------------------|----------------------|
 | Boot Fiwmare             | K24-BootFW-01.04.bin |
-| Linux Kernel             | 6.8.0-1013           |
+| Linux Kernel             | 6.8.0-1015           |
 | xlnx-firmware-kd240-bist | 1.0-0xlnx1           |
 
 ### KR260 platform artifacts
@@ -105,7 +105,7 @@ Testing was performed with the following artifacts:
 | Component                | Version                |
 |--------------------------|------------------------|
 | Boot Firmware            | K26-BootFW-01.04.bin   |
-| Linux Kernel             | 6.8.0-1013             |
+| Linux Kernel             | 6.8.0-1015             |
 | xlnx-firmware-kr260-bist | 1.0.1-0xlnx1           |
 
 ### KV260 platform artifacts
@@ -113,7 +113,7 @@ Testing was performed with the following artifacts:
 | Component                | Version              |
 |--------------------------|----------------------|
 | Boot Firmware            | K26-BootFW-01.04.bin |
-| Linux Kernel             | 6.8.0-1013           |
+| Linux Kernel             | 6.8.0-1015           |
 | xlnx-firmware-kv260-bist | 1.0-0xlnx1           |
 
 Please refer to the [Kria Wiki](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/3020685316/Kria+SOM+Boot+Firmware+Update#K26-Boot-Firmware-Updates)

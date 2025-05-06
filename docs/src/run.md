@@ -5,8 +5,38 @@
 This document shows how to set up the board and run the Built-In Self Test
 (BIST) application.
 
-This guide and its prebuilts are targeted for Ubuntu 22.04 and Xilinx 2023.1
+This guide and its prebuilts are targeted for Ubuntu 24.04 and AMD 2024.1
 toolchain.
+
+## Revision History
+
+### Version - v1.2
+
+Refreshed app for Ubuntu 24.04 compatibility with updates across test files and documentation.
+
+#### Change Log
+
+Test Updates:
+
+  * Ethernet: Refined interface detection logic to ensure correct enumeration of interfaces.
+  * CAN: Updated python-can usage to align with the latest API and remove deprecated parameters.
+  * Display & PWM: Standardized timeout handling by replacing inputimeout with timeout_handler.
+  * GPIO: Addressed a corner case in 1wire_brake_ctrl to ensure correct test passes.
+  * TTY: Adjusted pymodbus imports and parameters for compatibility with Ubuntu 24.04.
+  * Common: Introduced timeout_handler.py for consistent user input timeout management across tests.
+
+Documentation:
+
+  * Updated for compatibility with Ubuntu 24.04.
+  * Added a known issue related to Ethernet Test.
+
+### Version - v1.1
+
+Added additional support for KD240 starter kit on Ubuntu 22.04.
+
+### Version - v1.0
+
+Initial release on Ubuntu 22.04 with support for KV260 and KR260 starter kits.
 
 ## Set up the Host Machine
 
@@ -66,61 +96,45 @@ Testing was performed with the following artifacts:
 
 | Component                | Version              |
 |--------------------------|----------------------|
-| Boot Fiwmare             | K24-BootFW-01.00.bin |
-| Linux Kernel             | 5.15.0-9002          |
-| xlnx-firmware-kd240-bist | 0.10.1-0xlnx1        |
+| Boot Fiwmare             | K24-BootFW-01.04.bin |
+| Linux Kernel             | 6.8.0-1015           |
+| xlnx-firmware-kd240-bist | 1.0-0xlnx1           |
 
 ### KR260 platform artifacts
 
-| Component                | Version                                                 |
-|--------------------------|---------------------------------------------------------| 
-| Boot Firmware            | BOOT_xilinx-k26-starterkit-v2022.1-09152304_update3.BIN |
-| Linux Kernel             | 5.15.0-1023                                             |
-| xlnx-firmware-kr260-bist | 0.10.1-0xlnx1                                           |
+| Component                | Version                |
+|--------------------------|------------------------|
+| Boot Firmware            | K26-BootFW-01.04.bin   |
+| Linux Kernel             | 6.8.0-1015             |
+| xlnx-firmware-kr260-bist | 1.0.1-0xlnx1           |
 
 ### KV260 platform artifacts
 
-| Component                | Version                                                 |
-|--------------------------|---------------------------------------------------------| 
-| Boot Firmware            | BOOT_xilinx-k26-starterkit-v2022.1-09152304_update3.BIN |
-| Linux Kernel             | 5.15.0-1023                                             |
-| xlnx-firmware-kv260-bist | 0.10.1-0xlnx1                                           |
+| Component                | Version              |
+|--------------------------|----------------------|
+| Boot Firmware            | K26-BootFW-01.04.bin |
+| Linux Kernel             | 6.8.0-1015           |
+| xlnx-firmware-kv260-bist | 1.0-0xlnx1           |
 
-Please refer to the [Kria Wiki](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/1641152513/Kria+K26+SOM#Boot-Firmware-Updates)
+Please refer to the [Kria Wiki](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/3020685316/Kria+SOM+Boot+Firmware+Update#K26-Boot-Firmware-Updates)
 to obtain latest linux image and boot firmware.
 
 ### Application docker image
 
-| Docker Image              | Version     |
-|---------------------------|------------ |
-| xilinx/kria-bist          | 2023.1      |
+| Docker Image              | Version              |
+|---------------------------|--------------------- |
+| xilinx/kria-bist          | 1.2-noble-24.04      |
 
 ## Boot Linux
 
 Before continuing with the BIST application specific instructions, if not yet
 done so, boot Linux with instructions from:
 
-  1. [Kria Starter Kit Linux Boot on KV260](https://xilinx.github.io/kria-apps-docs/kv260/2022.1/build/html/docs/kria_starterkit_linux_boot.html)
-  2. [Kria Starter Kit Linux Boot on KR260](https://xilinx.github.io/kria-apps-docs/kr260/build/html/docs/kria_starterkit_linux_boot.html)
+  1. [Kria Starter Kit Linux Boot on KV260](https://xilinx.github.io/kria-apps-docs/kv260/2022.1/build/html/docs/linux_boot.html)
+  2. [Kria Starter Kit Linux Boot on KR260](https://xilinx.github.io/kria-apps-docs/kr260/build/html/docs/linux_boot.html)
   3. [Kria Starter Kit Linux Boot on KD240](https://xilinx.github.io/kria-apps-docs/kd240/linux_boot.html)
 
 ## Download and Load the BIST PL Firmware
-
-* Search the package feed for available bist firmware packages.
-
-  ```bash
-  apt search bist
-
-  Sorting... Done
-  Full Text Search... Done
-
-  xlnx-firmware-kr260-bist/jammy 0.10-0xlnx1 arm64
-  FPGA firmware for Xilinx boards - kr260 bist application
-  xlnx-firmware-kv260-bist/jammy 0.10-0xlnx1 arm64
-  FPGA firmware for Xilinx boards - kv260 bist application
-  xlnx-firmware-kd240-bist/jammy 0.10-0xlnx1 arm64
-  FPGA firmware for Xilinx boards - kd240 bist application
-  ```
 
 * Install firmware binaries.
 
@@ -130,7 +144,7 @@ done so, boot Linux with instructions from:
   sudo apt install xlnx-firmware-kd240-bist     // For kd240-bist
   ```
 
-* List installed the application firmware binaries.
+* List the installed the application firmware binaries.
 
   The firmware consists of bitstream, device tree overlay (dtbo) file. The
   firmware is loaded dynamically on user request once Linux is fully booted.
@@ -146,7 +160,7 @@ done so, boot Linux with instructions from:
 
 * Load a new application firmware binary.
 
-  When there is already an another accelerator/firmware being activated, unload it
+  When there is already another accelerator/firmware being activated, unload it
   first, then load the desired BIST firmware.
 
   ```bash
@@ -154,14 +168,6 @@ done so, boot Linux with instructions from:
   sudo xmutil loadapp kv260-bist      // For kv260-bist
   sudo xmutil loadapp kr260-bist      // For kr260-bist
   sudo xmutil loadapp kd240-bist      // For kd240-bist
-  ```
-  **NOTE**: KD240 Firmware load `xmutil loadapp kd240-bist` will print following 
-  messages. These are safe to ignore.
-  ```bash
-    [  112.802574] net eth1: Speed other than 10, 100
-    [  112.807227] net eth1: or 1Gbps is not supported
-    [  112.866305] net eth2: Speed other than 10, 100
-    [  112.871168] net eth2: or 1Gbps is not supported
   ```
 
 ## Setup SSH with X-forwarding
@@ -217,12 +223,25 @@ fail
   for the display testing to function as intended. On KD240 this step can be 
   skipped as we are using a headless Ubuntu Server image.
 
-  ```bash
-  sudo xmutil desktop_disable
-  ```
+  * Check if default target is set to `graphical.target`
 
-  ***NOTE***: Executing “xmutil desktop_disable” causes the monitor to go
-  blank.
+    ```bash
+    sudo systemctl get-default
+    ```
+
+  * If above command returns `graphical.target`, set default target to multi-user.
+  This step is to ensure that by default we always start without Ubuntu display
+  manager.
+
+    ```bash
+    sudo systemctl set-default multi-user.target
+    ```
+
+  * Reboot the system for the change to take effect.
+
+    ```bash
+    sudo reboot
+    ```
 
 * Remember to start the fancontrol service after exiting the docker container.
 
@@ -230,23 +249,33 @@ fail
   sudo systemctl start fancontrol
   ```
 
-* After running the application and exiting the docker container, the desktop
-  environment can be enabled again.
+* After running the application and exiting the docker container, the Ubuntu
+desktop environment can be enabled again.
 
-  ```bash
-  sudo xmutil desktop_enable
-  ```
+  * Set default target to graphical. This step is to ensure that by default we
+  always start with an Ubuntu display manager.
+
+    ```bash
+    sudo systemctl set-default graphical.target
+    ```
+
+  * Reboot the system for the change to take effect.
+
+    ```bash
+    sudo reboot
+    ```
+
 
 ## Download and Run the BIST Docker Image
 
 * Pull the docker image from dockerhub.
 
   ```bash
-  docker pull xilinx/kria-bist:2023.1
+  docker pull xilinx/kria-bist:1.2-noble-24.04
   ```
 
 * The storage volume on the SD card can be limited with multiple docker
-  images inbstalled. If there are space issues, use the following command
+  images installed. If there are space issues, use the following command
   to remove existing docker images.
 
   ```bash
@@ -274,7 +303,7 @@ fail
       -v /etc/vart.conf:/etc/vart.conf \
       -v /lib/firmware/xilinx:/lib/firmware/xilinx \
       -v /run:/run \
-      -it xilinx/kria-bist:2023.1 bash
+      -it xilinx/kria-bist:1.2-noble-24.04 bash
   ```
 
 * It launches the bist image in a new container and drops the user into a bash
@@ -335,9 +364,9 @@ The pytest command line output has two separate sessions as follows:
 
   ```bash
   ============================= test session starts ==============================
-  platform linux -- Python 3.10.6, pytest-6.2.5, py-1.10.0, pluggy-0.13.0
-  rootdir: /opt/xilinx/kria-bist/tests, configfile: pytest.ini
-  plugins: anyio-3.6.1
+  platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+  rootdir: /opt/xilinx/kria-bist/tests
+  configfile: pytest.ini
   collected 34 items / 33 deselected / 1 selected
 
   gpio/test_bist_gpio.py::test_gpio[pmod0]
@@ -392,9 +421,9 @@ The pytest command line output has two separate sessions as follows:
   pytest-3 -k pmod0 --board kv260
 
   ============================= test session starts ==============================
-  platform linux -- Python 3.10.6, pytest-6.2.5, py-1.10.0, pluggy-0.13.0
-  rootdir: /opt/xilinx/kria-bist/tests, configfile: pytest.ini
-  plugins: anyio-3.6.1
+  platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+  rootdir: /opt/xilinx/kria-bist/tests
+  configfile: pytest.ini
   collected 34 items / 33 deselected / 1 selected
 
   gpio/test_bist_gpio.py::test_gpio[pmod0]
@@ -420,9 +449,9 @@ The pytest command line output has two separate sessions as follows:
   pytest-3 --collect-only --board kv260
 
   ========================== test session starts ===============================
-  platform linux -- Python 3.10.6, pytest-6.2.5, py-1.10.0, pluggy-0.13.0
-  rootdir: /opt/xilinx/kria-bist/tests, configfile: pytest.ini
-  plugins: anyio-3.6.1
+  platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+  rootdir: /opt/xilinx/kria-bist/tests
+  configfile: pytest.ini
   collected 40 items
 
   <Module disk/test_bist_disk.py>
@@ -486,9 +515,9 @@ The pytest command line output has two separate sessions as follows:
   pytest-3 --collect-only --board kv260 -m video
 
   ============================= test session starts ==============================
-  platform linux -- Python 3.10.6, pytest-6.2.5, py-1.10.0, pluggy-0.13.0
-  rootdir: /opt/xilinx/kria-bist/tests, configfile: pytest.ini
-  plugins: anyio-3.6.1
+  platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+  rootdir: /opt/xilinx/kria-bist/tests
+  configfile: pytest.ini
   collected 34 items / 26 deselected / 8 selected
 
   <Module video/test_bist_video.py>
@@ -510,9 +539,9 @@ The pytest command line output has two separate sessions as follows:
   pytest-3 --board kv260 -m video
 
   ============================= test session starts ==============================
-  platform linux -- Python 3.10.6, pytest-6.2.5, py-1.10.0, pluggy-0.13.0
-  rootdir: /opt/xilinx/kria-bist/tests, configfile: pytest.ini
-  plugins: anyio-3.6.1
+  platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+  rootdir: /opt/xilinx/kria-bist/tests
+  configfile: pytest.ini
   collected 34 items / 26 deselected / 8 selected
 
   video/test_bist_video.py::test_video[ar1335_ap1302_ximagesink]
@@ -521,6 +550,8 @@ The pytest command line output has two separate sessions as follows:
   Start of test
   Please observe the pop-up window
   Do you see color bar test pattern in the window [Y/N]?
+
+  ** (gst-launch-1.0:23): CRITICAL **: 18:29:06.145: Unsupported property type GstParamArray for property crop-bounds
   y
   User reports that pattern was observed in the window
   Test passed
@@ -530,6 +561,8 @@ The pytest command line output has two separate sessions as follows:
   -------------------------------- live log call ---------------------------------
   ------------------------------------------
   Start of test
+
+  ** (gst-launch-1.0:23): CRITICAL **: 18:29:06.145: Unsupported property type GstParamArray for property crop-bounds
   Actual fps: 30.0, Target fps:30 - Actual fps within accepted range
   Test passed
   End of test
@@ -540,6 +573,8 @@ The pytest command line output has two separate sessions as follows:
   Start of test
   Please observe the pop-up window
   Do you see color bar test pattern in the window [Y/N]?
+
+  ** (gst-launch-1.0:23): CRITICAL **: 18:29:06.145: Unsupported property type GstParamArray for property crop-bounds
   y
   User reports that pattern was observed in the window
   Test passed
@@ -549,6 +584,8 @@ The pytest command line output has two separate sessions as follows:
   -------------------------------- live log call ---------------------------------
   ------------------------------------------
   Start of test
+
+  ** (gst-launch-1.0:23): CRITICAL **: 18:29:06.145: Unsupported property type GstParamArray for property crop-bounds
   Actual fps: 30.003, Target fps:30 - Actual fps within accepted range
   Test passed
   End of test
@@ -557,6 +594,8 @@ The pytest command line output has two separate sessions as follows:
   -------------------------------- live log call ---------------------------------
   ------------------------------------------
   Start of test
+
+  ** (gst-launch-1.0:23): CRITICAL **: 18:29:06.145: Unsupported property type GstParamArray for property crop-bounds
 
   (gst-launch-1.0:89): GStreamer-CRITICAL **: 21:29:17.009: gst_structure_fixate_field_nearest_int: assertion 'IS_MUTABLE (structure)' failed
 
@@ -571,6 +610,8 @@ The pytest command line output has two separate sessions as follows:
   -------------------------------- live log call ---------------------------------
   ------------------------------------------
   Start of test
+
+  ** (gst-launch-1.0:23): CRITICAL **: 18:29:06.145: Unsupported property type GstParamArray for property crop-bounds
   Actual fps: 30.004, Target fps:30 - Actual fps within accepted range
   Test passed
   End of test
@@ -579,6 +620,9 @@ The pytest command line output has two separate sessions as follows:
   -------------------------------- live log call ---------------------------------
   ------------------------------------------
   Start of test
+
+  ** (gst-launch-1.0:23): CRITICAL **: 18:29:06.145: Unsupported property type GstParamArray for property crop-bounds
+
   (gst-launch-1.0:89): GStreamer-CRITICAL **: 21:29:17.009: gst_structure_fixate_field_nearest_int: assertion 'IS_MUTABLE (structure)' failed
 
   (gst-launch-1.0:89): GStreamer-CRITICAL **: 21:29:17.009: gst_structure_fixate_field_nearest_int: assertion 'IS_MUTABLE (structure)' failed
@@ -592,6 +636,8 @@ The pytest command line output has two separate sessions as follows:
   -------------------------------- live log call ---------------------------------
   ------------------------------------------
   Start of test
+
+  ** (gst-launch-1.0:23): CRITICAL **: 18:29:06.145: Unsupported property type GstParamArray for property crop-bounds
   Actual fps: 30.004, Target fps:30 - Actual fps within accepted range
   Test passed
   End of test
@@ -605,6 +651,6 @@ The pytest command line output has two separate sessions as follows:
 * [BIST Overview](./overview)
 
 
-<p class="sphinxhide" align="center"><sub>Copyright © 2023 Advanced Micro Devices, Inc</sub></p>
+<p class="sphinxhide" align="center"><sub>Copyright © 2025 Advanced Micro Devices, Inc</sub></p>
 
 <p class="sphinxhide" align="center"><sup><a href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a></sup></p>

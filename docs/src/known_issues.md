@@ -1,106 +1,81 @@
  # Known Issues
 
-* RS485 over PS uart on KD240 does not function in Ubuntu 22.04 kd05 release as the driver is in the process of being upstreamed. Thus, TTY test is expected to fail in Ubuntu 22.04 kd05 image on KD240. (It expect to pass in the Ubuntu 22.04 kd03 version on KD240, and does not impact RS485 over AXI lite uart on KR260)
+* For 24.04 release, ethernet_performance for DHCP address assignment and SFP+ test suite yields performance lower than
+80% of the maximum bitrate. Due to this, Ethernet Performance tests for DHCP address assignment case and SFP+ are expected
+to fail.
 
-* Currently, the AR1335 module does not auto-load after loading kv260-bist firmware
-binaries. A near term solution is to dynamically modprobe module with an additional
-command.
+* An abrupt hang/system freeze is seen when dynamically loading `kr260-bist` firmware on the second attempt of loading.
 
-* Kernel traces are seen while dynamically loading `kv260-bist` firmware binaries
-on the second attempt after unloading the app after the first load.
+  **NOTE** : Workaround is to reboot/power cycle and try loading it again on next boot.
 
-***Note***: To get the BIST app working, press the on board 'SW2,'button which is 'RESET.'
-```bash
-ubuntu@kria:~$ sudo xmutil unloadapp
-[sudo] password for ubuntu:
-remove from slot 0 returns: 0 (Ok)
-ubuntu@kria:~$ sudo xmutil loadapp kv260-bist
-[   76.917224] OF: overlay: WARNING: memory leak will occur if overlay removed, property: /fpga-full/firmware-name
-[   76.927666] OF: overlay: WARNING: memory leak will occur if overlay removed, property: /fpga-full/resets
-kv260-bist: loaded to slot 0
-ubuntu@kria:~$ [   77.996752] debugfs: Directory '4-003c' with parent 'regmap' already present!
-ubuntu@kria:~$ sudo modprobe ar1335
-ubuntu@kria:~$ sudo xmutil unloadapp
-[   88.101605] OF: ERROR: memory leak, expected refcount 1 instead of 2, of_node_get()/of_node_put() unbalanced - destroy cset entry: attach overlay node /axi/scaler@b0040000/ports
-[   88.119985] OF: ERROR: memory leak, expected refcount 1 instead of 2, of_node_get()/of_node_put() unbalanced - destroy cset entry: attach overlay node /axi/v_demosaic@b0000000/ports
-[   88.136745] OF: ERROR: memory leak, expected refcount 1 instead of 2, of_node_get()/of_node_put() unbalanced - destroy cset entry: attach overlay node /axi/scaler@b0080000/ports
-[   88.157751] OF: ERROR: memory leak, expected refcount 1 instead of 2, of_node_get()/of_node_put() unbalanced - destroy cset entry: attach overlay node /axi/v_demosaic@b0030000/ports
-[   88.174264] OF: ERROR: memory leak, expected refcount 1 instead of 2, of_node_get()/of_node_put() unbalanced - destroy cset entry: attach overlay node /axi/i2c@80030000/i2c-mux@74/i2c@0/isp@3c/ports/port@0/endpoint
-[   88.193558] OF: ERROR: memory leak, expected refcount 1 instead of 2, of_node_get()/of_node_put() unbalanced - destroy cset entry: attach overlay node /axi/i2c@80030000/i2c-mux@74/i2c@0/isp@3c/sensors/sensor@0
-remove from slot 0 returns: 0 (Ok)
-ubuntu@kria:~$ sudo xmutil loadapp kv260-bist
-[   94.308089] OF: overlay: WARNING: memory leak will occur if overlay removed, property: /fpga-full/firmware-name
-[   94.318211] OF: overlay: WARNING: memory leak will occur if overlay removed, property: /fpga-full/resets
-[   94.497236] debugfs: Directory '4-003c' with parent 'regmap' already present!
-[   94.601130] Unable to handle kernel access to user memory outside uaccess routines at virtual address 0000000000000000
-[   94.611930] Mem abort info:
-[   94.614773]   ESR = 0x0000000096000004
-[   94.618555]   EC = 0x25: DABT (current EL), IL = 32 bits
-[   94.623923]   SET = 0, FnV = 0
-[   94.627004]   EA = 0, S1PTW = 0
-[   94.630200]   FSC = 0x04: level 0 translation fault
-[   94.635134] Data abort info:
-[   94.638111]   ISV = 0, ISS = 0x00000004
-[   94.642015]   CM = 0, WnR = 0
-[   94.645000] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000802953000
-[   94.651509] [0000000000000000] pgd=0000000000000000, p4d=0000000000000000
-[   94.658389] Internal error: Oops: 96000004 [#1] SMP
-[   94.663269] Modules linked in: ar1335 al5e al5d ap1302 allegro i2c_mux_pca954x xlnx_vcu xt_conntrack nft_chain_nat xt_MASQUERADE nf_nat nf_conntrack_netlink nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nft_counter xt_addrtype nft_compat nf_tables nfnetlink br_netfilter bridge binfmt_misc joydev input_leds ina260_adc tpm_tis_spi mali uio_pdrv_genirq dm_multipath sch_fq_codel scsi_dh_rdac scsi_dh_emc scsi_dh_alua usb5744 dmaproxy ramoops reed_solomon pstore_blk pstore_zone efi_pstore ip_tables x_tables autofs4 raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx raid1 raid0 multipath linear hid_logitech_hidpp da9121_regulator hid_logitech_dj rtc_zynqmp spi_zynqmp_gqspi i2c_cadence zynqmp_dpsub crct10dif_ce usbhid aes_neon_bs aes_neon_blk crypto_simd cryptd
-[   94.731858] CPU: 0 PID: 2561 Comm: sh Not tainted 5.15.0-1022-xilinx-zynqmp #26-Ubuntu
-[   94.739764] Hardware name: ZynqMP SMK-K26 Rev1/B/A (DT)
-[   94.744973] pstate: 00400005 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[   94.751924] pc : match_fwnode+0x38/0x14c
-[   94.755848] lr : v4l2_async_find_match+0x98/0xc4
-[   94.760457] sp : ffff8000146535a0
-[   94.763755] x29: ffff8000146535a0 x28: ffff000802843f00 x27: 0000000000000000
-[   94.770882] x26: ffff80000b522db0 x25: ffff00080c1c8bb8 x24: ffff80000905a640
-[   94.778008] x23: ffff00080ebef080 x22: ffff00080c1c8b98 x21: ffff00080c1c8bc8
-[   94.785134] x20: ffff00080ebef080 x19: ffff00080481ce00 x18: ffffffffffffffff
-[   94.792260] x17: 0000000000000000 x16: 0000000000000000 x15: ffffffffffffffff
-[   94.799387] x14: ffffff0000000000 x13: ffffffffffffffff x12: ffff800009cd6dc8
-[   94.806513] x11: ffff80000b1adad0 x10: 0000000000000b60 x9 : ffff80000905a3c8
-[   94.813639] x8 : ffff000802d91c10 x7 : ffff80000b509c10 x6 : 0000000000000001
-[   94.820766] x5 : 0000000000000001 x4 : ffff00080481c880 x3 : ffff80000905a4f4
-[   94.827892] x2 : ffff000809b35418 x1 : ffff00080ebef080 x0 : 0000000000000000
-[   94.835019] Call trace:
-[   94.837450]  match_fwnode+0x38/0x14c
-[   94.841017]  v4l2_async_find_match+0x98/0xc4
-[   94.845279]  v4l2_async_notifier_try_all_subdevs+0x80/0xd0
-[   94.850756]  __v4l2_async_notifier_register+0xdc/0x150
-[   94.855886]  v4l2_async_notifier_register+0x4c/0x74
-[   94.860755]  xvip_composite_probe+0x19c/0x334
-[   94.865104]  platform_probe+0x70/0xec
-[   94.868758]  really_probe+0xc4/0x470
-[   94.872326]  __driver_probe_device+0x11c/0x190
-[   94.876761]  driver_probe_device+0x48/0x130
-[   94.880936]  __device_attach_driver+0xc4/0x160
-[   94.885372]  bus_for_each_drv+0x80/0xe0
-[   94.889200]  __device_attach+0xb0/0x1ec
-[   94.893028]  device_initial_probe+0x1c/0x30
-[   94.897203]  bus_probe_device+0xa4/0xb0
-[   94.901030]  device_add+0x40c/0x7a0
-[   94.904511]  of_device_add+0x4c/0x70
-[   94.908079]  of_platform_device_create_pdata+0xa0/0x130
-[   94.913296]  of_platform_notify+0xe8/0x17c
-[   94.917384]  blocking_notifier_call_chain+0x74/0xac
-[   94.922253]  __of_changeset_entry_notify+0xf0/0x170
-[   94.927123]  __of_changeset_apply_notify+0x50/0xdc
-[   94.931906]  of_overlay_apply+0x1ac/0x2c0
-[   94.935907]  of_overlay_fdt_apply+0xac/0x124
-[   94.940169]  cfs_overlay_item_path_store+0xd4/0x1a0
-[   94.945039]  configfs_write_iter+0xcc/0x130
-[   94.949214]  new_sync_write+0xf0/0x18c
-[   94.952955]  vfs_write+0x22c/0x2cc
-[   94.956349]  ksys_write+0x70/0x100
-[   94.959743]  __arm64_sys_write+0x24/0x30
-[   94.963657]  invoke_syscall+0x78/0x100
-[   94.967398]  el0_svc_common.constprop.0+0x54/0x184
-[   94.972181]  do_el0_svc+0x30/0xac
-[   94.975488]  el0_svc+0x28/0xb0
-[   94.978535]  el0t_64_sync_handler+0xa4/0x130
-[   94.982797]  el0t_64_sync+0x1a4/0x1a8
-[   94.986457] Code: f9408420 eb02001f 54000560 aa0103f4 (f9400001)
-[   94.992538] ---[ end trace ef36477bd2b0a936 ]---
-kv260-bist: loaded to slot 0
-ubuntu@kria:~$
-```
+  ```
+  ubuntu@kria:~$ sudo xmutil loadapp kr260-bist
+  [  173.585162] OF: overlay: WARNING: memory leak will occur if overlay removed, property: /fpga-region/firmware-name
+  [  173.595491] OF: overlay: WARNING: memory leak will occur if overlay removed, property: /fpga-region/resets
+  ```
+
+* There is a known issue of system hang during the reload of the kd240-bist application. While the initial load and unload
+process works correctly, subsequent attempts to load the application result in a system hang. To prevent this, it is
+recommended to remove ADC_HUB and all the HLS modules before unloading the application firmware. This ensures that the next
+reload of the application does not cause a hang.
+
+  To remove the ADC_HUB and HLS modules before unloading the firmware, use the following commands:
+
+  ```
+  sudo rmmod $(lsmod | grep hls_ | awk '{print $1}') # Unloads all HLS modules
+  sudo rmmod xilinx_adc_hub # Unloads ADC_HUB module
+  sudo lsmod # Verify that HLS modules have been removed
+  ```
+  **NOTE** : Ensure that HLS and ADC_HUB modules are removed before `xmutil unloadapp` command.
+
+
+* On KV260 **Rev2** boards, the I2C test fails to detect the USB hub device `usb5744` at address `0x2d` on the `ps_i2c_bus_main` bus. This leads to a test failure in the I2C BIST test:
+
+  ```
+  i2c/test_bist_i2c.py::test_i2c[ps_i2c_bus_main]
+  ---------------------------------------------------------------------------------- live log call -------------------------------------------------------------------
+  ------------------------------------------
+  Start of test
+  Device 'usb5744' could not be detected on i2c-1 bus at expected device address 0x2d
+  Test failed
+  End of test
+  FAILED
+  i2c/test_bist_i2c.py::test_i2c[axi_i2c_bus_main]
+  ============================================================================= short test summary info ==============================================================
+  FAILED i2c/test_bist_i2c.py::test_i2c[ps_i2c_bus_main] - assert False
+  ```
+
+* For `kr260-bist` firmware a synchronous abort kernel trace is observed sometimes(not always) which is a known issue because of the XXV IP error.
+Workaround is to reboot/power cycle the target KR260 to get rid of it and start fresh.
+
+  ```
+  ubuntu@kria:~$ [  282.930884] Internal error: synchronous external abort: 0000000096000210 [#1] SMP
+  [  282.938396] Modules linked in: xt_conntrack xt_MASQUERADE bridge xt_set ip_set nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 xt_addrtype nft_compat nf_tables qrtr binfmt_misc tee zynqmp_edac ina260_adc mali sch_fq_codel dm_multipath efi_pstore nfnetlink ip_tables x_tables autofs4 raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx raid1 raid0 i2c_mux_pca954x da9121_regulator crct10dif_ce polyval_ce polyval_generic rtc_zynqmp spi_zynqmp_gqspi i2c_cadence uio_pdrv_genirq aes_neon_bs aes_neon_blk aes_ce_blk aes_ce_cipher
+  [  282.987940] CPU: 0 PID: 541 Comm: kworker/u8:5 Not tainted 6.8.0-1013-xilinx #14-Ubuntu
+  [  282.995949] Hardware name: ZynqMP KR260 revA (DT)
+  [  283.000646] Workqueue: events_power_efficient phylink_resolve
+  [  283.006409] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+  [  283.013370] pc : axienet_pcs_get_state+0x454/0x518
+  [  283.018161] lr : axienet_pcs_get_state+0x454/0x518
+  [  283.022952] sp : ffff8000846fbcb0
+  [  283.026259] x29: ffff8000846fbcb0 x28: 0000000000000000 x27: 00000041dedfbe6f
+  [  283.033403] x26: ffff80008123434c x25: ffff80008123434c x24: 0000000000000000
+  [  283.040547] x23: ffff8000811c69a4 x22: ffff800084bc040c x21: ffff8000811c69a4
+  [  283.047690] x20: ffff8000846fbd30 x19: ffff000800fe79e0 x18: ffff800084395030
+  [  283.054834] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+  [  283.061978] x14: ffffffffffffffff x13: 0000000000000000 x12: 0101010101010101
+  [  283.069122] x11: 0000000000000000 x10: 0000000000001b80 x9 : ffff800081ae1a3c
+  [  283.076265] x8 : ffff0008095d9be0 x7 : 0000000000000000 x6 : 0000000000000000
+  [  283.083409] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 0000000000000000
+  [  283.090553] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000000
+  [  283.097697] Call trace:
+  [  283.100137]  axienet_pcs_get_state+0x454/0x518
+  [  283.104580]  phylink_mac_pcs_get_state+0x84/0x118
+  [  283.109285]  phylink_resolve+0x290/0x370
+  [  283.113208]  process_one_work+0x170/0x3f8
+  [  283.117218]  worker_thread+0x354/0x478
+  [  283.120968]  kthread+0xf8/0x110
+  [  283.124110]  ret_from_fork+0x10/0x20
+  [  283.127690] Code: aa1e03e3 aa1603e1 52800400 97e57332 (b94002d8)
+  [  283.133784] ---[ end trace 0000000000000000 ]---
+  ```

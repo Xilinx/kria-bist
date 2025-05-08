@@ -28,7 +28,7 @@ Test Updates:
 Documentation:
 
   * Updated for compatibility with Ubuntu 24.04.
-  * Added a known issue related to Ethernet Test.
+  * Added known issues specific to Ubuntu 24.04.
 
 ### Version - v1.1
 

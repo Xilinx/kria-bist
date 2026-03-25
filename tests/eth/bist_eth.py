@@ -24,7 +24,7 @@ def eth_get_interface_speed(phy_addr, logger):
             float: Max speed in Gb/s
     """
     # Get list of eth interfaces
-    interface_list = [interface for interface in netifaces.interfaces() if "eth" in interface]
+    interface_list = [interface for interface in netifaces.interfaces() if interface.startswith(("eth", "end"))]
 
     # Check for SFP case where PHY address is None
     if phy_addr is None:

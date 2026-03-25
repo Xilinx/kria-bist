@@ -6,7 +6,6 @@ import signal
 import subprocess
 import netifaces
 import ipaddress
-from ping3 import ping
 import glob
 from time import sleep
 import re
@@ -157,13 +156,24 @@ def run_eth_ping_test(label, phy_addr, helpers):
         return False
 
     logger.info("Pinging remote host " + host_ip)
-    ping_result = ping(host_ip, interface=eth_interface)
-    logger.info("Delay: " + str(ping_result))
-
-    # ping returns delay if successful, False otherwise
-    if ping_result:
+    # ping command, send 5 continual pings to host_ip from eth_interface
+    ping_cmd = f"ping -I {eth_interface} -c 5 {host_ip}"
+    logger.debug("Ping command: %s", ping_cmd)
+    try:
+        process = subprocess.Popen(ping_cmd.split(' '), stdout=subprocess.PIPE)
+        stdout, stderr = process.communicate(timeout=10)
+        ping_output = stdout.decode('utf8')
+        logger.debug(ping_output)
+    except subprocess.TimeoutExpired as e:
+        logger.error("Ping command timed out after " + str(e.timeout) + " seconds.")
+        logger.error("Please check log file for detailed error")
+        os.kill(process.pid, signal.SIGKILL)
+        return False
+    if process.returncode == 0:
+        logger.info("Ping successful")
         return True
     else:
+        logger.error("Please check if BIST_REMOTE_HOST_IP set is correct and setup is correct. Please check log file for detailed error")
         return False
 
 

@@ -4,6 +4,7 @@
 # Import the 'modules' that are required for test cases execution
 import pytest
 from bist_display import *
+from bist_display_config import device_config
 
 
 @pytest.mark.display
@@ -22,9 +23,10 @@ def test_display(id, helpers):
         # Funtion call to Test DP connectivity
         test_result = run_display_connectivity_test(label, display_device, helpers)
     elif label == 'display_modetest':
+        display_device_config = device_config[display_device]
         fmt = (id["fmt"])
         # Function call to Test Modetest
-        test_result = run_display_modetest(label, display_device, fmt, helpers)
+        test_result = run_display_modetest(label, display_device_config, fmt, helpers)
     else:
         assert False
 

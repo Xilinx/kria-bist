@@ -182,17 +182,20 @@ def run_modetest_pipeline(plane_id, fmt, driver_name, logger):
     return ret_val
 
 
-def run_display_connectivity_test(label, display_device, helpers):
+def run_display_connectivity_test(label, display_device_config, helpers):
     """
     DP Connectivity Test
 
     Args:
             label: Label for Interface under test
-            display_device: DP name of display device
+            display_device_config: Display Device config descriptor
             helpers: Handle for logging
     """
     logger = helpers.logger_init(label)
     logger.start_test()
+    # Fetch DT node from config
+    display_device = display_device_config.get("dt_node")
+    logger.debug("Display Device Node: " + display_device)
     # Function call to get Display status,property/key
     status = get_display_status(display_device)
     edid_value = get_display_property_key('EDID', 'value', display_device)

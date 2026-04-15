@@ -19,11 +19,11 @@ def test_display(id, helpers):
     # Parse the configurations
     label = (id["label"])
     display_device = (id["display_device"])
+    display_device_config = device_config[display_device]
     if label == 'display_connectivity':
         # Funtion call to Test DP connectivity
-        test_result = run_display_connectivity_test(label, display_device, helpers)
+        test_result = run_display_connectivity_test(label, display_device_config, helpers)
     elif label == 'display_modetest':
-        display_device_config = device_config[display_device]
         fmt = (id["fmt"])
         # Function call to Test Modetest
         test_result = run_display_modetest(label, display_device_config, fmt, helpers)

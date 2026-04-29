@@ -6,7 +6,7 @@ supported_boards = {
         {
             'label': 'ina260_current',
             'device': 'ina260',
-            'channel': 'current0',
+            'channel': 'curr1',
             'min_current': 750,
             'max_current': 1050
         }
@@ -16,7 +16,7 @@ supported_boards = {
         {
             'label': 'ina260_current',
             'device': 'ina260',
-            'channel': 'current0',
+            'channel': 'curr1',
             'min_current': 850,
             'max_current': 1250
         }
@@ -26,7 +26,7 @@ supported_boards = {
         {
             'label': 'ina260_current',
             'device': 'ina260',
-            'channel': 'current0',
+            'channel': 'curr1',
             'min_current': 350,
             'max_current': 650
         }

@@ -51,6 +51,13 @@ def can_node_initialize(can_channel, buffer_length, baudrate, logger):
     Returns:
         can_bus: CAN device bus object
     """
+    # Ensure interface is down before configuring
+    set_can_down_result = subprocess.run(["ip", "link", "set", can_channel, "down"], capture_output=True, text=True)
+    if set_can_down_result.returncode:
+        logger.error(f"Error setting {can_channel} interface state: down")
+        return None
+    logger.debug(f"CAN interface {can_channel} is set to state: down")
+
     # Set baudrate for the can interface
     can_baudrate_cmd = ["ip", "link", "set", can_channel, "type", "can", "bitrate", str(baudrate)]
     set_baudrate_result = subprocess.run(can_baudrate_cmd, capture_output=True, text=True)
@@ -58,18 +65,21 @@ def can_node_initialize(can_channel, buffer_length, baudrate, logger):
         logger.error(f"Error setting baudrate for node: {can_channel}")
         return None  
     logger.debug(f"Baudrate of {can_channel} set to {baudrate}")
+
     # Set transmit buffer length
     set_txbuffer_result = subprocess.run(["ifconfig", can_channel, "txqueuelen",  str(buffer_length)], capture_output=True, text=True)
     if set_txbuffer_result.returncode:
         logger.error(f"Error setting {can_channel} transmit buffer length: {buffer_length}")
         return None
     logger.debug(f"Transmit queue length of {can_channel} set to {buffer_length}")
+
     # Set CAN node to state 'up'
-    set_can_result = subprocess.run(["ip", "link", "set", can_channel, "up"], capture_output=True, text=True)
-    if set_can_result.returncode:
+    set_can_up_result = subprocess.run(["ip", "link", "set", can_channel, "up"], capture_output=True, text=True)
+    if set_can_up_result.returncode:
         logger.error(f"Error setting {can_channel} interface state: up")
         return None
     logger.debug(f"CAN interface {can_channel} is set to state: up")
+
     try:
         bus = can.interface.Bus(channel=can_channel, interface='socketcan', bitrate=baudrate)
         logger.debug(f"Initialized node {can_channel}")
@@ -143,8 +153,8 @@ def can_node_shutdown(can_bus, can_channel, logger):
     except can.CanError as e:
         logger.error(f"Error shutting down CAN node {can_channel} - {e}")
     # Set CAN node to state 'down'
-    set_can_result = subprocess.run(["ip", "link", "set", can_channel, "down"], capture_output=True, text=True)
-    if set_can_result.returncode:
+    set_can_down_result = subprocess.run(["ip", "link", "set", can_channel, "down"], capture_output=True, text=True)
+    if set_can_down_result.returncode:
         logger.error(f"Error setting {can_channel} interface state: down")
     logger.debug(f"CAN interface {can_channel} is set to state: down")
 

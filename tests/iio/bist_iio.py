@@ -26,9 +26,7 @@ def run_ina260_current_test(label, device_name, channel_name, min_current, max_c
         logger.test_failed()
         logger.stop_test()
         return False
-    raw = float(channel.attrs["raw"].value)
-    scale = float(channel.attrs["scale"].value)
-    current = raw * scale
+    current = float(channel.attrs["input"].value)
 
     # Check if current is within range
     if current >= min_current and current <= max_current:

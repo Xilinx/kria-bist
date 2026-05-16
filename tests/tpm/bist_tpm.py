@@ -131,24 +131,71 @@ def tpm_pcrread(pcr_banks, sha, logger):
     logger.debug("pcr_data: " + str(pcr_data))
     return pcr_data
 
+def tpm_pcrread_map(pcr_banks, hash_algorithm, logger):
+    """Read PCR values and return a mapping of PCR index to hex value"""
+    cmd = f"tpm2_pcrread sha{hash_algorithm}:{pcr_banks}"
+    logger.info("Running " + cmd)
+    ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True)
+    if ret.returncode:
+        logger.error(cmd + " failed with return code: " + str(ret.returncode))
+        return {}
+
+    output = ret.stdout
+    if not output:
+        logger.error("Failed to read PCR values")
+        return {}
+
+    pcr_values = {}
+    for line in output.splitlines():
+        match = re.match(r'^\s*(\d+)\s*:\s*(?:0x)?([0-9A-Fa-f]+)\s*$', line)
+        if match:
+            pcr_index = int(match.group(1))
+            pcr_values[pcr_index] = "0x" + match.group(2).lower()
+
+    return pcr_values
+
 def run_tpm2_pcrread_test(label, helpers):
     """Verify that tpm2_pcrread can read PCR registers"""
     logger = helpers.logger_init(label)
     logger.start_test()
 
-    # PCRs 0-16 should read 0 for both hash algorithms
+    # EFI boot flow:
+    # - PCR values are extended during boot (non-zero)
+    # - PCR 9 and PCR 12 are expected to match
     hash_algorithms = ['1', '256']
-    pcr_banks = '0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16'
+    pcr_banks = '9,12'
 
     for sha in hash_algorithms:
-        output = tpm_pcrread(pcr_banks, sha, logger)
-        if not output:
-            logger.error("Failed to read PCR registers")
+        # Parse PCR output into a dict, keyed by PCR index for robust access
+        pcr_values = tpm_pcrread_map(pcr_banks, sha, logger)
+        if not pcr_values:
+            logger.error("Failed to read PCR 9 and PCR 12")
             return False
-        for val in output:
-            if val != 0:
-                logger.error("PCR register values are not 0 as expected")
-                return False
+
+        # Fetch PCR 9 and PCR 12 by index
+        # Per TCG EFI Platform Specification and systemd-boot behavior:
+        # - PCR 9 (OS Loader Loaded Components): extended with kernel command line
+        # - PCR 12 (OS Boot Configuration): extended with kernel command line (UTF-16)
+        # Both are extended with the same data by systemd-boot, so they are expected to match
+        pcr9 = pcr_values.get(9)
+        pcr12 = pcr_values.get(12)
+        if pcr9 is None or pcr12 is None:
+            logger.error(
+                f"Failed to read expected PCR values for sha{sha}: "
+                f"PCR9={pcr9}, PCR12={pcr12}"
+            )
+            return False
+
+        logger.debug(f"sha{sha} PCR9: {pcr9}")
+        logger.debug(f"sha{sha} PCR12: {pcr12}")
+
+        if pcr9 != pcr12:
+            logger.error(
+                f"PCR mismatch for sha{sha}: PCR9={pcr9}, PCR12={pcr12}"
+            )
+            return False
+
+    logger.info("PCR 9 and PCR 12 match for both sha1 and sha256")
     return True
 
 def tpm_pcrextend(pcr_register, hash_algorithm, sha_data, logger):

@@ -4,6 +4,39 @@
 import subprocess
 import os
 import re
+import stat
+
+_TPM2_ENV_CACHE = None
+
+def _tpm2_env():
+    """Return an os.environ copy with TPM2TOOLS_TCTI pinned to the
+    on-board kernel TPM device. Cached after the first call.
+
+    Selects /dev/tpmrm0 (kernel resource manager) when available,
+    falling back to /dev/tpm0 for systems without TPM2 RM support.
+    Raises RuntimeError if no TPM character device is present so
+    callers fail fast instead of falling back to the compiled-in
+    tpm2-tools default (which is swtpm on most distros and produces
+    a misleading 'connection refused 127.0.0.1:2321' error).
+    """
+    global _TPM2_ENV_CACHE
+    if _TPM2_ENV_CACHE is not None:
+        return _TPM2_ENV_CACHE
+    for dev in ("/dev/tpmrm0", "/dev/tpm0"):
+        try:
+            if stat.S_ISCHR(os.stat(dev).st_mode):
+                env = os.environ.copy()
+                env["TPM2TOOLS_TCTI"] = f"device:{dev}"
+                _TPM2_ENV_CACHE = env
+                return _TPM2_ENV_CACHE
+        except FileNotFoundError:
+            continue
+    raise RuntimeError(
+        "No on-board TPM device found (looked for /dev/tpmrm0 and "
+        "/dev/tpm0). Refusing to run TPM tests against the tpm2-tools "
+        "default TCTI (which is swtpm on most distros and would "
+        "produce a misleading connection-refused error)."
+    )
 
 def run_tpm2_getcap_test(label, helpers):
     """List all capabilities and verify expected capabilities"""
@@ -27,7 +60,7 @@ def run_tpm2_getcap_test(label, helpers):
         "handles-loaded-session",
         "handles-saved-session",
     ]
-    ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True)
+    ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True, env=_tpm2_env())
     if ret.returncode:
         logger.error("Failed to run " + cmd)
         return False
@@ -49,7 +82,7 @@ def run_tpm2_selftest_test(label, helpers):
 
     cmd = "tpm2_selftest"
     logger.info("Running " + cmd)
-    ret = subprocess.run(cmd, check=True)
+    ret = subprocess.run(cmd, check=True, env=_tpm2_env())
     if ret.returncode:
         logger.error(cmd + " failed with return code: " + ret)
         return False
@@ -67,7 +100,7 @@ def run_tpm2_getrandom_test(label, helpers):
     random_data = []
     # Generate 10 hash keys
     for i in range(10):
-        ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True)
+        ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True, env=_tpm2_env())
         if ret.returncode:
             logger.error(cmd + " failed with return code: " + ret)
             return False
@@ -96,7 +129,7 @@ def run_tpm2_hash_test(label, helpers):
 
     cmd = "tpm2_hash " + output_dir + "/" + test_file_name + " --hex"
     logger.info("Running " + cmd)
-    ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True)
+    ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True, env=_tpm2_env())
     if ret.returncode:
         logger.error(cmd + " failed with return code: " + ret)
         return False
@@ -118,7 +151,7 @@ def tpm_pcrread(pcr_banks, sha, logger):
     """Helper function to read PCR registers"""
     cmd = "tpm2_pcrread sha" + sha + ":" + pcr_banks
     logger.info("Running " + cmd)
-    ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True)
+    ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True, env=_tpm2_env())
     if ret.returncode:
         logger.error(cmd + " failed with return code: " + ret)
         return False
@@ -135,7 +168,7 @@ def tpm_pcrread_map(pcr_banks, hash_algorithm, logger):
     """Read PCR values and return a mapping of PCR index to hex value"""
     cmd = f"tpm2_pcrread sha{hash_algorithm}:{pcr_banks}"
     logger.info("Running " + cmd)
-    ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True)
+    ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True, env=_tpm2_env())
     if ret.returncode:
         logger.error(cmd + " failed with return code: " + str(ret.returncode))
         return {}
@@ -202,7 +235,7 @@ def tpm_pcrextend(pcr_register, hash_algorithm, sha_data, logger):
     """Helper function to extend PCR register"""
     cmd = "tpm2_pcrextend " + pcr_register + ":sha" + hash_algorithm + "=" + sha_data
     logger.info("Running " + cmd)
-    ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True)
+    ret = subprocess.run(cmd.split(' '), check=True, capture_output=True, text=True, env=_tpm2_env())
     if ret.returncode:
         logger.error(cmd + " failed with return code: " + ret)
         return False
@@ -264,7 +297,7 @@ def run_tpm2_pcrreset_test(label, helpers):
             return False
         cmd = "tpm2_pcrreset " + pcr_register
         logger.info("Running " + cmd)
-        ret = subprocess.run(cmd.split(' '), check=True)
+        ret = subprocess.run(cmd.split(' '), check=True, env=_tpm2_env())
         if ret.returncode:
             logger.error(cmd + " failed with return code: " + ret)
             return False

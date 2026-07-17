@@ -55,11 +55,11 @@ mapping for the test labels to the two USB ports is given below:
 Example commands for this module are provided below (KV260):
 
 ```bash
-pytest-3 --board kv260 -m disk  // Run all tests in this module
-pytest-3 --board kv260 -k usb1_read_performance  // Run read performance test for USB1 port
-pytest-3 --board kv260 -k usb1_write_performance  // Run write performance test for USB1 port
-pytest-3 --board kv260 -k sd_read_performance  // Run read performance test for SD port
-pytest-3 --board kv260 -k sd_write_performance  // Run write performance test for SD port
+pytest --board kv260 -m disk  # Run all tests in this module
+pytest --board kv260 -k usb1_read_performance  # Run read performance test for USB1 port
+pytest --board kv260 -k usb1_write_performance  # Run write performance test for USB1 port
+pytest --board kv260 -k sd_read_performance  # Run read performance test for SD port
+pytest --board kv260 -k sd_write_performance  # Run write performance test for SD port
 ```
 
 For each interface, the test prints out the device path, speed standard of the device

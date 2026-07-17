@@ -35,9 +35,9 @@ shutdown using can_node_shutdown().
 The example commands for this module are provided below:
 
 ```bash
-pytest-3 --board kd240 -m can  // Run all tests in this module
-pytest-3 --board kd240 -k can_bus_send  // Run CAN message transmitter functional test
-pytest-3 --board kd240 -k can_bus_receive  // Run CAN message receiver functional test
+pytest --board kd240 -m can  # Run all tests in this module
+pytest --board kd240 -k can_bus_send  # Run CAN message transmitter functional test
+pytest --board kd240 -k can_bus_receive  # Run CAN message receiver functional test
 ```
 
 The CAN functional test prints the CAN node enumeration of the form canX for transmitter

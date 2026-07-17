@@ -25,9 +25,9 @@ The config parameters for each test are described below:
 The example commands for this module are provided below (KV260):
 
 ```bash
-pytest-3 --board kv260 -m eeprom		// Run all tests in this module
-pytest-3 --board kv260 -k som_eeprom		// Run som_eeprom test
-pytest-3 --board kv260 -k carrier_card_eeprom	// Run carrier_card_eeprom test
+pytest --board kv260 -m eeprom		# Run all tests in this module
+pytest --board kv260 -k som_eeprom		# Run som_eeprom test
+pytest --board kv260 -k carrier_card_eeprom	# Run carrier_card_eeprom test
 ```
 
 These tests print out all the FRU Data and each test is pass if the

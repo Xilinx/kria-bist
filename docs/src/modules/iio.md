@@ -23,8 +23,8 @@ The config parameters for this test are described below:
 The example commands for this module are provided below (KV260):
 
 ```bash
-pytest-3 --board kv260 -m iio			// Run all tests in this module
-pytest-3 --board kv260 -k ina260_current	// Run ina260_current test
+pytest --board kv260 -m iio			# Run all tests in this module
+pytest --board kv260 -k ina260_current	# Run ina260_current test
 ```
 
 This test prints out the measured value and passes if it is within the

@@ -29,9 +29,9 @@ one has a separate function. The tests are described below.
 The example commands for this module are provided below (KV260):
 
 ```bash
-pytest-3 --board kv260 -m tpm			// Run all tests in this module
-pytest-3 --board kv260 -k tpm2_getcap		// Run tpm2_getcap test
-pytest-3 --board kv260 -k tpm2_hash		// Run tpm2_hash test
+pytest --board kv260 -m tpm			# Run all tests in this module
+pytest --board kv260 -k tpm2_getcap		# Run tpm2_getcap test
+pytest --board kv260 -k tpm2_hash		# Run tpm2_hash test
 ```
 
 Each test prints out the log messages that include the command that is run by

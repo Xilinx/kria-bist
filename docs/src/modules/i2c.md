@@ -24,10 +24,10 @@ The config parameters for the test are described below:
 The example commands for this module are provided below (KV260):
 
 ```bash
-pytest-3 --board kv260 -m i2c  // Run all tests in this module
-pytest-3 --board kv260 -k ps_i2c_bus_main  // Run i2c device detect test for PS I2C main bus
-pytest-3 --board kv260 -k axi_i2c_bus_main  // Run i2c device detect test for AXI I2C main bus
-pytest-3 --board kv260 -k axi_i2c_bus_ch0  // Run i2c device detect test for AXI I2C bus mux channel 0
+pytest --board kv260 -m i2c  # Run all tests in this module
+pytest --board kv260 -k ps_i2c_bus_main  # Run i2c device detect test for PS I2C main bus
+pytest --board kv260 -k axi_i2c_bus_main  # Run i2c device detect test for AXI I2C main bus
+pytest --board kv260 -k axi_i2c_bus_ch0  # Run i2c device detect test for AXI I2C bus mux channel 0
 ```
 
 For each bus passed as label, the test prints out message indicating all i2c devices are detected

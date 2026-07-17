@@ -57,13 +57,13 @@ Pattern to be observed in ximageink tests:
 The example commands for this module are provided below (KV260):
 
 ```bash
-pytest-3 --board kv260 -m video                       // Run all tests in this module
-pytest-3 --board kv260 -k imx219_perf	               // Run imx219_perf test
-pytest-3 --board kv260 -k imx219_filesink             // Run imx219_filesink test
-pytest-3 --board kv260 -k ar1335_ap1302_ximagesink    // Run ar1335_ap1302_ximagesink test
-pytest-3 --board kv260 -k perf -m video               // Run all performance tests in this module
-pytest-3 --board kv260 -k filesink -m video           // Run all filesink tests in this module
-pytest-3 --board kv260 -k ximagesink -m video         // Run all ximagesink tests in this module
+pytest --board kv260 -m video                       # Run all tests in this module
+pytest --board kv260 -k imx219_perf	               # Run imx219_perf test
+pytest --board kv260 -k imx219_filesink             # Run imx219_filesink test
+pytest --board kv260 -k ar1335_ap1302_ximagesink    # Run ar1335_ap1302_ximagesink test
+pytest --board kv260 -k perf -m video               # Run all performance tests in this module
+pytest --board kv260 -k filesink -m video           # Run all filesink tests in this module
+pytest --board kv260 -k ximagesink -m video         # Run all ximagesink tests in this module
 ```
 For the perf tests, the logs should have a comparison between actual_fps and
 target_fps. For a pass, it should be within the accepted percentage range.

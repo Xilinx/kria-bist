@@ -5,10 +5,29 @@
 This document shows how to set up the board and run the Built-In Self Test
 (BIST) application.
 
-This guide and its prebuilts are targeted for Ubuntu 24.04 and AMD 2024.1
+This guide and its prebuilts are targeted for AMD EDF 26.06 and AMD 2026.1
 toolchain.
 
 ## Revision History
+
+### Version - v1.3
+
+Refreshed app for AMD EDF 26.06 compatibility with updates across test files and documentation.
+
+#### Change Log
+
+Test Updates:
+
+  * CAN: Ensure interface is down before configuration
+  * Ethernet: Replaced python3-ping3 dependency with system ping and included endX interfaces in filtering
+  * Display: Unified config structure and now detects active display driver via sysfs
+  * TPM: Updated PCR validation for EFI boot flow and explicitly select kernel TPM device for all tpm2-tools calls
+  * Video: Updated Golden Images for filesink tests(No functional change in the tests)
+  * IIO: Updated to use new hwmon-style interface exposed by the newer kernel.
+
+Documentation:
+
+  * Updated for compatibility with AMD EDF 26.06
 
 ### Version - v1.2
 
@@ -85,7 +104,7 @@ the full suite of hardware tests. See the board specific pages:
 
 1. [KV260 Board Setup](setup_kv260.md)
 2. [KR260 Board Setup](setup_kr260.md)
-2. [KD240 Board Setup](setup_kd240.md)
+3. [KD240 Board Setup](setup_kd240.md)
 
 
 ## Tested Artifacts
@@ -96,25 +115,25 @@ Testing was performed with the following artifacts:
 
 | Component                | Version              |
 |--------------------------|----------------------|
-| Boot Fiwmare             | K24-BootFW-01.04.bin |
-| Linux Kernel             | 6.8.0-1015           |
-| xlnx-firmware-kd240-bist | 1.0-0xlnx1           |
+| Boot Firmware            | K24-BootFW-01.06.bin |
+| Linux Kernel             | 6.18.10              |
+| kd240-bist-firmware      | v1.2                 |
 
 ### KR260 platform artifacts
 
 | Component                | Version                |
 |--------------------------|------------------------|
-| Boot Firmware            | K26-BootFW-01.04.bin   |
-| Linux Kernel             | 6.8.0-1015             |
-| xlnx-firmware-kr260-bist | 1.0.1-0xlnx1           |
+| Boot Firmware            | K26-BootFW-01.07.bin   |
+| Linux Kernel             | 6.18.10                |
+| kr260-bist-firmware      | v1.2                   |
 
 ### KV260 platform artifacts
 
 | Component                | Version              |
 |--------------------------|----------------------|
-| Boot Firmware            | K26-BootFW-01.04.bin |
-| Linux Kernel             | 6.8.0-1015           |
-| xlnx-firmware-kv260-bist | 1.0-0xlnx1           |
+| Boot Firmware            | K26-BootFW-01.07.bin |
+| Linux Kernel             | 6.18.10              |
+| kv260-bist-firmware      | v1.2                 |
 
 Please refer to the [Kria Wiki](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/3020685316/Kria+SOM+Boot+Firmware+Update#K26-Boot-Firmware-Updates)
 to obtain latest linux image and boot firmware.
@@ -123,7 +142,7 @@ to obtain latest linux image and boot firmware.
 
 | Docker Image              | Version              |
 |---------------------------|--------------------- |
-| xilinx/kria-bist          | 1.2-noble-24.04      |
+| xilinx/kria-bist          | 1.3-edf-26.06        |
 
 ## Boot Linux
 
@@ -134,40 +153,68 @@ done so, boot Linux with instructions from:
   2. [Kria Starter Kit Linux Boot on KR260](https://xilinx.github.io/kria-apps-docs/kr260/build/html/docs/linux_boot.html)
   3. [Kria Starter Kit Linux Boot on KD240](https://xilinx.github.io/kria-apps-docs/kd240/linux_boot.html)
 
-## Download and Load the BIST PL Firmware
+## Download BIST Docker Image
 
-* Install firmware binaries.
+* Pull the docker image
 
   ```bash
-  sudo apt install xlnx-firmware-kv260-bist     // For kv260-bist
-  sudo apt install xlnx-firmware-kr260-bist     // For kr260-bist
-  sudo apt install xlnx-firmware-kd240-bist     // For kd240-bist
+  sudo docker pull xilinx/kria-bist:1.3-edf-26.06
   ```
 
-* List the installed the application firmware binaries.
-
-  The firmware consists of bitstream, device tree overlay (dtbo) file. The
-  firmware is loaded dynamically on user request once Linux is fully booted.
-  The xmutil utility can be used for that purpose.
-
-  After installing the FW, execute xmutil listapps to verify that it is
-  captured under the listapps function, and to have dfx-mgrd, re-scan and
-  register all accelerators in the firmware directory tree.
+* The storage volume on the SD card can be limited with multiple docker
+  images installed. If there are space issues, use the following command
+  to remove existing docker images.
 
   ```bash
-  sudo xmutil listapps
+  sudo docker rmi --force <image>
   ```
 
-* Load a new application firmware binary.
-
-  When there is already another accelerator/firmware being activated, unload it
-  first, then load the desired BIST firmware.
+* You can find the images installed with the following command:
 
   ```bash
-  sudo xmutil unloadapp
-  sudo xmutil loadapp kv260-bist      // For kv260-bist
-  sudo xmutil loadapp kr260-bist      // For kr260-bist
-  sudo xmutil loadapp kd240-bist      // For kd240-bist
+  sudo docker images
+  ```
+
+* This docker image is common across all three boards which contains kria-bist application, board firmwares, dependent packages, kernel modules and libraries including motor control library for kria motor control for KD240.
+  * [Container Recipe](https://github.com/AMD-AECG-SSW-PUBLIC/meta-kria-apps/blob/main/recipes-containers/container-kria-bist/container-kria-bist.bb)
+
+## Install BIST PL Firmware on the Host
+
+Copy and install the application firmware from the container into the host system (in /lib/firmware/Xilinx). This installation only needs to be performed once per target board.
+
+* Export the FW_NAME Environment Variable. Set FW_NAME variable to correct firmware for desired board
+
+  ```bash
+  export FW_NAME=kv260-bist      #For kv260-bist
+  export FW_NAME=kr260-bist      #For kr260-bist
+  export FW_NAME=kd240-bist      #For kd240-bist
+  ```
+
+* Create Firmware directory on target Host
+
+  ```bash
+  sudo mkdir -p /lib/firmware/xilinx/${FW_NAME}
+  ```
+
+* Install BIST firmware for **KR260/KD240**
+
+  ```bash
+  sudo docker run --rm \
+      -v /lib/firmware/xilinx/${FW_NAME}:/opt/firmware/xilinx/${FW_NAME} \
+      xilinx/kria-bist:1.3-edf-26.06 sh -c "
+      dfx-fw-install     --fw-name ${FW_NAME}"
+  ```
+
+* Install BIST firmware for **KV260** which requires an additional ap1302 firmware installation
+
+  ```bash
+  sudo docker run --rm \
+      -v /lib/firmware/xilinx/${FW_NAME}:/opt/firmware/xilinx/${FW_NAME} \
+      -v /lib/firmware:/opt/firmware/xilinx/ap1302 \
+      xilinx/kria-bist:1.3-edf-26.06 sh -c "
+      dfx-fw-install     --fw-name ${FW_NAME} &&
+      dfx-fw-install --fw-name ap1302 --src /lib/firmware/ap1302 \
+      "
   ```
 
 ## Setup SSH with X-forwarding
@@ -184,7 +231,7 @@ fail
   * On Host, run:
 
     ```bash
-    ssh -X ubuntu@<Kria Starter Kit IP address>
+    ssh -X amd-edf@<Kria Starter Kit IP address>
     ```
     **NOTE**: If all ethernet cables are plugged in, feel free to use any IP.
 
@@ -194,11 +241,15 @@ fail
 ## Miscellaneous Preparation
 
 * Verify if the SSH terminal is using the correct authority file.
-  * The output should look something like this.
+  * Install xauth application package
+  ```bash
+  sudo dnf install xauth
+  ```
+  * The Xauthority output should look something like this.
    ```bash
    xauth -v list
-   Using authority file /home/ubuntu/.Xauthority
-   kria/unix:10  MIT-MAGIC-COOKIE-1  f5212118305f75678a69daa4a6eda703
+   Using authority file /home/amd-edf/.Xauthority
+   amd-edf/unix:11  MIT-MAGIC-COOKIE-1  dac917db82c1ae575d74e94b44e75aba
    ```
    * If incorrect or no authority file is present, do the following steps:
    ```bash
@@ -221,27 +272,11 @@ fail
 
 * On KV260/KR260 disable desktop environment before running the docker 
   for the display testing to function as intended. On KD240 this step can be 
-  skipped as we are using a headless Ubuntu Server image.
+  skipped as we are using a headless Server image.
 
-  * Check if default target is set to `graphical.target`
-
-    ```bash
-    sudo systemctl get-default
-    ```
-
-  * If above command returns `graphical.target`, set default target to multi-user.
-  This step is to ensure that by default we always start without Ubuntu display
-  manager.
-
-    ```bash
-    sudo systemctl set-default multi-user.target
-    ```
-
-  * Reboot the system for the change to take effect.
-
-    ```bash
-    sudo reboot
-    ```
+  ```bash
+    sudo systemctl stop kmsconvt@tty1
+  ```
 
 * Remember to start the fancontrol service after exiting the docker container.
 
@@ -249,68 +284,103 @@ fail
   sudo systemctl start fancontrol
   ```
 
-* After running the application and exiting the docker container, the Ubuntu
-desktop environment can be enabled again.
-
-  * Set default target to graphical. This step is to ensure that by default we
-  always start with an Ubuntu display manager.
-
-    ```bash
-    sudo systemctl set-default graphical.target
-    ```
-
-  * Reboot the system for the change to take effect.
-
-    ```bash
-    sudo reboot
-    ```
-
-
-## Download and Run the BIST Docker Image
-
-* Pull the docker image from dockerhub.
+* After running the application and exiting the docker container, the desktop 
+environment can be enabled again.
 
   ```bash
-  docker pull xilinx/kria-bist:1.2-noble-24.04
+    sudo systemctl start kmsconvt@tty1
   ```
 
-* The storage volume on the SD card can be limited with multiple docker
-  images installed. If there are space issues, use the following command
-  to remove existing docker images.
-
-  ```bash
-  docker rmi --force <image>
-  ```
-
-* You can find the images installed with the following command:
-
-  ```bash
-  docker images
-  ```
+## Run BIST Docker Image
 
 * Launch the docker container using the following command:
 
   ```bash
-  docker run \
-      --env=DISPLAY \
-      --env=XDG_SESSION_TYPE \
+  sudo docker run --rm -it --privileged \
       --net=host \
-      --privileged \
-      --volume=/home/ubuntu/.Xauthority:/root/.Xauthority:rw \
-      -v /tmp:/tmp \
       -v /dev:/dev \
       -v /sys:/sys \
-      -v /etc/vart.conf:/etc/vart.conf \
-      -v /lib/firmware/xilinx:/lib/firmware/xilinx \
-      -v /run:/run \
-      -it xilinx/kria-bist:1.2-noble-24.04 bash
+      --volume=/home/amd-edf/.Xauthority:/root/.Xauthority:rw \
+      -v /var/run/dfx-mgrd.socket:/var/run/dfx-mgrd.socket  \
+      -e DISPLAY -e XDG_SESSION_TYPE \
+      xilinx/kria-bist:1.3-edf-26.06 \
+      /bin/bash
   ```
 
 * It launches the bist image in a new container and drops the user into a bash
   shell.
 
   ```
-  root@xlnx-docker/#
+  bash-5.2#
+  ```
+**NOTE**: Unless otherwise specified, the commands in the following sections are intended to be 
+executed from within the running BIST container.
+
+## Load BIST Firmware and Modules
+
+Before running the test suite, load BIST application firmware and the required kernel modules from as shown below.
+
+* Export the FW_NAME Environment Variable
+
+  ```bash
+  export FW_NAME=kv260-bist      #For kv260-bist
+  export FW_NAME=kr260-bist      #For kr260-bist
+  export FW_NAME=kd240-bist      #For kd240-bist
+  ```
+
+* List the installed application firmware binaries.
+
+  Execute below command to verify that it is captured under the listPackage function, and to have dfx-mgrd, 
+  re-scan and register all accelerators in the firmware directory tree.
+
+  ```bash
+  bash-5.2# dfx-mgr-client -listPackage
+  
+  Example output:
+  ID accelType   Base        slotLoc Accelerator
+  -- ----------- ----------- ------- -----------
+  1 RPU         rpu         -1      k26-r5-0-proxy-freertos
+  2 RPU         rpu         -1      k26-r5-0-matrix-freertos
+  3 RPU         rpu         -1      k26-r5-0-echo-freertos
+  4 XRT_FLAT    k26-star... 0       k26-starter-kits
+  ```
+
+* Load Kernel Modules
+
+  ```bash
+  bash-5.2# kria-modules-load  --fw-name ${FW_NAME}
+  ```
+
+* Load Application Firmware
+
+  When there is already another accelerator/firmware being activated, unload it
+  first, then load the desired BIST firmware.
+
+  ```bash
+  bash-5.2# dfx-mgr-client -unload 4                    #Previous FW ID(in above case)
+  bash-5.2# dfx-mgr-client -loadByName ${FW_NAME}       #Load desired BIST Firmware
+  ```
+  **NOTE**: The firmware consists of bitstream, device tree overlay (dtbo) file. The firmware is 
+  loaded dynamically on user request once Linux is fully booted.
+
+* On KR260 bring down the SFP 10G interface immediately after loading the firmware
+if a setup is not connected to test the peripheral. The reason being, when the link is 
+not connected, the clock becomes unstable, and the block lock register of the XXV IP 
+becomes inaccessible and results in a crash. [Known Issues](known_issues.md)
+
+  * Look for 10G interface after loading the Firmware. Speed should be listed as `10000`
+  ```bash
+  bash-5.2# cd /sys/class/net/
+  bash-5.2# ls
+  docker0  end0  end1  eth0  eth1  eth2  lo  sit0
+
+  bash-5.2# cat eth0/speed
+  10000
+  ```
+
+  * Bring down the interface immediately if a setup is not connected
+  ```bash
+  bash-5.2# ifconfig eth0 down       #eth0 in this case
   ```
 
 ## Setup IP addresses on the Kria board
@@ -342,7 +412,7 @@ cd /opt/xilinx/kria-bist/tests
 Commonly used command line switches for BIST.
 
 ```bash
-pytest-3 [OPTIONS]
+pytest [OPTIONS]
 
 OPTIONS:
   --collect-only                Collect the tests
@@ -364,7 +434,7 @@ The pytest command line output has two separate sessions as follows:
 
   ```bash
   ============================= test session starts ==============================
-  platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+  platform linux -- Python 3.12.12, pytest-8.0.2, pluggy-1.4.0
   rootdir: /opt/xilinx/kria-bist/tests
   configfile: pytest.ini
   collected 34 items / 33 deselected / 1 selected
@@ -408,9 +478,9 @@ The pytest command line output has two separate sessions as follows:
 * Run the entire BIST test suite for a target board.
 
   ```bash
-  pytest-3 --board kv260     // For KV260
-  pytest-3 --board kr260     // For KR260
-  pytest-3 --board kd240     // For KD240
+  pytest --board kv260     #For KV260
+  pytest --board kr260     #For KR260
+  pytest --board kd240     #For KD240
   ```
 
 * Run individual tests.
@@ -418,10 +488,10 @@ The pytest command line output has two separate sessions as follows:
   The following example runs the pmod0 test on the KV260 as target board.
 
   ```bash
-  pytest-3 -k pmod0 --board kv260
+  pytest -k pmod0 --board kv260
 
   ============================= test session starts ==============================
-  platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+  platform linux -- Python 3.12.12, pytest-8.0.2, pluggy-1.4.0
   rootdir: /opt/xilinx/kria-bist/tests
   configfile: pytest.ini
   collected 34 items / 33 deselected / 1 selected
@@ -446,10 +516,10 @@ The pytest command line output has two separate sessions as follows:
   Collect all the tests for a target board.
 
   ```bash
-  pytest-3 --collect-only --board kv260
+  pytest --collect-only --board kv260
 
   ========================== test session starts ===============================
-  platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+  platform linux -- Python 3.12.12, pytest-8.0.2, pluggy-1.4.0
   rootdir: /opt/xilinx/kria-bist/tests
   configfile: pytest.ini
   collected 40 items
@@ -512,10 +582,10 @@ The pytest command line output has two separate sessions as follows:
 * Collect all tests for a specific testmodule for a target board.
 
   ```bash
-  pytest-3 --collect-only --board kv260 -m video
+  pytest --collect-only --board kv260 -m video
 
   ============================= test session starts ==============================
-  platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+  platform linux -- Python 3.12.12, pytest-8.0.2, pluggy-1.4.0
   rootdir: /opt/xilinx/kria-bist/tests
   configfile: pytest.ini
   collected 34 items / 26 deselected / 8 selected
@@ -536,10 +606,10 @@ The pytest command line output has two separate sessions as follows:
 * Run all tests for a target board and the module.
 
   ```bash
-  pytest-3 --board kv260 -m video
+  pytest --board kv260 -m video
 
   ============================= test session starts ==============================
-  platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+  platform linux -- Python 3.12.12, pytest-8.0.2, pluggy-1.4.0
   rootdir: /opt/xilinx/kria-bist/tests
   configfile: pytest.ini
   collected 34 items / 26 deselected / 8 selected

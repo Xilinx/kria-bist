@@ -17,8 +17,7 @@ one has a separate function. The tests are described below.
 * tpm2_getrandom: Gets 10 random hash keys and checks if they are unique.
 * tpm2_hash: Gets the hash of a fixed file and verifies it matches the
   expected hash.
-* tpm2_pcrread: Reads PCR registers 0-16 and verifies that a value of 0 is
-  read for both hash algorithms.
+* tpm2_pcrread: Verifies PCR 9 and PCR 12 contain matching values for EFI boot validation.
 * tpm2_pcrextend: Extends PCR register 23 three times and verifies the has
   value changes each time.
 * tpm2_pcrreset: Extends PCR register 23 then resets it and verifies the value

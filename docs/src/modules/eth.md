@@ -73,10 +73,10 @@ below:
 The example commands for this module are provided below (KR260):
 
 ```bash
-pytest-3 --board kr260 -m eth			// Run all tests in this module
-pytest-3 --board kr260 -k ethernet1_ping	// Run ethernet1_ping test
-pytest-3 --board kr260 -k ping			// Run all ping tests
-pytest-3 --board kr260 -k perf			// Run all perf tests
+pytest --board kr260 -m eth			# Run all tests in this module
+pytest --board kr260 -k ethernet1_ping	# Run ethernet1_ping test
+pytest --board kr260 -k ping			# Run all ping tests
+pytest --board kr260 -k perf			# Run all perf tests
 ```
 For each interface, the ping test prints out the delay and the test is a
 pass if the ping is successful. The perf test prints out the measured

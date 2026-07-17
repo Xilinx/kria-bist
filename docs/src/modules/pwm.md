@@ -19,8 +19,8 @@ speed and if you confirm, the test passes. If at any point in this flow, you ind
 The example commands for this module are provided below (KV260):
 
 ```bash
-pytest-3 --board kv260 -m pwm		// Run all tests in this module
-pytest-3 --board kv260 -k fan		// Run fan test
+pytest --board kv260 -m pwm		# Run all tests in this module
+pytest --board kv260 -k fan		# Run fan test
 ```
 
 ## Test Debug

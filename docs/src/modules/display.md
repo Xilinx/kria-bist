@@ -41,8 +41,8 @@ The config parameters for each test are described below:
 The example commands for this module are provided below (KV260):
 
 ```bash
-pytest-3 --board kv260 -m display                // Run all tests in this module
-pytest-3 --board kv260 -k display_modetest       // Run display_modetest test
+pytest --board kv260 -m display                # Run all tests in this module
+pytest --board kv260 -k display_modetest       # Run display_modetest test
 ```
 Each test prints out the log messages that include the readings or a question
 and User Input(for User Validating test) and the final test result. The 

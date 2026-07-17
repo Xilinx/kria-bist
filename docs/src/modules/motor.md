@@ -99,14 +99,14 @@ If a dependency test fails, the main test is aborted.
 The example commands for this module are provided below (KD240):
 
 ```bash
-pytest-3 --board kd240 -m motor  // Run all tests in this module
-pytest-3 --board kd240 -k qei_gate_drive_test  // Run QEI interface test in 'Speed' mode
-pytest-3 --board kd240 -k volt_adc_fb_modeoff_test  // Run motor voltage ADC feedback test in 'Off' mode
-pytest-3 --board kd240 -k volt_adc_fb_modeopenloop_test  // Run motor voltage ADC feedback test in 'Open Loop' mode
-pytest-3 --board kd240 -k curr_adc_fb_modeoff_test  // Run motor current ADC feedback test in 'Off' mode
-pytest-3 --board kd240 -k curr_adc_fb_modeopenloop_test  // Run motor current ADC feedback test in 'Open Loop' mode
-pytest-3 --board kd240 -k dc_link_volt_adc_fb_test  // Run DC link voltage ADC feedback test in 'Off' mode
-pytest-3 --board kd240 -k dc_link_curr_adc_fb_test  // Run DC link current ADC feedback test in 'Off' mode
+pytest --board kd240 -m motor  # Run all tests in this module
+pytest --board kd240 -k qei_gate_drive_test  # Run QEI interface test in 'Speed' mode
+pytest --board kd240 -k volt_adc_fb_modeoff_test  # Run motor voltage ADC feedback test in 'Off' mode
+pytest --board kd240 -k volt_adc_fb_modeopenloop_test  # Run motor voltage ADC feedback test in 'Open Loop' mode
+pytest --board kd240 -k curr_adc_fb_modeoff_test  # Run motor current ADC feedback test in 'Off' mode
+pytest --board kd240 -k curr_adc_fb_modeopenloop_test  # Run motor current ADC feedback test in 'Open Loop' mode
+pytest --board kd240 -k dc_link_volt_adc_fb_test  # Run DC link voltage ADC feedback test in 'Off' mode
+pytest --board kd240 -k dc_link_curr_adc_fb_test  # Run DC link current ADC feedback test in 'Off' mode
 ```
 
 The test prints out the messages indicating the motor mode and readings of the motor object for each test.

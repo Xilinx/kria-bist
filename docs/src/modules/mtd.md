@@ -42,10 +42,10 @@ get_qspi_read_performance() functions and the result is logged by log_disk_perfo
 The example commands for this module are provided below (KV260):
 
 ```bash
-pytest-3 --board kv260 -m mtd  // Run all tests in this module
-pytest-3 --board kv260 -k qspi_read_write  // Run QSPI read and write functional test
-pytest-3 --board kv260 -k qspi_read_performance  // Run QSPI read performance test
-pytest-3 --board kv260 -k qspi_write_performance  // Run QSPI write performance test
+pytest --board kv260 -m mtd  # Run all tests in this module
+pytest --board kv260 -k qspi_read_write  # Run QSPI read and write functional test
+pytest --board kv260 -k qspi_read_performance  # Run QSPI read performance test
+pytest --board kv260 -k qspi_write_performance  # Run QSPI write performance test
 ```
 
 The QSPI read and write functional test prints the MTD User partition and its size along

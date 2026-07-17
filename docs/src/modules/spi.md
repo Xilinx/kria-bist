@@ -32,9 +32,9 @@ sequence for reading the inbuilt temperature raw value is sent to the SPI device
 The example commands for this module are provided below:
 
 ```bash
-pytest-3 --board kd240 -m spi  // Run all tests in this module
-pytest-3 --board kd240 -k ad7797_torque_sensor_id_read  // Run Torque sensor ID read test
-pytest-3 --board kd240 -k ad7797_torque_sensor_temperature_read  // Run Torque sensor temperature read test
+pytest --board kd240 -m spi  # Run all tests in this module
+pytest --board kd240 -k ad7797_torque_sensor_id_read  # Run Torque sensor ID read test
+pytest --board kd240 -k ad7797_torque_sensor_temperature_read  # Run Torque sensor temperature read test
 ```
 
 For run_torque_sensor_id_test() functional test, the test is passed if the ID read from the SPI device response

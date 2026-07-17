@@ -25,8 +25,8 @@ The config parameters for this test are described below:
 The example commands for this module are provided below (KV260):
 
 ```bash
-pytest-3 --board kv260 -m gpio              // Run all tests in this module
-pytest-3 --board kv260 -k pmod0             // Run individual pmod0 test
+pytest --board kv260 -m gpio              # Run all tests in this module
+pytest --board kv260 -k pmod0             # Run individual pmod0 test
 ```
 Each test prints out log messages that include the observations/readings
 and the final test result. The live log call is also available, which can be

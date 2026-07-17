@@ -22,8 +22,8 @@ The config parameters for this test are described below:
 The example commands for this module are provided below (KD240):
 
 ```bash
-pytest-3 --board kd240 -m tty                                     // Run all tests in this module
-pytest-3 --board kd240 -k rs485_temp_humidity_sensor_read         // Run inidvidual test
+pytest --board kd240 -m tty                                     # Run all tests in this module
+pytest --board kd240 -k rs485_temp_humidity_sensor_read         # Run inidvidual test
 ```
 The test prints out the log messages that include the readings from the sensor
 and final test result. The readings have the temperature and humidity 

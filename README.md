@@ -1,58 +1,67 @@
 # Kria Board Interface Test Application
 
 ## Setup
-Install prerequisites
-```
-sudo apt install \
-	python3-pytest \
-	freeipmi-tools \
-	libiio0 \
-	python3-libiio \
-	tpm2-tools \
-	v4l-utils \
-	gstreamer1.0-tools \
-	gstreamer1.0-plugins-good \
-	gstreamer1.0-plugins-bad \
-	libgstreamer1.0-0 \
-	gst-perf \
-	libdrm-tests \
-	python3-periphery \
-	iperf3 \
-	ethtool \
-	mtd-utils \
-	i2c-tools \
-	python3-can \
-	python3-pymodbus \
-	xlnx-app-kd240-foc-motor-ctrl
 
-sudo pip install \
-	netifaces \
-	ipaddress \
-	pyroute2 \
-	ping3 \
-	iperf3 \
-	func-timeout \
-	inputimeout
-```
+The recommended way to run the BIST application is from the prebuilt Docker
+image for your platform. Pull the image that matches your OS release and
+follow its documentation:
+
+| Platform      | Docker image                   | Release tag | Documentation |
+|---------------|--------------------------------|-------------|---------------|
+| Ubuntu 24.04  | `xilinx/kria-bist:1.2-noble-24.04` | v1.2        | [BIST v1.2 docs](https://xilinx.github.io/kria-apps-docs/kr260/bist/1_2/build/html/docs/overview.html) |
+| AMD EDF 26.06 | `xilinx/kria-bist:1.3-edf-26.06` | v1.3      | [BIST v1.3 docs](https://xilinx.github.io/kria-apps-docs/kr260/bist/1_3/build/html/docs/overview.html) |
+
+## Building the Container
+
+The BIST container for the AMD EDF image is built with Yocto/BitBake:
+
+1. Set up an AMD EDF build environment by following the
+   [Yocto Project build setup instructions for EDF](https://edf.docs.amd.com/en/latest/osdev/operating-system-integration-and-development.html#yocto-project-build-setup-instructions-for-edf).
+
+2. Add the
+   [meta-kria-apps](https://github.com/AMD-AECG-SSW-PUBLIC/meta-kria-apps)
+   layer, which provides the BIST container recipe
+   ([recipes-containers/container-kria-bist/container-kria-bist.bb](https://github.com/AMD-AECG-SSW-PUBLIC/meta-kria-apps/blob/main/recipes-containers/container-kria-bist/container-kria-bist.bb)):
+   ```
+   bitbake-layers add-layer /path/to/meta-kria-apps
+   ```
+
+3. Build the container image:
+   ```
+   MACHINE=amd-cortexa53-mali-common bitbake container-kria-bist
+   ```
+
+   The resulting OCI image is written under
+   `tmp/deploy/images/${MACHINE}/`.
+
+## How to Run
+
+See [Setting up the Board and Application Deployment](docs/src/run.md) for
+the full container setup, firmware install, and run instructions.
+
 ## Examples
+
+The following are example pytest commands, run from inside the BIST
+container.
+
 To collect tests:
 ```
-pytest-3 --board kr260 --collect-only
+pytest --board kr260 --collect-only
 ```
 
 To run tests:
 ```
-pytest-3 --board kr260
+pytest --board kr260
 ```
 
 To run gpio tests only, use the -m option:
 ```
-pytest-3 --board kr260 -m gpio
+pytest --board kr260 -m gpio
 ```
 
 To run an individual test, use the -k option:
 ```
-pytest-3 --board kr260 -k pmod1
+pytest --board kr260 -k pmod1
 ```
 
 ## License
